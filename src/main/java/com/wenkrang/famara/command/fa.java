@@ -19,6 +19,8 @@ import java.io.IOException;
 import java.util.*;
 import java.util.List;
 
+import static com.wenkrang.famara.Famara.yamlConfiguration;
+
 public class fa implements CommandExecutor {
 
     /**
@@ -63,6 +65,18 @@ public class fa implements CommandExecutor {
             //供测试使用的命令
             if (strings[0].equalsIgnoreCase("test")) {
                 FaPhotoRender.TakePhoto(player);
+            }
+
+            if (strings[0].equalsIgnoreCase("set")) {
+                yamlConfiguration.set(strings[1] + ".r", Integer.parseInt(strings[2]));
+                yamlConfiguration.set(strings[1] + ".g", Integer.parseInt(strings[3]));
+                yamlConfiguration.set(strings[1] + ".b", Integer.parseInt(strings[4]));
+
+                try {
+                    yamlConfiguration.save("./plugins/Famara/colors.yml");
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
             }
 
             if (strings[0].equalsIgnoreCase("color")) {

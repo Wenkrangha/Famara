@@ -6,6 +6,7 @@ import org.bukkit.FluidCollisionMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
+import org.bukkit.block.BlockFace;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Entity;
@@ -71,6 +72,22 @@ public class FaPhotoRender {
         }
 
         return null;
+    }
+
+    public static Color BlockFaceColorMatcher(BlockFace blockFace, Color color) {
+        try {
+            return switch (blockFace) {
+                case NORTH -> new Color(color.getRed() - 5, color.getGreen() - 5, color.getBlue() - 5);
+                case SOUTH -> new Color(color.getRed() + 5, color.getGreen() + 5, color.getBlue() + 5);
+                case UP -> new Color(color.getRed() + 15, color.getGreen() + 15, color.getBlue() + 15);
+                case DOWN -> new Color(color.getRed() - 15, color.getGreen() - 15, color.getBlue() - 15);
+                case EAST -> new Color(color.getRed() + 10, color.getGreen() + 10, color.getBlue() + 10);
+                case WEST -> new Color(color.getRed() - 10, color.getGreen() - 10, color.getBlue() - 10);
+                default -> color;
+            };
+        } catch (Exception e) {
+            return Color.black;
+        }
     }
 
     public static void TakePhoto(Player player) {
@@ -141,7 +158,9 @@ public class FaPhotoRender {
 
                         try {
                             if (result != null) {
-                                image.setRGB(finalX, finalY, PhotoColorMatcher(result, eyes).getRGB());
+                                Color color = PhotoColorMatcher(result, eyes);
+                                color = BlockFaceColorMatcher(result.getHitBlockFace(), color);
+                                image.setRGB(finalX, finalY, color.getRGB());
                             } else {
                                 image.setRGB(finalX, finalY, (new Color(143,173,241)).getRGB());
                             }
