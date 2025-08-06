@@ -139,13 +139,13 @@ BIRCH_HANGING_SIGN:
   g: 0
   b: 0
 BIRCH_LEAVES:
-  r: 0
-  g: 0
-  b: 0
+  r: 71
+  g: 94
+  b: 47
 BIRCH_LOG:
-  r: 255
-  g: 255
-  b: 255
+  r: 248
+  g: 248
+  b: 248
 BIRCH_PLANKS:
   r: 215
   g: 193
@@ -851,9 +851,9 @@ FARMLAND:
   g: 108
   b: 74
 FERN:
-  r: 0
-  g: 0
-  b: 0
+  r: 70
+  g: 91
+  b: 81
 FIRE_CORAL:
   r: 0
   g: 0
@@ -1095,9 +1095,9 @@ LARGE_AMETHYST_BUD:
   g: 0
   b: 0
 LEAF_LITTER:
-  r: 0
-  g: 0
-  b: 0
+  r: 140
+  g: 93
+  b: 60
 LEVER:
   r: 0
   g: 0
@@ -1359,9 +1359,9 @@ OAK_HANGING_SIGN:
   g: 0
   b: 0
 OAK_LEAVES:
-  r: 0
-  g: 0
-  b: 0
+  r: 57
+  g: 114
+  b: 31
 OAK_LOG:
   r: 116
   g: 90
@@ -1459,9 +1459,9 @@ OXIDIZED_CUT_COPPER:
   g: 164
   b: 139
 PACKED_ICE:
-  r: 146
-  g: 185
-  b: 254
+  r: 113
+  g: 147
+  b: 211
 PACKED_MUD:
   r: 137
   g: 101
@@ -1799,9 +1799,9 @@ SHORT_DRY_GRASS:
   g: 0
   b: 0
 SHORT_GRASS:
-  r: 0
-  g: 0
-  b: 0
+  r: 98
+  g: 127
+  b: 60
 SHROOMLIGHT:
   r: 254
   g: 172
@@ -1831,9 +1831,9 @@ SNIFFER_EGG:
   g: 0
   b: 0
 SNOW:
-  r: 255
-  g: 255
-  b: 255
+  r: 248
+  g: 248
+  b: 248
 SOUL_CAMPFIRE:
   r: 0
   g: 0
@@ -1875,9 +1875,9 @@ SPRUCE_HANGING_SIGN:
   g: 0
   b: 0
 SPRUCE_LEAVES:
-  r: 0
-  g: 0
-  b: 0
+  r: 33
+  g: 52
+  b: 33
 SPRUCE_LOG:
   r: 59
   g: 39
@@ -1983,9 +1983,9 @@ TINTED_GLASS:
   g: 37
   b: 40
 TORCH:
-  r: 0
-  g: 0
-  b: 0
+  r: 252
+  g: 252
+  b: 149
 TORCHFLOWER:
   r: 0
   g: 0
@@ -2194,3 +2194,27 @@ YELLOW_WOOL:
   r: 254
   g: 217
   b: 63
+GRASS_BLOCK:
+  r: 86
+  g: 112
+  b: 53
+WATER:
+  r: 65
+  g: 109
+  b: 204
+TALL_GRASS:
+  r: 79
+  g: 100
+  b: 48
+fern:
+  r: 70
+  g: 91
+  b: 81
+PODZOL:
+  r: 57
+  g: 47
+  b: 43
+LARGE_FERN:
+  r: 70
+  g: 91
+  b: 81
