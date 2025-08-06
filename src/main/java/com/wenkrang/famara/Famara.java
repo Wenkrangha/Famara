@@ -15,7 +15,7 @@ import java.util.UUID;
 public final class Famara extends JavaPlugin {
 
 
-    public static Map<UUID, MapCanvas> MapCanvas = new HashMap<>();
+    public static Map<UUID, Integer> progress = new HashMap<>();
 
     public static YamlConfiguration yamlConfiguration = new YamlConfiguration();
     @Override
