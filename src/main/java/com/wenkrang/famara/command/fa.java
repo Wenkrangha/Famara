@@ -1,6 +1,7 @@
 package com.wenkrang.famara.command;
 
-import com.wenkrang.famara.lib.FaPhotoRender;
+import com.wenkrang.famara.Famara;
+import com.wenkrang.famara.Render.PhotoRender;
 import org.bukkit.Material;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -9,15 +10,16 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 
 import javax.imageio.ImageIO;
-
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.*;
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static com.wenkrang.famara.Famara.yamlConfiguration;
 
@@ -64,7 +66,7 @@ public class fa implements CommandExecutor {
 
             //供测试使用的命令
             if (strings[0].equalsIgnoreCase("test")) {
-                FaPhotoRender.TakePhoto(player);
+                PhotoRender.TakePhoto(player);
             }
 
             if (strings[0].equalsIgnoreCase("set")) {
@@ -76,6 +78,13 @@ public class fa implements CommandExecutor {
                     yamlConfiguration.save("./plugins/Famara/colors.yml");
                 } catch (IOException e) {
                     throw new RuntimeException(e);
+                }
+            }
+
+            if (strings[0].equalsIgnoreCase("speed")) {
+                if (strings.length == 2) {
+                    player.sendMessage("§9§l[*]§r 当前渲染速度设置为" + Famara.speed);
+                    Famara.speed = Integer.parseInt(strings[1]);
                 }
             }
 
