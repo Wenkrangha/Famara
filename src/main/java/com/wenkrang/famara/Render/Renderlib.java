@@ -1,18 +1,26 @@
 package com.wenkrang.famara.Render;
 
 import com.wenkrang.famara.Famara;
-import org.bukkit.FluidCollisionMode;
-import org.bukkit.Location;
-import org.bukkit.Material;
+import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
+import org.bukkit.boss.BarColor;
+import org.bukkit.boss.BarStyle;
+import org.bukkit.boss.BossBar;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.inventory.meta.MapMeta;
+import org.bukkit.map.MapCanvas;
+import org.bukkit.map.MapRenderer;
+import org.bukkit.map.MapView;
+import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.RayTraceResult;
 import org.bukkit.util.Vector;
 
 import javax.imageio.ImageIO;
-import java.awt.*;
+import java.awt.Color;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -21,6 +29,55 @@ import java.util.UUID;
 import static com.wenkrang.famara.Famara.yamlConfiguration;
 
 public class Renderlib {
+    public static ItemStack getPhoto(BufferedImage image, World world) {
+        MapView map = Bukkit.createMap(world);
+        map.setLocked(true);
+        MapRenderer mapRenderer = new MapRenderer() {
+            @Override
+            public void render(MapView mapView, MapCanvas mapCanvas, Player player) {
+                //渲染照片
+                mapCanvas.drawImage(0, 0, image);
+            }
+        };
+        map.addRenderer(mapRenderer);
+
+        //发放照片
+        ItemStack itemStack = new ItemStack(Material.FILLED_MAP);
+        ItemMeta itemMeta = itemStack.getItemMeta();
+        MapMeta mapMeta = (MapMeta) itemMeta;
+        if (mapMeta != null) {
+            mapMeta.setMapView(map);
+        }
+        itemStack.setItemMeta(mapMeta);
+
+        return itemStack;
+    }
+
+    public static void ShowProgress(Player player,UUID uuid) {
+        BossBar progress = Bukkit.createBossBar("曝光进度", BarColor.WHITE, BarStyle.SOLID);
+        progress.addPlayer(player);
+        new BukkitRunnable() {
+            @Override
+            public void run() {
+                Integer i = Famara.progress.get(uuid);
+
+                try {
+                    progress.setProgress((double) i / 16384);
+                } catch (Exception e) {
+                    progress.removeAll();
+                    Famara.progress.remove(uuid);
+                    cancel();
+                }
+
+                if (i == 16384) {
+                    progress.removeAll();
+                    Famara.progress.remove(uuid);
+                    cancel();
+                }
+            }
+        }.runTaskTimerAsynchronously(Famara.getPlugin(Famara.class), 0, 20);
+    }
+
     public static void render(int x, int y, Location eyes, double pitchRad, double yawRad, double fieldOfView, UUID uuid, BufferedImage image, Player player, File picture){
         int x1 = x;
         int y1 = y;
