@@ -1,4 +1,4 @@
-package com.wenkrang.famara.Render;
+package com.wenkrang.famara.render;
 
 import org.bukkit.Location;
 import org.bukkit.entity.Player;

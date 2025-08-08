@@ -1,6 +1,7 @@
-package com.wenkrang.famara.Render;
+package com.wenkrang.famara.render;
 
 import com.wenkrang.famara.Famara;
+import com.wenkrang.famara.itemSystem.ItemSystem;
 import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
@@ -8,6 +9,7 @@ import org.bukkit.boss.BarColor;
 import org.bukkit.boss.BarStyle;
 import org.bukkit.boss.BossBar;
 import org.bukkit.configuration.InvalidConfigurationException;
+import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -18,6 +20,7 @@ import org.bukkit.map.MapView;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.RayTraceResult;
 import org.bukkit.util.Vector;
+import org.jetbrains.annotations.NotNull;
 
 import javax.imageio.ImageIO;
 import java.awt.Color;
@@ -25,16 +28,17 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.util.UUID;
+import java.util.logging.Logger;
 
 import static com.wenkrang.famara.Famara.yamlConfiguration;
 
-public class Renderlib {
+public class RenderLib {
     public static ItemStack getPhoto(BufferedImage image, World world) {
         MapView map = Bukkit.createMap(world);
         map.setLocked(true);
         MapRenderer mapRenderer = new MapRenderer() {
             @Override
-            public void render(MapView mapView, MapCanvas mapCanvas, Player player) {
+            public void render(@NotNull MapView mapView, MapCanvas mapCanvas,@NotNull Player player) {
                 //渲染照片
                 mapCanvas.drawImage(0, 0, image);
             }
@@ -42,7 +46,7 @@ public class Renderlib {
         map.addRenderer(mapRenderer);
 
         //发放照片
-        ItemStack itemStack = new ItemStack(Material.FILLED_MAP);
+        ItemStack itemStack = ItemSystem.itemMap.get("photo");
         ItemMeta itemMeta = itemStack.getItemMeta();
         MapMeta mapMeta = (MapMeta) itemMeta;
         if (mapMeta != null) {
@@ -79,38 +83,29 @@ public class Renderlib {
     }
 
     public static void render(int x, int y, Location eyes, double pitchRad, double yawRad, double fieldOfView, UUID uuid, BufferedImage image, Player player, File picture){
-        int x1 = x;
-        int y1 = y;
-
-
-        double cos = Math.cos(pitchRad - (y1 - 64) * fieldOfView);
+        double cos = Math.cos(pitchRad - (y - 64) * fieldOfView);
         Vector direction = new Vector(
-                Math.cos(yawRad + (x1 - 64) * fieldOfView) * cos,
-                Math.sin(pitchRad - (y1 - 64) * fieldOfView),
-                Math.sin(yawRad + (x1 - 64) * fieldOfView) * cos
+                Math.cos(yawRad + (x - 64) * fieldOfView) * cos,
+                Math.sin(pitchRad - (y - 64) * fieldOfView),
+                Math.sin(yawRad + (x - 64) * fieldOfView) * cos
         );
 
 //                        Predicate<Entity> excludePlayers = entity -> !(entity instanceof Player);
         //光线追踪
         RayTraceResult result = player.getWorld().rayTraceBlocks(eyes, direction, 300, FluidCollisionMode.ALWAYS, false);
 
-        try {
-            if (result != null) {
-                Color color = PhotoColorMatcher(result, eyes, direction, player);
-                color = BlockFaceColorMatcher(result.getHitBlockFace(), color);
-                color = LightColorMatcher(color, getBlockLightLevel(result));
-                // 添加边缘阴影效果
+        if (result != null) {
+            Color color = PhotoColorMatcher(result, eyes, direction, player);
+            color = BlockFaceColorMatcher(result.getHitBlockFace(), color);
+            color = LightColorMatcher(color, getBlockLightLevel(result));
+            // 添加边缘阴影效果
 //                                if (result.getHitBlock() != null && result.getHitBlockFace() != null) {
 //                                    color = addEdgeShadow(result.getHitBlock(), result.getHitBlockFace(), color);
 //                                }
-                color = MaskColor(x1, y1, color);
-                image.setRGB(x1, y1, color.getRGB());
-            } else {
-                image.setRGB(x1, y1, (new Color(143,173,241)).getRGB());
-            }
-
-        } catch (IOException | InvalidConfigurationException e) {
-            throw new RuntimeException(e);
+            color = MaskColor(x, y, color);
+            image.setRGB(x, y, color.getRGB());
+        } else {
+            image.setRGB(x, y, (new Color(143,173,241)).getRGB());
         }
 
         //写入照片
@@ -126,7 +121,7 @@ public class Renderlib {
     public static boolean isBlock(Block block) {
         return block != null && block.getType().isBlock() && !block.getType().isAir();
     }
-    public static Color BlockColorMatcher(Block block, Player player, Location eyes, Vector direction) throws IOException, InvalidConfigurationException {
+    public static Color BlockColorMatcher(Block block, Player player, Location eyes, Vector direction) {
         if (isBlock(block)) {
             Material material = block.getType();
 
@@ -148,6 +143,9 @@ public class Renderlib {
 //            }
 
             String name = material.name();
+            if (Famara.colorCache.containsKey(name)) {
+                return Famara.colorCache.get(name);
+            }
 
             if (!yamlConfiguration.contains(name + ".r")) {
                 player.sendMessage("§c§l[-] §r无法找到颜色：" + name);
@@ -158,11 +156,12 @@ public class Renderlib {
             int g = yamlConfiguration.getInt(name + ".g");
             int b = yamlConfiguration.getInt(name + ".b");
 
+            Famara.colorCache.put(name, new Color(r, g, b));
             return new Color(r, g, b);
         }
         return new Color(143,173,241);
     }
-    public static Color PhotoColorMatcher(RayTraceResult result, Location start, Vector direction, Player player) throws IOException, InvalidConfigurationException {
+    public static Color PhotoColorMatcher(RayTraceResult result, Location start, Vector direction, Player player) {
         if (result != null) {
             if (isBlock(result.getHitBlock()) && result.getHitEntity() != null) {
                 if (result.getHitBlock().getLocation().distance(start) < result.getHitEntity().getLocation().distance(start)) {
@@ -200,7 +199,7 @@ public class Renderlib {
             if (color.getRed() < 100 || color.getGreen() < 100 || color.getBlue() < 100) {
                 return Color.black;
             }
-            e.printStackTrace();
+            Logger.getGlobal().warning("颜色遮罩设置失败");
             return Color.black;
         }
     }

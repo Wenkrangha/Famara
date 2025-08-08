@@ -1,11 +1,12 @@
-package com.wenkrang.famara.Render;
+package com.wenkrang.famara.render;
 
 import com.wenkrang.famara.Famara;
 import org.bukkit.scheduler.BukkitRunnable;
-import java.awt.*;
-import java.util.Random;
 
-import static com.wenkrang.famara.Render.Renderlib.*;
+import java.util.Random;
+import java.util.logging.Logger;
+
+import static com.wenkrang.famara.render.RenderLib.*;
 
 public class RenderRunner {
 
@@ -32,7 +33,7 @@ public class RenderRunner {
                         }
                     }
                 }catch (Exception e) {
-                    e.printStackTrace();
+                    Logger.getGlobal().warning(e.getMessage());
                 }
             }
         }.runTaskTimer(Famara.getPlugin(Famara.class), 0, 1);

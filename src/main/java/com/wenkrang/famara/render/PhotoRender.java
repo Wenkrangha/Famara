@@ -1,14 +1,14 @@
-package com.wenkrang.famara.Render;
+package com.wenkrang.famara.render;
 
 import com.wenkrang.famara.Famara;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
-import java.awt.*;
+
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.util.UUID;
-import static com.wenkrang.famara.Render.Renderlib.ShowProgress;
+import static com.wenkrang.famara.render.RenderLib.ShowProgress;
 
 public class PhotoRender {
 
@@ -43,12 +43,15 @@ public class PhotoRender {
         BufferedImage image = new BufferedImage(128, 128, BufferedImage.TYPE_INT_RGB);
         File picture = new File("./plugins/Famara/pictures/" + uuid + ".png");
         try {
-            picture.createNewFile();
+            boolean newFile = picture.createNewFile();
+            if (!newFile) {
+                throw new RuntimeException("照片文件创建失败");
+            }
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
 
-        player.getInventory().addItem(Renderlib.getPhoto(image, player.getWorld()));
+        player.getInventory().addItem(RenderLib.getPhoto(image, player.getWorld()));
 
         //初始化数据
         Location eyes = player.getEyeLocation();
@@ -64,11 +67,9 @@ public class PhotoRender {
         //为照片每一个像素进行渲染
         for (int x = 0; x < 128; x++) {
             for (int y = 0; y < 128; y++) {
-                int x1 = x;
-                int y1 = y;
                 RenderTask renderTask = new RenderTask();
-                renderTask.x = x1;
-                renderTask.y = y1;
+                renderTask.x = x;
+                renderTask.y = y;
                 renderTask.eyes = eyes;
                 renderTask.pitchRad = pitchRad;
                 renderTask.yawRad = yawRad;

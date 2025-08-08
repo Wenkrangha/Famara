@@ -1,13 +1,15 @@
 package com.wenkrang.famara.command;
 
 import com.wenkrang.famara.Famara;
-import com.wenkrang.famara.Render.PhotoRender;
+import com.wenkrang.famara.itemSystem.RecipeBook;
+import com.wenkrang.famara.render.PhotoRender;
 import org.bukkit.Material;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
@@ -16,10 +18,8 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.HashMap;
+import java.util.*;
 import java.util.List;
-import java.util.Map;
 
 import static com.wenkrang.famara.Famara.yamlConfiguration;
 
@@ -56,87 +56,94 @@ public class fa implements CommandExecutor {
         return new Color(mostFrequentRGB);
     }
     @Override
-    public boolean onCommand(CommandSender commandSender, Command command, String s, String[] strings) {
+    public boolean onCommand(@NotNull CommandSender commandSender,@NotNull Command command,@NotNull String s, String[] strings) {
         //Famara命令处理
 
+        if (strings[0].equalsIgnoreCase("set")) {
+            yamlConfiguration.set(strings[1] + ".r", Integer.parseInt(strings[2]));
+            yamlConfiguration.set(strings[1] + ".g", Integer.parseInt(strings[3]));
+            yamlConfiguration.set(strings[1] + ".b", Integer.parseInt(strings[4]));
+
+            try {
+                yamlConfiguration.save("./plugins/Famara/colors.yml");
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }
+
+        if (strings[0].equalsIgnoreCase("speed")) {
+            if (strings.length == 2) {
+                Famara.speed = Integer.parseInt(strings[1]);
+                commandSender.sendMessage("§9§l[*]§r 当前渲染速度设置为" + Famara.speed);
+            }
+        }
+
         //检测对象是否为玩家
-        if (commandSender instanceof Player) {
+        if (commandSender instanceof Player player) {
             //防止重复获取
-            Player player = (Player) commandSender;
 
             //供测试使用的命令
             if (strings[0].equalsIgnoreCase("test")) {
                 PhotoRender.TakePhoto(player);
             }
 
-            if (strings[0].equalsIgnoreCase("set")) {
-                yamlConfiguration.set(strings[1] + ".r", Integer.parseInt(strings[2]));
-                yamlConfiguration.set(strings[1] + ".g", Integer.parseInt(strings[3]));
-                yamlConfiguration.set(strings[1] + ".b", Integer.parseInt(strings[4]));
 
-                try {
-                    yamlConfiguration.save("./plugins/Famara/colors.yml");
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
-                }
+
+            if (strings[0].equalsIgnoreCase("guide")) {
+                player.getWorld().dropItem(player.getLocation(), RecipeBook.RecipeBookItem);
             }
 
-            if (strings[0].equalsIgnoreCase("speed")) {
-                if (strings.length == 2) {
-                    player.sendMessage("§9§l[*]§r 当前渲染速度设置为" + Famara.speed);
-                    Famara.speed = Integer.parseInt(strings[1]);
-                }
-            }
-
-            if (strings[0].equalsIgnoreCase("color")) {
-                YamlConfiguration colors = new YamlConfiguration();
-
-                File textures = new File("./textures/");
-                List<String> list = Arrays.stream(textures.list()).toList();
-
-                Material[] values = Material.values();
-
-                String name = Arrays.stream(values).filter(Material::isBlock).findFirst().get().name().toLowerCase();
-                player.sendMessage(name);
-
-                try {
-                    BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter("./exclude.yml"));
-
-                    for (Material material : values) {
-                        if (material.isBlock()) {
-                            if (list.contains(material.name().toLowerCase() + ".png")) {
-                                File file = new File("./textures/" + material.name().toLowerCase() + ".png");
-                                try {
-                                    Color mostFrequentColor = getMostFrequentColor(file);
-
-                                    player.sendMessage(material.name() + ": " + mostFrequentColor);
-
-
-                                    colors.set(material.name() + ".r", mostFrequentColor.getRed());
-                                    colors.set(material.name() + ".g", mostFrequentColor.getGreen());
-                                    colors.set(material.name() + ".b", mostFrequentColor.getBlue());
-
-//                                    colors.set(material.name() + ".include", true);
-                                } catch (IOException e) {
-                                    throw new RuntimeException(e);
-                                }
-                            }else {
-                                bufferedWriter.write(material.name() + "\n");
-                            }
-                        }
-                    }
-
-                    bufferedWriter.close();
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
-                }
-
-                try {
-                    colors.save("./plugins/Famara/colors.yml");
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
-                }
-            }
+//            if (strings[0].equalsIgnoreCase("color")) {
+//                YamlConfiguration colors = new YamlConfiguration();
+//
+//                File textures = new File("./textures/");
+//                List<String> list = Arrays.stream(Objects.requireNonNull(textures.list())).toList();
+//
+//                Material[] values = Material.values();
+//
+//                String name = Arrays.stream(values).filter(Material::isBlock).findFirst().get().name().toLowerCase();
+//                player.sendMessage(name);
+//
+//                try {
+//                    BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter("./exclude.yml"));
+//
+//                    for (Material material : values) {
+//                        if (material.isBlock()) {
+//                            if (list.contains(material.name().toLowerCase() + ".png")) {
+//                                File file = new File("./textures/" + material.name().toLowerCase() + ".png");
+//                                try {
+//                                    Color mostFrequentColor = getMostFrequentColor(file);
+//
+//                                    player.sendMessage(material.name() + ": " + mostFrequentColor);
+//
+//
+//                                    colors.set(material.name() + ".r", mostFrequentColor.getRed());
+//                                    colors.set(material.name() + ".g", mostFrequentColor.getGreen());
+//                                    colors.set(material.name() + ".b", mostFrequentColor.getBlue());
+//
+////                                    colors.set(material.name() + ".include", true);
+//                                } catch (IOException e) {
+//                                    throw new RuntimeException(e);
+//                                }
+//                            }else {
+//                                bufferedWriter.write(material.name() + "\n");
+//                            }
+//                        }
+//                    }
+//
+//                    bufferedWriter.close();
+//                } catch (IOException e) {
+//                    throw new RuntimeException(e);
+//                }
+//
+//                try {
+//                    colors.save("./plugins/Famara/colors.yml");
+//                } catch (IOException e) {
+//                    throw new RuntimeException(e);
+//                }
+//            }
+        }else {
+            commandSender.sendMessage("§c§l[-]§r 请在游戏中使用该命令");
         }
 
 
