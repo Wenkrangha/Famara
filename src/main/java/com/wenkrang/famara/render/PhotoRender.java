@@ -51,7 +51,7 @@ public class PhotoRender {
             throw new RuntimeException(e);
         }
 
-        player.getInventory().addItem(RenderLib.getPhoto(image, player.getWorld()));
+        player.getInventory().addItem(RenderLib.getPhoto(image, player.getWorld(), uuid));
 
         //初始化数据
         Location eyes = player.getEyeLocation();

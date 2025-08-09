@@ -17,6 +17,8 @@ import org.bukkit.inventory.meta.MapMeta;
 import org.bukkit.map.MapCanvas;
 import org.bukkit.map.MapRenderer;
 import org.bukkit.map.MapView;
+import org.bukkit.persistence.PersistentDataContainer;
+import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.RayTraceResult;
 import org.bukkit.util.Vector;
@@ -33,7 +35,7 @@ import java.util.logging.Logger;
 import static com.wenkrang.famara.Famara.yamlConfiguration;
 
 public class RenderLib {
-    public static ItemStack getPhoto(BufferedImage image, World world) {
+    public static ItemStack getPhoto(BufferedImage image, World world, UUID uuid) {
         MapView map = Bukkit.createMap(world);
         map.setLocked(true);
         MapRenderer mapRenderer = new MapRenderer() {
@@ -52,6 +54,9 @@ public class RenderLib {
         if (mapMeta != null) {
             mapMeta.setMapView(map);
         }
+        PersistentDataContainer persistentDataContainer = itemMeta.getPersistentDataContainer();
+        persistentDataContainer.set(new NamespacedKey(Famara.getPlugin(Famara.class), "uuid"), PersistentDataType.STRING, uuid.toString());
+
         itemStack.setItemMeta(mapMeta);
 
         return itemStack;
