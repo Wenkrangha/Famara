@@ -19,10 +19,12 @@ import java.io.IOException;
 import java.util.*;
 import java.util.logging.Logger;
 
+import static com.wenkrang.famara.Loader.LoadPhoto.loadPhoto;
+
 public final class Famara extends JavaPlugin {
 
 
-    public static Map<UUID, Integer> progress = new HashMap<>();
+    public static Map<String, Integer> progress = new HashMap<>();
 
     public static YamlConfiguration yamlConfiguration = new YamlConfiguration();
 
@@ -55,6 +57,7 @@ public final class Famara extends JavaPlugin {
             }
         }
 
+
         RenderRunner.Runner();
 
         new BukkitRunnable() {
@@ -67,6 +70,8 @@ public final class Famara extends JavaPlugin {
         LoadItem.loadItem();
 
         RecipeBook.mainPage = new BookPage("相机配方", null, null, null);
+
+        loadPhoto();
     }
 
     @Override

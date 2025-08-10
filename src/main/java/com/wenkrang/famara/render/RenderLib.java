@@ -9,6 +9,7 @@ import org.bukkit.boss.BarColor;
 import org.bukkit.boss.BarStyle;
 import org.bukkit.boss.BossBar;
 import org.bukkit.configuration.InvalidConfigurationException;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -35,8 +36,9 @@ import java.util.logging.Logger;
 import static com.wenkrang.famara.Famara.yamlConfiguration;
 
 public class RenderLib {
-    public static ItemStack getPhoto(BufferedImage image, World world, UUID uuid) {
-        MapView map = Bukkit.createMap(world);
+    public static ItemStack getPhoto(BufferedImage image, MapView map) {
+        String id = String.valueOf(map.getId());
+
         map.setLocked(true);
         MapRenderer mapRenderer = new MapRenderer() {
             @Override
@@ -51,43 +53,45 @@ public class RenderLib {
         ItemStack itemStack = ItemSystem.itemMap.get("photo");
         ItemMeta itemMeta = itemStack.getItemMeta();
         MapMeta mapMeta = (MapMeta) itemMeta;
+
         if (mapMeta != null) {
             mapMeta.setMapView(map);
         }
         PersistentDataContainer persistentDataContainer = itemMeta.getPersistentDataContainer();
-        persistentDataContainer.set(new NamespacedKey(Famara.getPlugin(Famara.class), "uuid"), PersistentDataType.STRING, uuid.toString());
+        persistentDataContainer.set(new NamespacedKey(Famara.getPlugin(Famara.class), "id"), PersistentDataType.STRING, id.toString());
 
         itemStack.setItemMeta(mapMeta);
+
 
         return itemStack;
     }
 
-    public static void ShowProgress(Player player,UUID uuid) {
+    public static void ShowProgress(Player player,String id) {
         BossBar progress = Bukkit.createBossBar("曝光进度", BarColor.WHITE, BarStyle.SOLID);
         progress.addPlayer(player);
         new BukkitRunnable() {
             @Override
             public void run() {
-                Integer i = Famara.progress.get(uuid);
+                Integer i = Famara.progress.get(id);
 
                 try {
                     progress.setProgress((double) i / 16384);
                 } catch (Exception e) {
                     progress.removeAll();
-                    Famara.progress.remove(uuid);
+                    Famara.progress.remove(id);
                     cancel();
                 }
 
                 if (i == 16384) {
                     progress.removeAll();
-                    Famara.progress.remove(uuid);
+                    Famara.progress.remove(id);
                     cancel();
                 }
             }
         }.runTaskTimerAsynchronously(Famara.getPlugin(Famara.class), 0, 20);
     }
 
-    public static void render(int x, int y, Location eyes, double pitchRad, double yawRad, double fieldOfView, UUID uuid, BufferedImage image, Player player, File picture){
+    public static void render(int x, int y, Location eyes, double pitchRad, double yawRad, double fieldOfView,String id, BufferedImage image, Player player, File picture){
         double cos = Math.cos(pitchRad - (y - 64) * fieldOfView);
         Vector direction = new Vector(
                 Math.cos(yawRad + (x - 64) * fieldOfView) * cos,
@@ -120,7 +124,7 @@ public class RenderLib {
             throw new RuntimeException(e);
         }
 
-        Famara.progress.put(uuid, Famara.progress.get(uuid) + 1);
+        Famara.progress.put(id, Famara.progress.get(id) + 1);
     }
 
     public static boolean isBlock(Block block) {

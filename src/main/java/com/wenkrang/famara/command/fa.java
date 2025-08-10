@@ -84,7 +84,11 @@ public class fa implements CommandExecutor {
 
             //供测试使用的命令
             if (strings[0].equalsIgnoreCase("test")) {
-                PhotoRender.TakePhoto(player);
+                try {
+                    PhotoRender.TakePhoto(player);
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
             }
 
 

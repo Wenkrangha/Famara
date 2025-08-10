@@ -1,8 +1,10 @@
 package com.wenkrang.famara.render;
 
 import com.wenkrang.famara.Famara;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
+import org.bukkit.map.MapView;
 
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -35,13 +37,16 @@ public class PhotoRender {
     
 
 
-    public static void TakePhoto(Player player) {
+    public static void TakePhoto(Player player) throws IOException {
+
+        MapView map = Bukkit.createMap(player.getWorld());
+
         //生成UUID
-        UUID uuid = UUID.randomUUID();
+        String id = String.valueOf(map.getId());
 
         //初始化照片
         BufferedImage image = new BufferedImage(128, 128, BufferedImage.TYPE_INT_RGB);
-        File picture = new File("./plugins/Famara/pictures/" + uuid + ".png");
+        File picture = new File("./plugins/Famara/pictures/" + id + ".png");
         try {
             boolean newFile = picture.createNewFile();
             if (!newFile) {
@@ -51,7 +56,7 @@ public class PhotoRender {
             throw new RuntimeException(e);
         }
 
-        player.getInventory().addItem(RenderLib.getPhoto(image, player.getWorld(), uuid));
+        player.getInventory().addItem(RenderLib.getPhoto(image, map));
 
         //初始化数据
         Location eyes = player.getEyeLocation();
@@ -59,9 +64,9 @@ public class PhotoRender {
         double yawRad = Math.toRadians(eyes.getYaw() + 90);
         final double fieldOfView = 1.0 / 128.0;
 
-        Famara.progress.put(uuid, 0);
+        Famara.progress.put(id, 0);
 
-        ShowProgress(player, uuid);
+        ShowProgress(player, id);
 
 
         //为照片每一个像素进行渲染
@@ -74,7 +79,7 @@ public class PhotoRender {
                 renderTask.pitchRad = pitchRad;
                 renderTask.yawRad = yawRad;
                 renderTask.fieldOfView = fieldOfView;
-                renderTask.uuid = uuid;
+                renderTask.id = id;
                 renderTask.image = image;
                 renderTask.player = player;
                 renderTask.picture = picture;

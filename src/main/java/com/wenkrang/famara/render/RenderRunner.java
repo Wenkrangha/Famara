@@ -24,7 +24,7 @@ public class RenderRunner {
                                     , renderTask.eyes,
                                     renderTask.pitchRad, renderTask.yawRad,
                                     renderTask.fieldOfView,
-                                    renderTask.uuid,
+                                    renderTask.id,
                                     renderTask.image,
                                     renderTask.player,
                                     renderTask.picture);

@@ -14,7 +14,7 @@ public class RenderTask {
     double pitchRad;
     double yawRad;
     double fieldOfView;
-    UUID uuid;
+    String id;
     BufferedImage image;
     Player player;
     File picture;
