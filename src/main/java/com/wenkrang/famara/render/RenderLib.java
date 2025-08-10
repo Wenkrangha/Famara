@@ -36,6 +36,45 @@ import java.util.logging.Logger;
 import static com.wenkrang.famara.Famara.yamlConfiguration;
 
 public class RenderLib {
+    public static Color getSkyColor(World world) {
+        long time = world.getTime();
+        boolean isRaining = world.hasStorm();
+
+
+        if (world.getEnvironment() == World.Environment.NETHER) {
+            return new Color(132, 22, 22);
+        }
+        if (world.getEnvironment() == World.Environment.THE_END){
+            return Color.BLACK;
+        }
+        // 根据时间计算基础颜色（简化逻辑）
+        int red = 0, green = 0, blue = 0;
+
+        // 白天（6000-12000 ticks）
+        if (time >= 0 && time < 6000 || time >= 23300 && time < 24000) {
+            red = 100; green = 150; blue = 255; // 黄昏/黎明
+        } else if (time >= 6000 && time < 12000) {
+            red = 135; green = 206; blue = 250; // 正午
+        }
+        // 晚上（12000-23000 ticks）
+        else if (time >= 12000 && time < 23000) {
+            red = 20; green = 20; blue = 40; // 夜晚
+        }
+
+        // 根据天气调整颜色
+        if (isRaining) {
+            red -= 30; green -= 30; blue -= 50; // 下雨时调暗
+        }
+
+        // 限制颜色范围
+        red = Math.max(0, Math.min(255, red));
+        green = Math.max(0, Math.min(255, green));
+        blue = Math.max(0, Math.min(255, blue));
+
+        return new Color(red, green, blue);
+    }
+
+
     public static ItemStack getPhoto(BufferedImage image, MapView map) {
         String id = String.valueOf(map.getId());
 
@@ -114,7 +153,7 @@ public class RenderLib {
             color = MaskColor(x, y, color);
             image.setRGB(x, y, color.getRGB());
         } else {
-            image.setRGB(x, y, (new Color(143,173,241)).getRGB());
+            getSkyColor(player.getWorld());
         }
 
         //写入照片
@@ -168,7 +207,8 @@ public class RenderLib {
             Famara.colorCache.put(name, new Color(r, g, b));
             return new Color(r, g, b);
         }
-        return new Color(143,173,241);
+//        return new Color(143,173,241);
+        return getSkyColor(player.getWorld());
     }
     public static Color PhotoColorMatcher(RayTraceResult result, Location start, Vector direction, Player player) {
         if (result != null) {
