@@ -131,14 +131,20 @@ public class RenderLib {
     }
 
     public static void render(int x, int y, Location eyes, double pitchRad, double yawRad, double fieldOfView,String id, BufferedImage image, Player player, File picture){
-        double cos = Math.cos(pitchRad - (y - 64) * fieldOfView);
-        Vector direction = new Vector(
-                Math.cos(yawRad + (x - 64) * fieldOfView) * cos,
-                Math.sin(pitchRad - (y - 64) * fieldOfView),
-                Math.sin(yawRad + (x - 64) * fieldOfView) * cos
-        );
 
-//                        Predicate<Entity> excludePlayers = entity -> !(entity instanceof Player);
+        // calculate ray rotations
+        double yrotate = -((y) * .9 / 128 - .45);
+        double xrotate = ((x) * .9 / 128 - .45);
+        Vector direction = new Vector(Math.cos(yawRad + xrotate) * Math.cos(pitchRad + yrotate),
+                Math.sin(pitchRad + yrotate), Math.sin(yawRad + xrotate) * Math.cos(pitchRad + yrotate));
+        //        double cos = Math.cos(pitchRad - (y - 64) * fieldOfView);
+//        Vector direction = new Vector(
+//                Math.cos(yawRad + (x - 64) * fieldOfView) * cos,
+//                Math.sin(pitchRad - (y - 64) * fieldOfView),
+//                Math.sin(yawRad + (x - 64) * fieldOfView) * cos
+//        );
+
+
         //光线追踪
         RayTraceResult result = player.getWorld().rayTraceBlocks(eyes, direction, 300, FluidCollisionMode.ALWAYS, false);
 
@@ -153,7 +159,8 @@ public class RenderLib {
             color = MaskColor(x, y, color);
             image.setRGB(x, y, color.getRGB());
         } else {
-            getSkyColor(player.getWorld());
+            image.setRGB(x, y, getSkyColor(player.getWorld()).getRGB());
+
         }
 
         //写入照片
