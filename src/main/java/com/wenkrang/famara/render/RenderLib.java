@@ -131,6 +131,8 @@ public class RenderLib {
     }
 
     public static void render(int x, int y, Location eyes, double pitchRad, double yawRad, double fieldOfView,String id, BufferedImage image, Player player, File picture){
+        //TODO:1.添加液体渲染 2.添加UP阴影
+
 
         // calculate ray rotations
         double yrotate = -((y) * .9 / 128 - .45);

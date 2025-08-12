@@ -1,5 +1,7 @@
 package com.wenkrang.famara;
 
+import com.wenkrang.famara.event.BookClickE;
+import com.wenkrang.famara.event.OnUseCameraE;
 import com.wenkrang.famara.event.OpenBookE;
 import com.wenkrang.famara.itemSystem.BookPage;
 import com.wenkrang.famara.Loader.LoadItem;
@@ -41,6 +43,8 @@ public final class Famara extends JavaPlugin {
         Objects.requireNonNull(this.getCommand("fa")).setExecutor(new fa());
 
         getServer().getPluginManager().registerEvents(new OpenBookE(), this);
+        getServer().getPluginManager().registerEvents(new BookClickE(), this);
+        getServer().getPluginManager().registerEvents(new OnUseCameraE(), this);
 
         try {
             yamlConfiguration.load("./plugins/Famara/colors.yml");
@@ -67,9 +71,9 @@ public final class Famara extends JavaPlugin {
             }
         }.runTaskTimer(this, 0, 200);
 
-        LoadItem.loadItem();
+        RecipeBook.mainPage = new BookPage("相机配方", new HashMap<>(), new HashMap<>(), new HashMap<>());
 
-        RecipeBook.mainPage = new BookPage("相机配方", null, null, null);
+        LoadItem.loadItem();
 
         loadPhoto();
     }

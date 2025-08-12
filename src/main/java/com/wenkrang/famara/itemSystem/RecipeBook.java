@@ -40,9 +40,8 @@ public class RecipeBook {
         player.openInventory(inventory);
 
         Map<Integer, ItemStack> items = mainPage.items();
-        for (int i = 0;i < items.size();i++) {
-            ItemStack itemStack = items.get(i);
-            inventory.setItem(i + 9, itemStack);
-        }
+        items.forEach((index, itemStack) -> {
+            inventory.setItem(index + 9, itemStack);
+        });
     }
 }

@@ -40,5 +40,18 @@ public class LoadItem {
 
             ItemSystem.itemMap.put("photo", itemStack);
         }
+        {
+            ItemStack itemStack = new ItemStack(Material.NETHERITE_HOE);
+            ItemMeta itemMeta = itemStack.getItemMeta();
+            itemMeta.setDisplayName("§f相机");
+            ArrayList<String> lore = new ArrayList<>();
+            lore.add("§7这是一台老式的撕拉片相机，看起来十分破旧，");
+            lore.add("§7但还可以用，它会为你留下怎样的记忆呢？");
+            itemMeta.setLore(lore);
+            itemStack.setItemMeta(itemMeta);
+
+            ItemSystem.itemMap.put("camera", itemStack);
+            RecipeBook.mainPage.items().put(0, itemStack);
+        }
     }
 }

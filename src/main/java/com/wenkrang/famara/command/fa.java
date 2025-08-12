@@ -82,17 +82,6 @@ public class fa implements CommandExecutor {
         if (commandSender instanceof Player player) {
             //防止重复获取
 
-            //供测试使用的命令
-            if (strings[0].equalsIgnoreCase("test")) {
-                try {
-                    PhotoRender.TakePhoto(player);
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
-                }
-            }
-
-
-
             if (strings[0].equalsIgnoreCase("guide")) {
                 player.getWorld().dropItem(player.getLocation(), RecipeBook.RecipeBookItem);
             }
