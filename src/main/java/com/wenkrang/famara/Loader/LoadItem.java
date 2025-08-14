@@ -3,6 +3,7 @@ package com.wenkrang.famara.Loader;
 import com.wenkrang.famara.itemSystem.ItemSystem;
 import com.wenkrang.famara.itemSystem.RecipeBook;
 import org.bukkit.Material;
+import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.jetbrains.annotations.NotNull;
@@ -41,17 +42,47 @@ public class LoadItem {
             ItemSystem.itemMap.put("photo", itemStack);
         }
         {
-            ItemStack itemStack = new ItemStack(Material.NETHERITE_HOE);
+            ItemStack itemStack = new ItemStack(Material.FILLED_MAP);
+            @NotNull ItemMeta itemMeta = Objects.requireNonNull(itemStack.getItemMeta());
+            itemMeta.setDisplayName("§f照片（按右键撕开拉片）");
+            ArrayList<String> lore = new ArrayList<>();
+            lore.add("§7一张看起来§7§l平平无奇的照片§7，");
+            lore.add("§7也许你早已经忘却了照片上的§7§l人与事物§r，");
+            lore.add("§7但它一直在为你记录着§7§l那一切§7......");
+            itemMeta.setLore(lore);
+            itemStack.setItemMeta(itemMeta);
+
+            ItemSystem.itemMap.put("photo_unPull", itemStack);
+        }
+        {
+            ItemStack itemStack = new ItemStack(Material.STICK);
             ItemMeta itemMeta = itemStack.getItemMeta();
             itemMeta.setDisplayName("§f相机");
             ArrayList<String> lore = new ArrayList<>();
             lore.add("§7这是一台老式的撕拉片相机，看起来十分破旧，");
             lore.add("§7但还可以用，它会为你留下怎样的记忆呢？");
+            lore.add("");
+            lore.add("§6§lShift + 右键§r§6将拉片拉出");
+            itemMeta.setItemModel(new NamespacedKey("famara", "famara_close"));
             itemMeta.setLore(lore);
             itemStack.setItemMeta(itemMeta);
-
             ItemSystem.itemMap.put("camera", itemStack);
             RecipeBook.mainPage.items().put(0, itemStack);
+        }
+        {
+            ItemStack itemStack = new ItemStack(Material.STICK);
+            ItemMeta itemMeta = itemStack.getItemMeta();
+            itemMeta.setDisplayName("§f相机（Shift + 右键拉出撕拉片）");
+            ArrayList<String> lore = new ArrayList<>();
+            lore.add("§7这是一台老式的撕拉片相机，看起来十分破旧，");
+            lore.add("§7但还可以用，它会为你留下怎样的记忆呢？");
+            lore.add("§7照片编号：");
+            lore.add("");
+            lore.add("§6§lShift + 右键§r§6将拉片拉出");
+            itemMeta.setItemModel(new NamespacedKey("famara", "famara_close"));
+            itemMeta.setLore(lore);
+            itemStack.setItemMeta(itemMeta);
+            ItemSystem.itemMap.put("camera_filmed", itemStack);
         }
     }
 }

@@ -76,7 +76,6 @@ public class RenderLib {
 
 
     public static ItemStack getPhoto(BufferedImage image, MapView map) {
-        String id = String.valueOf(map.getId());
 
         map.setLocked(true);
         MapRenderer mapRenderer = new MapRenderer() {
@@ -96,38 +95,9 @@ public class RenderLib {
         if (mapMeta != null) {
             mapMeta.setMapView(map);
         }
-        PersistentDataContainer persistentDataContainer = itemMeta.getPersistentDataContainer();
-        persistentDataContainer.set(new NamespacedKey(Famara.getPlugin(Famara.class), "id"), PersistentDataType.STRING, id.toString());
 
         itemStack.setItemMeta(mapMeta);
-
-
         return itemStack;
-    }
-
-    public static void ShowProgress(Player player,String id) {
-        BossBar progress = Bukkit.createBossBar("曝光进度", BarColor.WHITE, BarStyle.SOLID);
-        progress.addPlayer(player);
-        new BukkitRunnable() {
-            @Override
-            public void run() {
-                Integer i = Famara.progress.get(id);
-
-                try {
-                    progress.setProgress((double) i / 16384);
-                } catch (Exception e) {
-                    progress.removeAll();
-                    Famara.progress.remove(id);
-                    cancel();
-                }
-
-                if (i == 16384) {
-                    progress.removeAll();
-                    Famara.progress.remove(id);
-                    cancel();
-                }
-            }
-        }.runTaskTimerAsynchronously(Famara.getPlugin(Famara.class), 0, 20);
     }
 
     public static void render(int x, int y, Location eyes, double pitchRad, double yawRad, double fieldOfView,String id, BufferedImage image, Player player, File picture){

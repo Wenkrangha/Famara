@@ -1,27 +1,104 @@
 package com.wenkrang.famara.event;
 
+import com.wenkrang.famara.Famara;
 import com.wenkrang.famara.itemSystem.ItemSystem;
 import com.wenkrang.famara.render.PhotoRender;
+import com.wenkrang.famara.render.RenderLib;
 import org.bukkit.Bukkit;
+import org.bukkit.NamespacedKey;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
+import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.EquipmentSlot;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.inventory.meta.MapMeta;
 
+import javax.imageio.ImageIO;
+import java.io.File;
 import java.io.IOException;
+import java.util.List;
 
 public class OnUseCameraE implements Listener {
+    public static int getId(ItemStack itemStack, int index) {
+        String s = itemStack.getItemMeta().getLore().get(index);
+        int i = Integer.parseInt(s.replace("§7照片编号：", ""));
+        return i;
+    }
     @EventHandler
-    public static void onUseCamera(org.bukkit.event.player.PlayerInteractEvent event) {
+    public static void onUseCamera(PlayerInteractEvent event) {
         if (event.getHand() == EquipmentSlot.HAND &&
                 (event.getAction().equals(Action.RIGHT_CLICK_AIR) ||
                         event.getAction().equals(Action.RIGHT_CLICK_BLOCK))) {
-            if (event.getPlayer().getInventory().getItemInMainHand().equals(ItemSystem.itemMap.get("camera"))) {
-                event.getPlayer().getWorld().playSound(event.getPlayer().getLocation(), "famara.shutter", 1, 1);
+            if (event.getPlayer().getInventory().getItemInMainHand().getItemMeta() == null) return;
+            if (event.getPlayer().getInventory().getItemInMainHand().getItemMeta().getDisplayName().equalsIgnoreCase("§f相机")) {
+                ItemStack itemInMainHand = event.getPlayer().getInventory().getItemInMainHand();
+                NamespacedKey itemModel = itemInMainHand.getItemMeta().getItemModel();
+                if (itemModel.getKey().equalsIgnoreCase("famara_close")) {
+                    ItemMeta itemMeta = itemInMainHand.getItemMeta();
+                    itemMeta.setItemModel(new NamespacedKey("famara", "famara_open"));
+                    itemInMainHand.setItemMeta(itemMeta);
+                    event.getPlayer().getInventory().setItemInMainHand(itemInMainHand);
+                    event.getPlayer().getWorld().playSound(event.getPlayer().getLocation(), "famara:famara.viewfinder", 1, 1);
+                    return;
+                }
+                event.getPlayer().getWorld().playSound(event.getPlayer().getLocation(), "famara:famara.shutter", 1, 1);
                 try {
-                    PhotoRender.TakePhoto(event.getPlayer());
+                    ItemStack itemStack = PhotoRender.TakePhoto(event.getPlayer());
+                    MapMeta mapMeta = (MapMeta) itemStack.getItemMeta();
+                    int mapId = mapMeta.getMapId();
+                    ItemStack cameraFilmed = ItemSystem.itemMap.get("camera_filmed");
+                    List<String> lore = cameraFilmed.getItemMeta().getLore();
+                    lore.set(2, "§7照片编号：" + mapId);
+                    ItemMeta itemMeta = cameraFilmed.getItemMeta();
+                    itemMeta.setLore(lore);
+                    cameraFilmed.setItemMeta(itemMeta);
+                    event.getPlayer().getInventory().setItemInMainHand(cameraFilmed);
+                    Famara.results.put(mapId, itemStack);
                 } catch (IOException e) {
                     throw new RuntimeException(e);
+                }
+            }
+            if (event.getPlayer().isSneaking() && event.getPlayer().getInventory().getItemInMainHand().getItemMeta().getDisplayName().equalsIgnoreCase("§f相机（Shift + 右键拉出撕拉片）")) {
+                int i = getId(event.getPlayer().getInventory().getItemInMainHand(), 2);
+                try {
+                    event.getPlayer().getWorld().playSound(event.getPlayer().getLocation(), "famara:famara.pull.film", 1, 1);
+                    ItemStack itemStack = ItemSystem.itemMap.get("photo_unPull");
+                    ItemMeta itemMeta = itemStack.getItemMeta();
+                    List<String> lore = itemMeta.getLore();
+
+                    if (lore.size() >= 4) {
+                        lore.set(3,"§7照片编号：" + i);
+                    } else lore.add(3,"§7照片编号：" + i);
+
+                    itemMeta.setLore(lore);
+                    itemStack.setItemMeta(itemMeta);
+                    event.getPlayer().getInventory().addItem(itemStack);
+                    event.getPlayer().getInventory().setItemInMainHand(ItemSystem.itemMap.get("camera"));
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+
+            if (event.getPlayer().getInventory().getItemInMainHand().getItemMeta().getDisplayName().equalsIgnoreCase("§f照片（按右键撕开拉片）")) {
+                int i = getId(event.getPlayer().getInventory().getItemInMainHand(), 3);
+                if (Famara.progress.containsKey(String.valueOf(i))) {
+                    event.getPlayer().sendMessage("§c§l[-] §r照片冲洗未完成，请等待渲染再撕开拉片");
+                    return;
+                }
+                event.getPlayer().getWorld().playSound(event.getPlayer().getLocation(), "famara:famara.film", 1, 1);
+
+                try {
+                    ItemStack itemStack = null;
+                    if (Famara.results.containsKey(i)) {
+                        itemStack = Famara.results.get(i);
+                    }else {
+                        RenderLib.getPhoto(ImageIO.read(new File("./plugins/Famara/pictures/" + i + ".png")), Bukkit.getMap(i));
+                    }
+                    event.getPlayer().getInventory().setItemInMainHand(itemStack);
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
             }
         }

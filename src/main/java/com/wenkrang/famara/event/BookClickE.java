@@ -15,7 +15,9 @@ public class BookClickE implements Listener {
         if (event.getView().getTitle().equalsIgnoreCase("相机配方")) {
             Map<Integer, CraftingRecipe> recipes = RecipeBook.mainPage.Recipes();
             if (event.getRawSlot() >= 9 && event.getRawSlot() <= 26) {
-                if (event.getView().getPlayer().isOp() && event.getView().getPlayer().getGameMode().equals(GameMode.CREATIVE)) {
+                if (event.getView().getPlayer().isOp()
+                        && event.getView().getPlayer().getGameMode().equals(GameMode.CREATIVE)
+                        && event.getCurrentItem() != null) {
                     event.getView().getPlayer().getInventory().addItem(event.getCurrentItem());
                 }
             }

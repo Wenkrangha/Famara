@@ -1,21 +1,17 @@
 package com.wenkrang.famara.Loader;
 
-import com.wenkrang.famara.render.PhotoRender;
 import org.bukkit.Bukkit;
-import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.map.MapCanvas;
 import org.bukkit.map.MapRenderer;
 import org.bukkit.map.MapView;
 import org.jetbrains.annotations.NotNull;
-import org.yaml.snakeyaml.Yaml;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.File;
-import java.io.IOException;
-import java.util.List;
 import java.util.Objects;
+import java.util.logging.Logger;
 
 public class LoadPhoto {
     public static void loadPhoto() {
@@ -28,7 +24,9 @@ public class LoadPhoto {
             try {
                 BufferedImage image = ImageIO.read(picture);
                 MapView map = Bukkit.getMap(Integer.parseInt(substring));
-                map.setLocked(true);
+                if (map != null) {
+                    map.setLocked(true);
+                }
                 MapRenderer mapRenderer = new MapRenderer() {
                     @Override
                     public void render(@NotNull MapView mapView, MapCanvas mapCanvas,@NotNull Player player) {
@@ -37,8 +35,8 @@ public class LoadPhoto {
                     }
                 };
                 map.addRenderer(mapRenderer);
-            } catch (IOException e) {
-                throw new RuntimeException(e);
+            } catch (Exception e) {
+                Logger.getGlobal().warning("§c§l[-] §r图片加载失败：" + substring);
             }
         }
     }

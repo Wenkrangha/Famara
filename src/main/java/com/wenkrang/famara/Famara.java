@@ -1,6 +1,7 @@
 package com.wenkrang.famara;
 
 import com.wenkrang.famara.event.BookClickE;
+import com.wenkrang.famara.event.OnPlayerJoinE;
 import com.wenkrang.famara.event.OnUseCameraE;
 import com.wenkrang.famara.event.OpenBookE;
 import com.wenkrang.famara.itemSystem.BookPage;
@@ -12,6 +13,7 @@ import com.wenkrang.famara.command.fa;
 
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
 
@@ -36,6 +38,8 @@ public final class Famara extends JavaPlugin {
 
     public static Map<String, Color> colorCache = new HashMap<>();
 
+    public static Map<Integer, ItemStack> results = new HashMap<>();
+
     @Override
     public void onEnable() {
         // Plugin startup logic
@@ -45,6 +49,7 @@ public final class Famara extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new OpenBookE(), this);
         getServer().getPluginManager().registerEvents(new BookClickE(), this);
         getServer().getPluginManager().registerEvents(new OnUseCameraE(), this);
+        getServer().getPluginManager().registerEvents(new OnPlayerJoinE(), this);
 
         try {
             yamlConfiguration.load("./plugins/Famara/colors.yml");

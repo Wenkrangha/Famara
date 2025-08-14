@@ -4,13 +4,13 @@ import com.wenkrang.famara.Famara;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.map.MapView;
 
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-import java.util.UUID;
-import static com.wenkrang.famara.render.RenderLib.ShowProgress;
+
 
 public class PhotoRender {
 
@@ -36,12 +36,11 @@ public class PhotoRender {
 //    }
     
 
-
-    public static void TakePhoto(Player player) throws IOException {
+    public static ItemStack TakePhoto(Player player) throws IOException {
 
         MapView map = Bukkit.createMap(player.getWorld());
 
-        //生成UUID
+        //生成mapID
         String id = String.valueOf(map.getId());
 
         //初始化照片
@@ -56,7 +55,7 @@ public class PhotoRender {
             throw new RuntimeException(e);
         }
 
-        player.getInventory().addItem(RenderLib.getPhoto(image, map));
+
 
         //初始化数据
         Location eyes = player.getEyeLocation();
@@ -65,9 +64,6 @@ public class PhotoRender {
         final double fieldOfView = 1.0 / 128.0;
 
         Famara.progress.put(id, 0);
-
-        ShowProgress(player, id);
-
 
         //为照片每一个像素进行渲染
         for (int x = 0; x < 128; x++) {
@@ -86,5 +82,7 @@ public class PhotoRender {
                 Famara.tasks.add(renderTask);
             }
         }
+
+        return RenderLib.getPhoto(image, map);
     }
 }
