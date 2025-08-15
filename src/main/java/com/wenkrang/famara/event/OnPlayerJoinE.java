@@ -11,6 +11,8 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.Objects;
@@ -56,15 +58,30 @@ public class OnPlayerJoinE implements Listener {
                 }else {
                     progress.removeAll();
                 }
-                if (event.getPlayer().isSneaking() && Objects.requireNonNull(event.getPlayer().getInventory().getItemInMainHand().getItemMeta()).getDisplayName().equalsIgnoreCase("§f相机")) {
-                    ItemStack itemInMainHand = event.getPlayer().getInventory().getItemInMainHand();
-                    ItemMeta itemMeta = itemInMainHand.getItemMeta();
-                    NamespacedKey itemModel = itemInMainHand.getItemMeta().getItemModel();
-                    if (!itemModel.getKey().equalsIgnoreCase("famara_open")) return;
-                    itemMeta.setItemModel(new NamespacedKey("famara", "famara_close"));
-                    itemInMainHand.setItemMeta(itemMeta);
-                    event.getPlayer().getInventory().setItemInMainHand(itemInMainHand);
+                //TODO:更优雅的开镜放大
+                if (event.getPlayer().getInventory().getItemInMainHand().getItemMeta() != null) {
+                    if (Objects.requireNonNull(event.getPlayer().getInventory().getItemInMainHand().getItemMeta()).getDisplayName().equalsIgnoreCase("§f相机")) {
+                        ItemStack itemInMainHand = event.getPlayer().getInventory().getItemInMainHand();
+                        ItemMeta itemMeta = itemInMainHand.getItemMeta();
+                        NamespacedKey itemModel = itemInMainHand.getItemMeta().getItemModel();
+                        if (event.getPlayer().isSneaking()) {
+                            if (!itemModel.getKey().equalsIgnoreCase("famara_open")) return;
+                            itemMeta.setItemModel(new NamespacedKey("famara", "famara_close"));
+                            itemInMainHand.setItemMeta(itemMeta);
+                            event.getPlayer().getInventory().setItemInMainHand(itemInMainHand);
+                        }
+                        if (itemModel.getKey().equalsIgnoreCase("famara_open")) {
+                            event.getPlayer().addPotionEffect(new PotionEffect(PotionEffectType.SLOWNESS, 9999999, 4));
+                        } else {
+                            event.getPlayer().removePotionEffect(PotionEffectType.SLOWNESS);
+                        }
+                    } else {
+                        event.getPlayer().removePotionEffect(PotionEffectType.SLOWNESS);
+                    }
+                } else {
+                    event.getPlayer().removePotionEffect(PotionEffectType.SLOWNESS);
                 }
+
             }
         }.runTaskTimer(Famara.getPlugin(Famara.class), 0, 3);
     }

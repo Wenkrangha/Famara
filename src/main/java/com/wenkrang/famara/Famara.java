@@ -1,9 +1,6 @@
 package com.wenkrang.famara;
 
-import com.wenkrang.famara.event.BookClickE;
-import com.wenkrang.famara.event.OnPlayerJoinE;
-import com.wenkrang.famara.event.OnUseCameraE;
-import com.wenkrang.famara.event.OpenBookE;
+import com.wenkrang.famara.event.*;
 import com.wenkrang.famara.itemSystem.BookPage;
 import com.wenkrang.famara.Loader.LoadItem;
 import com.wenkrang.famara.itemSystem.RecipeBook;
@@ -50,6 +47,7 @@ public final class Famara extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new BookClickE(), this);
         getServer().getPluginManager().registerEvents(new OnUseCameraE(), this);
         getServer().getPluginManager().registerEvents(new OnPlayerJoinE(), this);
+        getServer().getPluginManager().registerEvents(new OnLoadFilm(), this);
 
         try {
             yamlConfiguration.load("./plugins/Famara/colors.yml");
