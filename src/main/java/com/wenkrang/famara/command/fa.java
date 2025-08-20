@@ -2,25 +2,22 @@ package com.wenkrang.famara.command;
 
 import com.wenkrang.famara.Famara;
 import com.wenkrang.famara.itemSystem.RecipeBook;
-import com.wenkrang.famara.render.PhotoRender;
 import org.bukkit.Material;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
-import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.util.*;
 import java.util.List;
 
+import static com.wenkrang.famara.Famara.excludingBlocks;
 import static com.wenkrang.famara.Famara.yamlConfiguration;
 
 public class fa implements CommandExecutor {
@@ -66,10 +63,32 @@ public class fa implements CommandExecutor {
                 help = false;
             }
             if (commandSender.isOp()) {
+                if (strings[0].equalsIgnoreCase("version")) {
+                    yamlConfiguration.set("version", Integer.parseInt(strings[1]));
+                    try {
+                        yamlConfiguration.save("./plugins/Famara/colors.yml");
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
+                }
                 if (strings[0].equalsIgnoreCase("set")) {
-                    yamlConfiguration.set(strings[1] + ".r", Integer.parseInt(strings[2]));
-                    yamlConfiguration.set(strings[1] + ".g", Integer.parseInt(strings[3]));
-                    yamlConfiguration.set(strings[1] + ".b", Integer.parseInt(strings[4]));
+                    try {
+                        if (strings.length < 5) {
+                            commandSender.sendMessage("§c§l[-]§r 参数缺少，请根据命令补全来填写");
+                            return true;
+                        }
+                        if (Integer.parseInt(strings[2]) > 255 | Integer.parseInt(strings[3]) > 255 | Integer.parseInt(strings[4]) > 255
+                        | Integer.parseInt(strings[2]) < 0 | Integer.parseInt(strings[3]) < 0 | Integer.parseInt(strings[4]) < 0) {
+                            commandSender.sendMessage("§c§l[-]§r \"RED\",\"BLUE\",\"GREEN\"必须在0 ~ 255之间");
+                            return true;
+                        }
+                        yamlConfiguration.set(strings[1] + ".r", Integer.parseInt(strings[2]));
+                        yamlConfiguration.set(strings[1] + ".g", Integer.parseInt(strings[3]));
+                        yamlConfiguration.set(strings[1] + ".b", Integer.parseInt(strings[4]));
+                    }catch (NumberFormatException e){
+                        commandSender.sendMessage("§c§l[-]§r \"RED\",\"BLUE\",\"GREEN\"必须为数字");
+                        return true;
+                    }
 
                     try {
                         yamlConfiguration.save("./plugins/Famara/colors.yml");
@@ -77,11 +96,25 @@ public class fa implements CommandExecutor {
                         throw new RuntimeException(e);
                     }
                     commandSender.sendMessage("§9§l[*]§r 方块颜色设置成功");
+                    //刷新列表
+                    List<Material> itemStacks = new ArrayList<>(Arrays.stream(Material.values()).toList());
+                    itemStacks.removeIf(i -> !i.isBlock());
+                    itemStacks.forEach(i -> excludingBlocks.add(i.name().toUpperCase()));
+                    excludingBlocks.removeIf(Famara.yamlConfiguration::contains);
                     help = false;
                 }
 
                 if (strings[0].equalsIgnoreCase("speed")) {
-                    Famara.speed = Integer.parseInt(strings[1]);
+                    try {
+                        if (Famara.speed > 50) {
+                            commandSender.sendMessage("§e§l[!]§r Integer过大可能会导致服务器卡顿!!!");
+                        }
+                        Famara.speed = Integer.parseInt(strings[1]);
+                    }catch (NumberFormatException e) {
+                        commandSender.sendMessage("§c§l[-]§r Integer必须为数字");
+                        return true;
+                    }
+
                     commandSender.sendMessage("§9§l[*]§r 当前渲染速度设置为" + Famara.speed);
                     help = false;
                 }
