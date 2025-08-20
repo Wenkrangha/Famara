@@ -1,0 +1,32 @@
+{
+  "famara.shutter": {
+    "sounds": [
+      "famara:famara/shutter" 
+    ]
+  },
+  "famara.film": {
+    "sounds": [
+      "famara:famara/film" 
+    ]
+  },
+  "famara.viewfinder": {
+    "sounds": [
+      "famara:famara/viewfinder" 
+    ]
+  },
+  "famara.pull.film": {
+    "sounds": [
+      "famara:famara/pull_film" 
+    ]
+  },
+  "famara.attach.film.box": {
+    "sounds": [
+      "famara:famara/attach_film_box" 
+    ]
+  },
+  "famara.remove.film.box": {
+    "sounds": [
+      "famara:famara/remove_film_box" 
+    ]
+  }
+}
