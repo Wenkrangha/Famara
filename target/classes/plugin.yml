@@ -1,8 +1,0 @@
-name: Famara
-version: '1.0-SNAPSHOT'
-main: com.wenkrang.famara.Famara
-api-version: '1.21'
-commands:
-  fa:
-      description: Famara
-      usage: /fa
