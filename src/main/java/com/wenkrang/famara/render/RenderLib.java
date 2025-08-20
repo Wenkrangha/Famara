@@ -33,6 +33,7 @@ import java.io.IOException;
 import java.util.UUID;
 import java.util.logging.Logger;
 
+import static com.wenkrang.famara.Famara.renderSpeeds;
 import static com.wenkrang.famara.Famara.yamlConfiguration;
 
 public class RenderLib {
@@ -90,6 +91,7 @@ public class RenderLib {
         //发放照片
         ItemStack itemStack = ItemSystem.itemMap.get("photo");
         ItemMeta itemMeta = itemStack.getItemMeta();
+        itemMeta.setItemModel(new NamespacedKey("famara", "photo"));
         MapMeta mapMeta = (MapMeta) itemMeta;
 
         if (mapMeta != null) {
@@ -102,19 +104,12 @@ public class RenderLib {
 
     public static void render(int x, int y, Location eyes, double pitchRad, double yawRad, double fieldOfView,String id, BufferedImage image, Player player, File picture){
         //TODO:1.添加液体渲染 2.添加UP阴影
-
-
-        // calculate ray rotations
-        double yrotate = -((y) * .9 / 128 - .45);
-        double xrotate = ((x) * .9 / 128 - .45);
-        Vector direction = new Vector(Math.cos(yawRad + xrotate) * Math.cos(pitchRad + yrotate),
-                Math.sin(pitchRad + yrotate), Math.sin(yawRad + xrotate) * Math.cos(pitchRad + yrotate));
-        //        double cos = Math.cos(pitchRad - (y - 64) * fieldOfView);
-//        Vector direction = new Vector(
-//                Math.cos(yawRad + (x - 64) * fieldOfView) * cos,
-//                Math.sin(pitchRad - (y - 64) * fieldOfView),
-//                Math.sin(yawRad + (x - 64) * fieldOfView) * cos
-//        );
+                double cos = Math.cos(pitchRad - (y - 64) * fieldOfView);
+        Vector direction = new Vector(
+                Math.cos(yawRad + (x - 64) * fieldOfView) * cos,
+                Math.sin(pitchRad - (y - 64) * fieldOfView),
+                Math.sin(yawRad + (x - 64) * fieldOfView) * cos
+        );
 
 
         //光线追踪
@@ -143,6 +138,8 @@ public class RenderLib {
         }
 
         Famara.progress.put(id, Famara.progress.get(id) + 1);
+
+        renderSpeeds.put(id, Famara.renderSpeeds.containsKey(id) ? Famara.renderSpeeds.get(id) + 1 : 1);
     }
 
     public static boolean isBlock(Block block) {

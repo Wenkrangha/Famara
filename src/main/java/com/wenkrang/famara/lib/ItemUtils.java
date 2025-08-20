@@ -30,6 +30,9 @@ public class ItemUtils {
     public static ItemStack setFilmAmount(ItemStack itemStack, int i) {
         ItemMeta itemMeta = itemStack.getItemMeta();
         List<String> lore = itemMeta.getLore();
+        if (i <= 0) {
+            lore.set(2, "§7未装填胶卷");
+        }
         lore.set(2, "§7已装填彩色胶卷（16 / " + i + "）");
         itemMeta.setLore(lore);
         itemStack.setItemMeta(itemMeta);

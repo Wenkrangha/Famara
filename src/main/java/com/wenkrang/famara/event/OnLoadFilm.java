@@ -10,7 +10,7 @@ import org.bukkit.inventory.PlayerInventory;
 public class OnLoadFilm implements Listener {
     @EventHandler
     public static void LoadFilm(PlayerSwapHandItemsEvent event) {
-        if (event.getOffHandItem() != null && event.getOffHandItem().getItemMeta() != null) {
+        if (event.getOffHandItem() != null && event.getOffHandItem().getItemMeta() != null && event.getOffHandItem().getItemMeta().getItemModel() != null) {
             if (event.getOffHandItem().getItemMeta().getItemModel().getKey().equalsIgnoreCase("famara_close")) {
                 if (ItemUtils.getFilmAmount(event.getOffHandItem()) != 0) return;
                 PlayerInventory inventory = event.getPlayer().getInventory();
@@ -24,7 +24,7 @@ public class OnLoadFilm implements Listener {
                             }else {
                                 inventory.remove(item);
                             }
-                            event.getPlayer().getWorld().playSound(event.getPlayer().getLocation(), "famara:famara.pull.film", 1, 1);
+                            event.getPlayer().getWorld().playSound(event.getPlayer().getLocation(), "famara:famara.attach.film.box", 1, 1);
                             ItemUtils.setCamera(event.getPlayer());
                             event.setCancelled(true);
                         }

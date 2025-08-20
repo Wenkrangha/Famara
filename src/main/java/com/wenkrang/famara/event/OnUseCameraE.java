@@ -2,6 +2,7 @@ package com.wenkrang.famara.event;
 
 import com.wenkrang.famara.Famara;
 import com.wenkrang.famara.itemSystem.ItemSystem;
+import com.wenkrang.famara.itemSystem.RecipeBook;
 import com.wenkrang.famara.lib.ItemUtils;
 import com.wenkrang.famara.render.PhotoRender;
 import com.wenkrang.famara.render.RenderLib;
@@ -32,11 +33,11 @@ public class OnUseCameraE implements Listener {
                 (event.getAction().equals(Action.RIGHT_CLICK_AIR) ||
                         event.getAction().equals(Action.RIGHT_CLICK_BLOCK))) {
             if (event.getPlayer().getInventory().getItemInMainHand().getItemMeta() == null) return;
+            //TODO:这里有大问题，会修改ItemMap
             if (!event.getPlayer().isSneaking() && event.getPlayer().getInventory().getItemInMainHand().getItemMeta().getDisplayName().equalsIgnoreCase("§f相机")) {
                 ItemStack itemInMainHand = event.getPlayer().getInventory().getItemInMainHand();
                 NamespacedKey itemModel = itemInMainHand.getItemMeta().getItemModel();
                 if (itemModel.getKey().equalsIgnoreCase("famara_close")) {
-                    if (ItemUtils.getFilmAmount(itemInMainHand) == 0) return;
                     ItemMeta itemMeta = itemInMainHand.getItemMeta();
                     itemMeta.setItemModel(new NamespacedKey("famara", "famara_open"));
                     itemInMainHand.setItemMeta(itemMeta);
@@ -46,6 +47,13 @@ public class OnUseCameraE implements Listener {
                 }
                 event.getPlayer().getWorld().playSound(event.getPlayer().getLocation(), "famara:famara.shutter", 1, 1);
                 try {
+                    if (ItemUtils.getFilmAmount(itemInMainHand) <= 0)
+                        return;
+                    else {
+                        int filmAmount = ItemUtils.getFilmAmount(itemInMainHand);
+                        ItemStack itemInMainHand1 = ItemUtils.setFilmAmount(itemInMainHand, filmAmount - 1);
+                        event.getPlayer().getInventory().setItemInMainHand(itemInMainHand1);
+                    }
                     ItemStack itemStack = PhotoRender.TakePhoto(event.getPlayer());
                     MapMeta mapMeta = (MapMeta) itemStack.getItemMeta();
                     int mapId = mapMeta.getMapId();
@@ -55,8 +63,13 @@ public class OnUseCameraE implements Listener {
                     ItemMeta itemMeta = cameraFilmed.getItemMeta();
                     itemMeta.setLore(lore);
                     cameraFilmed.setItemMeta(itemMeta);
-                    event.getPlayer().getInventory().setItemInMainHand(cameraFilmed);
                     Famara.results.put(mapId, itemStack);
+                    int filmAmount = ItemUtils.getFilmAmount(itemInMainHand);
+                    ItemStack itemInMainHand1 = ItemUtils.setFilmAmount(cameraFilmed, filmAmount);
+                    if (filmAmount == 0) {
+                        event.getPlayer().getWorld().playSound(event.getPlayer().getLocation(), "famara:famara.remove.film.box", 1, 1);
+                    }
+                    event.getPlayer().getInventory().setItemInMainHand(itemInMainHand1);
                 } catch (IOException e) {
                     throw new RuntimeException(e);
                 }
@@ -67,6 +80,7 @@ public class OnUseCameraE implements Listener {
                     event.getPlayer().getWorld().playSound(event.getPlayer().getLocation(), "famara:famara.pull.film", 1, 1);
                     ItemStack itemStack = ItemSystem.itemMap.get("photo_unPull");
                     ItemMeta itemMeta = itemStack.getItemMeta();
+                    itemMeta.setItemModel(new NamespacedKey("famara", "photo"));
                     List<String> lore = itemMeta.getLore();
 
                     if (lore.size() >= 4) {
@@ -76,7 +90,9 @@ public class OnUseCameraE implements Listener {
                     itemMeta.setLore(lore);
                     itemStack.setItemMeta(itemMeta);
                     event.getPlayer().getInventory().addItem(itemStack);
-                    event.getPlayer().getInventory().setItemInMainHand(ItemSystem.itemMap.get("camera"));
+                    ItemStack itemStack1 = ItemSystem.itemMap.get("camera");
+                    ItemStack itemStack2 = ItemUtils.setFilmAmount(itemStack1, ItemUtils.getFilmAmount(event.getPlayer().getInventory().getItemInMainHand()));
+                    event.getPlayer().getInventory().setItemInMainHand(itemStack2);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -95,6 +111,8 @@ public class OnUseCameraE implements Listener {
                     if (Famara.results.containsKey(i)) {
                         itemStack = Famara.results.get(i);
                     }else {
+                        if (Bukkit.getMap(i) == null) return;
+                        //TODO：重启服务器后，没有撕开的照片没法获取（加急！！！！！）
                         RenderLib.getPhoto(ImageIO.read(new File("./plugins/Famara/pictures/" + i + ".png")), Bukkit.getMap(i));
                     }
                     event.getPlayer().getInventory().setItemInMainHand(itemStack);

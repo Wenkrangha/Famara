@@ -41,8 +41,16 @@ public class OnPlayerJoinE implements Listener {
                         Integer i = Famara.progress.get(String.valueOf(id));
 
                         if (i != 16384) progress.addPlayer(event.getPlayer());
+
                         try {
                             progress.setProgress((double) i / 16384);
+
+                            progress.setTitle("冲洗进度 "
+                                    + Math.round((double) i / 16384 * 100) + "% "
+                                    + "s:" + Famara.renderRealSpeeds.get(String.valueOf(id)) + "p/s "
+                                    + "ETA:" + (16384 - Famara.progress.get(String.valueOf(id))) /
+                                    Math.max(1, Famara.renderRealSpeeds.get(String.valueOf(id))) + "s");
+
                         } catch (Exception e) {
                             progress.removeAll();
                             Famara.progress.remove(String.valueOf(id));
