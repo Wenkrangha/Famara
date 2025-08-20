@@ -16,6 +16,7 @@ import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.MapMeta;
+import org.bukkit.map.MapView;
 
 import javax.imageio.ImageIO;
 import java.io.File;
@@ -112,8 +113,17 @@ public class OnUseCameraE implements Listener {
                         itemStack = Famara.results.get(i);
                     }else {
                         if (Bukkit.getMap(i) == null) return;
-                        //TODO：重启服务器后，没有撕开的照片没法获取（加急！！！！！）
-                        RenderLib.getPhoto(ImageIO.read(new File("./plugins/Famara/pictures/" + i + ".png")), Bukkit.getMap(i));
+                        MapView map = null;
+                        if (Bukkit.getMap(i) == null) {
+                            if (new File("./plugins/Famara/pictures/" + i + ".png").exists()) {
+                                map = Bukkit.createMap(event.getPlayer().getWorld());
+                            }
+                        } else {
+                            map = Bukkit.getMap(i);
+                        }
+                        if (map != null) {
+                            itemStack = RenderLib.getPhoto(ImageIO.read(new File("./plugins/Famara/pictures/" + i + ".png")), map);
+                        }
                     }
                     event.getPlayer().getInventory().setItemInMainHand(itemStack);
                 } catch (Exception e) {

@@ -59,88 +59,64 @@ public class fa implements CommandExecutor {
     public boolean onCommand(@NotNull CommandSender commandSender,@NotNull Command command,@NotNull String s, String[] strings) {
         //Famara命令处理
 
-        if (strings[0].equalsIgnoreCase("set")) {
-            yamlConfiguration.set(strings[1] + ".r", Integer.parseInt(strings[2]));
-            yamlConfiguration.set(strings[1] + ".g", Integer.parseInt(strings[3]));
-            yamlConfiguration.set(strings[1] + ".b", Integer.parseInt(strings[4]));
-
-            try {
-                yamlConfiguration.save("./plugins/Famara/colors.yml");
-            } catch (IOException e) {
-                throw new RuntimeException(e);
+        boolean help = true;
+        try {
+            if (strings[0].equalsIgnoreCase("help")) {
+                getHelp(commandSender);
+                help = false;
             }
-        }
+            if (commandSender.isOp()) {
+                if (strings[0].equalsIgnoreCase("set")) {
+                    yamlConfiguration.set(strings[1] + ".r", Integer.parseInt(strings[2]));
+                    yamlConfiguration.set(strings[1] + ".g", Integer.parseInt(strings[3]));
+                    yamlConfiguration.set(strings[1] + ".b", Integer.parseInt(strings[4]));
 
-        if (strings[0].equalsIgnoreCase("speed")) {
-            if (strings.length == 2) {
-                Famara.speed = Integer.parseInt(strings[1]);
-                commandSender.sendMessage("§9§l[*]§r 当前渲染速度设置为" + Famara.speed);
+                    try {
+                        yamlConfiguration.save("./plugins/Famara/colors.yml");
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
+                    commandSender.sendMessage("§9§l[*]§r 方块颜色设置成功");
+                    help = false;
+                }
+
+                if (strings[0].equalsIgnoreCase("speed")) {
+                    Famara.speed = Integer.parseInt(strings[1]);
+                    commandSender.sendMessage("§9§l[*]§r 当前渲染速度设置为" + Famara.speed);
+                    help = false;
+                }
             }
-        }
 
-        //检测对象是否为玩家
-        if (commandSender instanceof Player player) {
-            //防止重复获取
+            //检测对象是否为玩家
 
             if (strings[0].equalsIgnoreCase("guide")) {
-                player.getWorld().dropItem(player.getLocation(), RecipeBook.RecipeBookItem);
+                if (commandSender instanceof Player player) {
+                    player.getWorld().dropItem(player.getLocation(), RecipeBook.RecipeBookItem);
+                    help = false;
+                } else {
+                    commandSender.sendMessage("§c§l[-]§r 请在游戏中使用该命令");
+                    help = false;
+                }
             }
 
-//            if (strings[0].equalsIgnoreCase("color")) {
-//                YamlConfiguration colors = new YamlConfiguration();
-//
-//                File textures = new File("./textures/");
-//                List<String> list = Arrays.stream(Objects.requireNonNull(textures.list())).toList();
-//
-//                Material[] values = Material.values();
-//
-//                String name = Arrays.stream(values).filter(Material::isBlock).findFirst().get().name().toLowerCase();
-//                player.sendMessage(name);
-//
-//                try {
-//                    BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter("./exclude.yml"));
-//
-//                    for (Material material : values) {
-//                        if (material.isBlock()) {
-//                            if (list.contains(material.name().toLowerCase() + ".png")) {
-//                                File file = new File("./textures/" + material.name().toLowerCase() + ".png");
-//                                try {
-//                                    Color mostFrequentColor = getMostFrequentColor(file);
-//
-//                                    player.sendMessage(material.name() + ": " + mostFrequentColor);
-//
-//
-//                                    colors.set(material.name() + ".r", mostFrequentColor.getRed());
-//                                    colors.set(material.name() + ".g", mostFrequentColor.getGreen());
-//                                    colors.set(material.name() + ".b", mostFrequentColor.getBlue());
-//
-////                                    colors.set(material.name() + ".include", true);
-//                                } catch (IOException e) {
-//                                    throw new RuntimeException(e);
-//                                }
-//                            }else {
-//                                bufferedWriter.write(material.name() + "\n");
-//                            }
-//                        }
-//                    }
-//
-//                    bufferedWriter.close();
-//                } catch (IOException e) {
-//                    throw new RuntimeException(e);
-//                }
-//
-//                try {
-//                    colors.save("./plugins/Famara/colors.yml");
-//                } catch (IOException e) {
-//                    throw new RuntimeException(e);
-//                }
-//            }
-        }else {
-            commandSender.sendMessage("§c§l[-]§r 请在游戏中使用该命令");
+
+        } catch (Exception e) {
+            getHelp(commandSender);
+            help = false;
         }
 
-
-
+        if (help) {
+            getHelp(commandSender);
+        }
         return true;
+    }
+
+    private static void getHelp(@NotNull CommandSender commandSender) {
+        commandSender.sendMessage("§7[!]  §4寄枪 - FakeGun §7正在运行");
+        commandSender.sendMessage(" §4| §7help  帮助列表");
+        commandSender.sendMessage(" §4| §7speed  设置渲染速度（默认为7）");
+        commandSender.sendMessage(" §4| §7set 设置物品对应颜色");
+        commandSender.sendMessage(" §4| §7guide  获取指南");
+        commandSender.sendMessage(" §4| §7- 创造下，右键配方可以将直接获取物品");
     }
 }

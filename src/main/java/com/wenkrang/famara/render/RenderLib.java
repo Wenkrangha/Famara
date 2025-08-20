@@ -77,7 +77,6 @@ public class RenderLib {
 
 
     public static ItemStack getPhoto(BufferedImage image, MapView map) {
-
         map.setLocked(true);
         MapRenderer mapRenderer = new MapRenderer() {
             @Override
@@ -94,9 +93,7 @@ public class RenderLib {
         itemMeta.setItemModel(new NamespacedKey("famara", "photo"));
         MapMeta mapMeta = (MapMeta) itemMeta;
 
-        if (mapMeta != null) {
-            mapMeta.setMapView(map);
-        }
+        mapMeta.setMapView(map);
 
         itemStack.setItemMeta(mapMeta);
         return itemStack;
