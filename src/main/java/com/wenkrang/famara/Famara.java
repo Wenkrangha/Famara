@@ -1,22 +1,26 @@
 package com.wenkrang.famara;
 
-import com.google.common.cache.RemovalListener;
 import com.wenkrang.famara.Loader.LoadRecipe;
 import com.wenkrang.famara.command.faTabComplete;
 import com.wenkrang.famara.event.*;
 import com.wenkrang.famara.itemSystem.BookPage;
 import com.wenkrang.famara.Loader.LoadItem;
 import com.wenkrang.famara.itemSystem.RecipeBook;
+import com.wenkrang.famara.lib.ConsoleLoger;
+import com.wenkrang.famara.lib.VersionChecker;
+import com.wenkrang.famara.lib.text;
 import com.wenkrang.famara.render.RenderRunner;
 import com.wenkrang.famara.render.RenderTask;
 import com.wenkrang.famara.command.fa;
 
 import org.bukkit.Material;
+import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
+import org.yaml.snakeyaml.Yaml;
 
 import java.awt.*;
 import java.io.File;
@@ -26,8 +30,6 @@ import java.net.URL;
 import java.nio.file.Files;
 import java.util.*;
 import java.util.List;
-import java.util.function.Consumer;
-import java.util.function.IntConsumer;
 import java.util.logging.Logger;
 
 import static com.wenkrang.famara.Loader.LoadPhoto.loadPhoto;
@@ -86,18 +88,71 @@ public final class Famara extends JavaPlugin {
     /**
      * 当前颜色配置版本号。
      */
-    public static int colorVersion = 1;
+    public static int Version = 1;
 
     /**
      * 插件启用时调用的方法。
      * 负责初始化插件的各种功能模块，包括命令、事件、资源加载等。
      */
+
+    public static UUID resPack = UUID.fromString("4cc63921-99d7-40d7-bc00-f44b5ecb2437");
+
+    public static void loadPack(String name, File file) {
+        try {
+            Runnable runnable = () -> {
+                ClassLoader classLoader = Famara.class.getClassLoader();
+                URL resource = classLoader.getResource(name);
+
+                try {
+                    InputStream inputStream = resource.openStream();
+                    Files.copy(inputStream, file.toPath());
+                    inputStream.close();
+
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            };
+            if (file.exists()) {
+                YamlConfiguration tmp = YamlConfiguration.loadConfiguration(file);
+                tmp.load(file);
+                int version = tmp.getInt("version");
+                if (Version > version) {
+                    if (file.delete()) {
+                        runnable.run();
+                    }else {
+                        Logger.getGlobal().warning(name + "文件更新失败，请尝试手动删除");
+                    }
+                }
+            } else {
+                runnable.run();
+            }
+        }catch (Exception e) {
+            Logger.getGlobal().warning("§c§l[-] §r文件加载失败：" + name);
+        }
+
+
+
+    }
     @Override
     public void onEnable() {
+
+        loadPack("language.yml", new File("./plugins/Famara/language.yml"));
+        text.config = YamlConfiguration.loadConfiguration(new File("./plugins/Famara/language.yml"));
+
+        ConsoleCommandSender consoleSender = getServer().getConsoleSender();
+        consoleSender.sendMessage("    ____                                ");
+        consoleSender.sendMessage("   / __/___ _____ ___  ____ __________ _");
+        consoleSender.sendMessage("  / /_/ __ `/ __ `__ \\/ __ `/ ___/ __ `/");
+        consoleSender.sendMessage(" / __/ /_/ / / / / / / /_/ / /  / /_/ / ");
+        consoleSender.sendMessage("/_/  \\__,_/_/ /_/ /_/\\__,_/_/   \\__,_/  \n");
+        ConsoleLoger.info("Server version: " + VersionChecker.getVersion());
+
+        ConsoleLoger.info("Registering commands");
         // 注册命令执行器和补全器
         Objects.requireNonNull(this.getCommand("fa")).setExecutor(new fa());
         Objects.requireNonNull(this.getCommand("fa")).setTabCompleter(new faTabComplete());
 
+        ConsoleLoger.info("Registering event listeners");
         // 注册事件监听器
         getServer().getPluginManager().registerEvents(new OpenBookE(), this);
         getServer().getPluginManager().registerEvents(new BookClickE(), this);
@@ -106,53 +161,31 @@ public final class Famara extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new OnLoadFilm(), this);
         getServer().getPluginManager().registerEvents(new PlayerDownloadResPackE(), this);
 
+        ConsoleLoger.info("Initializing photo storage directory");
         // 初始化照片存储目录
         File pictureDir = new File("./plugins/Famara/pictures");
         if (!pictureDir.exists()) {
             boolean mkdir = pictureDir.mkdirs();
             if (!mkdir) {
-                Logger.getGlobal().warning("文件夹创建失败");
+                Logger.getGlobal().warning("Failed to create directory");
             }
         }
 
+        ConsoleLoger.info("Loading color configuration file");
         // 加载颜色配置文件
+        File file = new File("./plugins/Famara/colors.yml");
+        loadPack("colors.yml", file);
         try {
-            File file = new File("./plugins/Famara/colors.yml");
-            Runnable unpackColor = () -> {
-                ClassLoader classLoader = Famara.class.getClassLoader();
-                URL resource = classLoader.getResource("colors.yml");
-
-                try {
-                    InputStream inputStream = resource.openStream();
-                    Files.copy(inputStream, file.toPath());
-                    inputStream.close();
-                    yamlConfiguration.load("./plugins/Famara/colors.yml");
-                } catch (IOException | InvalidConfigurationException e) {
-                    throw new RuntimeException(e);
-                }
-
-            };
-            if (file.exists()) {
-                yamlConfiguration.load("./plugins/Famara/colors.yml");
-                int version = yamlConfiguration.getInt("version");
-                if (colorVersion > version) {
-                    if (file.delete()) {
-                        unpackColor.run();
-                    }else {
-                        Logger.getGlobal().warning("Color.yml文件更新失败，请尝试手动删除");
-                    }
-                }
-            }else {
-                unpackColor.run();
-            }
-
+            yamlConfiguration.load(file);
         } catch (IOException | InvalidConfigurationException e) {
             throw new RuntimeException(e);
         }
 
+        ConsoleLoger.info("Starting renderer");
         // 启动渲染器
         RenderRunner.Runner();
 
+        ConsoleLoger.info("Starting scheduled tasks");
         // 定时清理颜色缓存
         new BukkitRunnable() {
             @Override
@@ -188,22 +221,27 @@ public final class Famara extends JavaPlugin {
             }
         }.runTaskTimerAsynchronously(Famara.getPlugin(Famara.class), 0, 20);
 
+        // 对在线玩家执行加入检查
+        getServer().getOnlinePlayers().forEach(OnPlayerJoinE::startCheck);
+
+        ConsoleLoger.info("Initializing recipe book");
         // 初始化配方书主页面
         RecipeBook.mainPage = new BookPage("相机配方", new HashMap<>(), new HashMap<>(), new HashMap<>());
 
+        ConsoleLoger.info("Loading items, photos and recipes");
         // 加载物品、照片和配方
         LoadItem.loadItem();
         loadPhoto();
         LoadRecipe.loadRecipe();
-
-        // 对在线玩家执行加入检查
-        getServer().getOnlinePlayers().forEach(OnPlayerJoinE::startCheck);
 
         // 构建排除方块列表
         List<Material> itemStacks = new ArrayList<>(Arrays.stream(Material.values()).toList());
         itemStacks.removeIf(i -> !i.isBlock());
         itemStacks.forEach(i -> excludingBlocks.add(i.name().toUpperCase()));
         excludingBlocks.removeIf(Famara.yamlConfiguration::contains);
+
+        ConsoleLoger.info("Loading complete, current version: alpine 1.0");
+
     }
 
     /**

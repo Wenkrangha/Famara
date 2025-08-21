@@ -1,6 +1,7 @@
 package com.wenkrang.famara.event;
 
 import com.wenkrang.famara.Famara;
+import com.wenkrang.famara.Loader.LoadResourcePack;
 import org.bukkit.Bukkit;
 import org.bukkit.NamespacedKey;
 import org.bukkit.boss.BarColor;
@@ -24,10 +25,15 @@ public class OnPlayerJoinE implements Listener {
 
     @EventHandler
     public static void onHoldFilm(PlayerJoinEvent event) {
+        if (event.getPlayer().getScoreboardTags().contains("FamaraResPackIncluded")) {
+            event.getPlayer().removeScoreboardTag("FamaraResPackIncluded");
+            LoadResourcePack.load(event.getPlayer(),false);
+        }
         startCheck(event.getPlayer());
     }
 
     public static void startCheck(Player player) {
+
         BossBar progress = Bukkit.createBossBar("冲洗进度", BarColor.WHITE, BarStyle.SOLID);
 
         new BukkitRunnable() {

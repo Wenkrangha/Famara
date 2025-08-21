@@ -1,6 +1,7 @@
 package com.wenkrang.famara.event;
 
 import com.wenkrang.famara.Famara;
+import com.wenkrang.famara.Loader.LoadResourcePack;
 import com.wenkrang.famara.itemSystem.ItemSystem;
 import com.wenkrang.famara.itemSystem.RecipeBook;
 import com.wenkrang.famara.lib.ItemUtils;
@@ -39,6 +40,7 @@ public class OnUseCameraE implements Listener {
                 ItemStack itemInMainHand = event.getPlayer().getInventory().getItemInMainHand();
                 NamespacedKey itemModel = itemInMainHand.getItemMeta().getItemModel();
                 if (itemModel.getKey().equalsIgnoreCase("famara_close")) {
+                    LoadResourcePack.load(event.getPlayer(),false);
                     ItemMeta itemMeta = itemInMainHand.getItemMeta();
                     itemMeta.setItemModel(new NamespacedKey("famara", "famara_open"));
                     itemInMainHand.setItemMeta(itemMeta);

@@ -1,5 +1,6 @@
 package com.wenkrang.famara.event;
 
+import com.wenkrang.famara.Loader.LoadResourcePack;
 import com.wenkrang.famara.itemSystem.RecipeBook;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -15,6 +16,7 @@ public class OpenBookE implements Listener {
                         .getItemMeta()
                         .getDisplayName()
                         .equals("§9§lFamara§f-法玛拉相机配方")) {
+                    LoadResourcePack.load(event.getPlayer(),false);
                     RecipeBook.openBook(event.getPlayer());
                 }
             }

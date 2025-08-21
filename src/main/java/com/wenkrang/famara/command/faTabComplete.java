@@ -21,9 +21,9 @@ public class faTabComplete implements TabCompleter{
             player.playEffect(player.getLocation(), Effect.CLICK1, 1);
         }
         return switch (strings.length) {
-            case 1 -> Arrays.asList("help", "guide", "set", "speed");
+            case 1 -> Arrays.asList("help", "guide", "set", "speed", "resource");
             case 2 -> switch (strings[0].toLowerCase()) {
-
+                case "resource" -> List.of("china");
                 case "set" -> Famara.excludingBlocks;
                 case "speed" -> List.of("Integer");
                 default -> Collections.emptyList();

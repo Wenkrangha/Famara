@@ -1,7 +1,9 @@
 package com.wenkrang.famara.command;
 
 import com.wenkrang.famara.Famara;
+import com.wenkrang.famara.Loader.LoadResourcePack;
 import com.wenkrang.famara.itemSystem.RecipeBook;
+import com.wenkrang.famara.lib.text;
 import org.bukkit.Material;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -74,19 +76,19 @@ public class fa implements CommandExecutor {
                 if (strings[0].equalsIgnoreCase("set")) {
                     try {
                         if (strings.length < 5) {
-                            commandSender.sendMessage("§c§l[-]§r 参数缺少，请根据命令补全来填写");
+                            commandSender.sendMessage(text.get("lostArguments"));
                             return true;
                         }
                         if (Integer.parseInt(strings[2]) > 255 | Integer.parseInt(strings[3]) > 255 | Integer.parseInt(strings[4]) > 255
                         | Integer.parseInt(strings[2]) < 0 | Integer.parseInt(strings[3]) < 0 | Integer.parseInt(strings[4]) < 0) {
-                            commandSender.sendMessage("§c§l[-]§r \"RED\",\"BLUE\",\"GREEN\"必须在0 ~ 255之间");
+                            commandSender.sendMessage(text.get("setError1"));
                             return true;
                         }
                         yamlConfiguration.set(strings[1] + ".r", Integer.parseInt(strings[2]));
                         yamlConfiguration.set(strings[1] + ".g", Integer.parseInt(strings[3]));
                         yamlConfiguration.set(strings[1] + ".b", Integer.parseInt(strings[4]));
                     }catch (NumberFormatException e){
-                        commandSender.sendMessage("§c§l[-]§r \"RED\",\"BLUE\",\"GREEN\"必须为数字");
+                        commandSender.sendMessage(text.get("setError2"));
                         return true;
                     }
 
@@ -95,7 +97,7 @@ public class fa implements CommandExecutor {
                     } catch (IOException e) {
                         throw new RuntimeException(e);
                     }
-                    commandSender.sendMessage("§9§l[*]§r 方块颜色设置成功");
+                    commandSender.sendMessage(text.get("setSuccessfully"));
                     //刷新列表
                     List<Material> itemStacks = new ArrayList<>(Arrays.stream(Material.values()).toList());
                     itemStacks.removeIf(i -> !i.isBlock());
@@ -107,27 +109,39 @@ public class fa implements CommandExecutor {
                 if (strings[0].equalsIgnoreCase("speed")) {
                     try {
                         if (Famara.speed > 50) {
-                            commandSender.sendMessage("§e§l[!]§r Integer过大可能会导致服务器卡顿!!!");
+                            commandSender.sendMessage(text.get("warning1"));
                         }
                         Famara.speed = Integer.parseInt(strings[1]);
                     }catch (NumberFormatException e) {
-                        commandSender.sendMessage("§c§l[-]§r Integer必须为数字");
+                        commandSender.sendMessage(text.get("warning2"));
                         return true;
                     }
 
-                    commandSender.sendMessage("§9§l[*]§r 当前渲染速度设置为" + Famara.speed);
+                    commandSender.sendMessage(text.get("speedSetSuccessfully") + Famara.speed);
                     help = false;
                 }
             }
 
             //检测对象是否为玩家
-
+            if (strings[0].equalsIgnoreCase("resource")) {
+                if (commandSender instanceof Player player) {
+                    if (strings[1].equalsIgnoreCase("china")){
+                        LoadResourcePack.load(player, true);
+                        return true;
+                    }
+                    LoadResourcePack.load(player, false);
+                    help = false;
+                } else {
+                    commandSender.sendMessage(text.get("useInGame"));
+                    help = false;
+                }
+            }
             if (strings[0].equalsIgnoreCase("guide")) {
                 if (commandSender instanceof Player player) {
                     player.getWorld().dropItem(player.getLocation(), RecipeBook.RecipeBookItem);
                     help = false;
                 } else {
-                    commandSender.sendMessage("§c§l[-]§r 请在游戏中使用该命令");
+                    commandSender.sendMessage(text.get("useInGame"));
                     help = false;
                 }
             }
@@ -145,11 +159,12 @@ public class fa implements CommandExecutor {
     }
 
     private static void getHelp(@NotNull CommandSender commandSender) {
-        commandSender.sendMessage("§7[!]  §4寄枪 - FakeGun §7正在运行");
-        commandSender.sendMessage(" §4| §7help  帮助列表");
-        commandSender.sendMessage(" §4| §7speed  设置渲染速度（默认为7）");
-        commandSender.sendMessage(" §4| §7set 设置物品对应颜色");
-        commandSender.sendMessage(" §4| §7guide  获取指南");
-        commandSender.sendMessage(" §4| §7- 创造下，右键配方可以将直接获取物品");
+        commandSender.sendMessage(text.get("help1"));
+        commandSender.sendMessage(text.get("help2"));
+        commandSender.sendMessage(text.get("help3"));
+        commandSender.sendMessage(text.get("help4"));
+        commandSender.sendMessage(text.get("help5"));
+        commandSender.sendMessage(text.get("help6"));
+        commandSender.sendMessage(text.get("help7"));
     }
 }
