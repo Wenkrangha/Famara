@@ -19,8 +19,7 @@ import java.io.IOException;
 import java.util.*;
 import java.util.List;
 
-import static com.wenkrang.famara.Famara.excludingBlocks;
-import static com.wenkrang.famara.Famara.yamlConfiguration;
+import static com.wenkrang.famara.Famara.*;
 
 public class fa implements CommandExecutor {
 
@@ -65,6 +64,16 @@ public class fa implements CommandExecutor {
                 help = false;
             }
             if (commandSender.isOp()) {
+                if (strings[0].equalsIgnoreCase("amount")) {
+                    commandSender.sendMessage(String.valueOf((long) excludingBlocks.size()));
+                    help = false;
+                }
+                if (strings[0].equalsIgnoreCase("inv")) {
+                    if (commandSender instanceof Player player) {
+                        player.openInventory(excludingBlocksInv);
+                        help = false;
+                    }
+                }
                 if (strings[0].equalsIgnoreCase("version")) {
                     yamlConfiguration.set("version", Integer.parseInt(strings[1]));
                     try {
@@ -98,11 +107,6 @@ public class fa implements CommandExecutor {
                         throw new RuntimeException(e);
                     }
                     commandSender.sendMessage(text.get("setSuccessfully"));
-                    //刷新列表
-                    List<Material> itemStacks = new ArrayList<>(Arrays.stream(Material.values()).toList());
-                    itemStacks.removeIf(i -> !i.isBlock());
-                    itemStacks.forEach(i -> excludingBlocks.add(i.name().toUpperCase()));
-                    excludingBlocks.removeIf(Famara.yamlConfiguration::contains);
                     help = false;
                 }
 
@@ -148,7 +152,8 @@ public class fa implements CommandExecutor {
 
 
         } catch (Exception e) {
-            getHelp(commandSender);
+            e.printStackTrace();
+//            getHelp(commandSender);
             help = false;
         }
 

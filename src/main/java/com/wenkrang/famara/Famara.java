@@ -13,11 +13,14 @@ import com.wenkrang.famara.render.RenderRunner;
 import com.wenkrang.famara.render.RenderTask;
 import com.wenkrang.famara.command.fa;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.yaml.snakeyaml.Yaml;
@@ -96,6 +99,8 @@ public final class Famara extends JavaPlugin {
      */
 
     public static UUID resPack = UUID.fromString("4cc63921-99d7-40d7-bc00-f44b5ecb2437");
+
+    public static Inventory excludingBlocksInv = Bukkit.createInventory(null, 54,"54");
 
     public static void loadPack(String name, File file) {
         try {
@@ -206,6 +211,20 @@ public final class Famara extends JavaPlugin {
         new BukkitRunnable() {
             @Override
             public void run() {
+                excludingBlocks.clear();
+                List<Material> itemStacks = new ArrayList<>(Arrays.stream(Material.values()).toList());
+                itemStacks.removeIf(t -> yamlConfiguration.contains(t.name().toUpperCase()));
+                itemStacks.removeIf(t -> !t.isBlock());
+                itemStacks.removeIf(t -> !t.isItem());
+                itemStacks.removeIf(Material::isAir);
+                itemStacks.forEach(t -> excludingBlocks.add(t.name().toUpperCase()));
+                for (int i = 0;i < excludingBlocksInv.getSize();i++) {
+                    ItemStack itemStack = new ItemStack(itemStacks.get(i));
+                    ItemMeta itemMeta = itemStack.getItemMeta();
+                    itemMeta.setDisplayName(itemStack.getType().name());
+                    itemStack.setItemMeta(itemMeta);
+                    excludingBlocksInv.setItem(i, itemStack);
+                }
                 LoadItem.loadItem();
             }
         }.runTaskTimer(Famara.getPlugin(Famara.class), 0, 8);
@@ -233,12 +252,6 @@ public final class Famara extends JavaPlugin {
         LoadItem.loadItem();
         loadPhoto();
         LoadRecipe.loadRecipe();
-
-        // 构建排除方块列表
-        List<Material> itemStacks = new ArrayList<>(Arrays.stream(Material.values()).toList());
-        itemStacks.removeIf(i -> !i.isBlock());
-        itemStacks.forEach(i -> excludingBlocks.add(i.name().toUpperCase()));
-        excludingBlocks.removeIf(Famara.yamlConfiguration::contains);
 
         ConsoleLoger.info("Loading complete, current version: alpine 1.0");
 

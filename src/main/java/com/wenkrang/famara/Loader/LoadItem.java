@@ -47,7 +47,7 @@ public class LoadItem {
             itemMeta.setDisplayName("§f照片（按右键撕开拉片）");
             ArrayList<String> lore = new ArrayList<>();
             lore.add("§7一张看起来§7§l平平无奇的照片§7，");
-            lore.add("§7也许你早已经忘却了照片上的§7§l人与事物§r，");
+            lore.add("§7也许你早已经忘却了照片上的§7§l人与事物，");
             lore.add("§7但它一直在为你记录着§7§l那一切§7......");
             itemMeta.setLore(lore);
             itemStack.setItemMeta(itemMeta);
