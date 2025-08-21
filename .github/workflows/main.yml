@@ -1,0 +1,14 @@
+name: Build with Maven
+on: push
+jobs:
+  build:
+     name: build
+     runs-on: least
+     steps:
+     - name: Setup Java JDK
+       uses: actions/setup-java@v5.0.0
+       with:
+         java-version: 21
+     - name: Maven Action
+       uses: hb0730/maven-action@v1.0.2
+     
