@@ -49,7 +49,10 @@ public class OnPlayerJoinE implements Listener {
                             .equalsIgnoreCase("§f照片（按右键撕开拉片）")) {
                         int id = getId(player.getInventory().getItemInMainHand(), 3);
 
-                        if (!Famara.progress.containsKey(String.valueOf(id))) return;
+                        if (!Famara.progress.containsKey(String.valueOf(id))) {
+                            progress.removeAll();
+                            return;
+                        }
                         Integer i = Famara.progress.get(String.valueOf(id));
 
                         if (i != 16384) progress.addPlayer(player);
@@ -70,7 +73,6 @@ public class OnPlayerJoinE implements Listener {
 
                         if (i == 16384) {
                             progress.removeAll();
-                            Famara.progress.remove(String.valueOf(id));
                         }
                     }else {
                         progress.removeAll();

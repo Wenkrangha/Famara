@@ -240,6 +240,16 @@ public final class Famara extends JavaPlugin {
             }
         }.runTaskTimerAsynchronously(Famara.getPlugin(Famara.class), 0, 20);
 
+        // 完成照片渲染
+        new BukkitRunnable() {
+            @Override
+            public void run() {
+                Famara.progress.forEach((id, progress) -> {
+                    if (progress >= 16384) Famara.progress.remove(id);
+                });
+            }
+        }.runTaskTimer(Famara.getPlugin(Famara.class), 0 , 20);
+
         // 对在线玩家执行加入检查
         getServer().getOnlinePlayers().forEach(OnPlayerJoinE::startCheck);
 

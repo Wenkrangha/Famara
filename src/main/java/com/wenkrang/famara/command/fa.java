@@ -4,6 +4,7 @@ import com.wenkrang.famara.Famara;
 import com.wenkrang.famara.Loader.LoadResourcePack;
 import com.wenkrang.famara.itemSystem.RecipeBook;
 import com.wenkrang.famara.lib.text;
+import org.apache.commons.lang3.Range;
 import org.bukkit.Material;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -18,6 +19,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.*;
 import java.util.List;
+
 
 import static com.wenkrang.famara.Famara.*;
 
@@ -88,8 +90,11 @@ public class fa implements CommandExecutor {
                             commandSender.sendMessage(text.get("lostArguments"));
                             return true;
                         }
-                        if (Integer.parseInt(strings[2]) > 255 | Integer.parseInt(strings[3]) > 255 | Integer.parseInt(strings[4]) > 255
-                        | Integer.parseInt(strings[2]) < 0 | Integer.parseInt(strings[3]) < 0 | Integer.parseInt(strings[4]) < 0) {
+
+                        Range<Integer> range = Range.of(0, 255);
+                        if (range.contains(Integer.parseInt(strings[2])) ||
+                                range.contains(Integer.parseInt(strings[3])) ||
+                                range.contains(Integer.parseInt(strings[4]))) {
                             commandSender.sendMessage(text.get("setError1"));
                             return true;
                         }
@@ -129,11 +134,13 @@ public class fa implements CommandExecutor {
             //检测对象是否为玩家
             if (strings[0].equalsIgnoreCase("resource")) {
                 if (commandSender instanceof Player player) {
-                    if (strings[1].equalsIgnoreCase("china")){
-                        LoadResourcePack.load(player, true);
-                        return true;
+                    if (strings.length > 2) {
+                        if (strings[1].equalsIgnoreCase("china")){
+                            LoadResourcePack.load(player, true);
+                            return true;
+                        }
+                        LoadResourcePack.load(player, false);
                     }
-                    LoadResourcePack.load(player, false);
                     help = false;
                 } else {
                     commandSender.sendMessage(text.get("useInGame"));
