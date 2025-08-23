@@ -1,0 +1,25 @@
+name: BuildFully
+on: push
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+        - uses: actions/checkout@v4
+        - uses: actions/setup-java@v4
+          with:
+            distribution: 'zulu' # See 'Supported distributions' for available options
+            java-version: '21'
+        - name: 克隆 Wenkrangha/Famara 公共存储库
+          uses: GuillaumeFalourd/clone-github-repo-action@v2.1
+          with:
+            depth: 1
+            branch: 'master'
+            owner: 'Wenkrangha' 
+            #请更改用户为你的用户名
+            repository: 'Famara'
+        - name: 编译 Famara 本体
+          run: mvn package
+        - uses: actions/upload-artifact@v4
+          with:
+            name: Famara  
+            path: Famara/target/Famara-*.jar
