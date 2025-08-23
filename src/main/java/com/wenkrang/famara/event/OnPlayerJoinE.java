@@ -2,11 +2,13 @@ package com.wenkrang.famara.event;
 
 import com.wenkrang.famara.Famara;
 import com.wenkrang.famara.Loader.LoadResourcePack;
+import com.wenkrang.famara.itemSystem.ItemSystem;
 import org.bukkit.Bukkit;
 import org.bukkit.NamespacedKey;
 import org.bukkit.boss.BarColor;
 import org.bukkit.boss.BarStyle;
 import org.bukkit.boss.BossBar;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -17,6 +19,8 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.Objects;
 
 import static com.wenkrang.famara.event.OnUseCameraE.getId;
@@ -24,7 +28,7 @@ import static com.wenkrang.famara.event.OnUseCameraE.getId;
 public class OnPlayerJoinE implements Listener {
 
     @EventHandler
-    public static void onHoldFilm(PlayerJoinEvent event) {
+    public static void onHoldFilm(PlayerJoinEvent event) throws IOException {
         if (event.getPlayer().getScoreboardTags().contains("FamaraResPackIncluded")) {
             event.getPlayer().removeScoreboardTag("FamaraResPackIncluded");
             LoadResourcePack.load(event.getPlayer(),false);
@@ -35,7 +39,15 @@ public class OnPlayerJoinE implements Listener {
     public static void startCheck(Player player) {
 
         BossBar progress = Bukkit.createBossBar("冲洗进度", BarColor.WHITE, BarStyle.SOLID);
+        File PlayerFile = new File("./plugins/Famara/players/" + player.getName() + ".yml");
 
+        if(!PlayerFile.exists()) {
+            try {
+                PlayerFile.createNewFile();
+            }catch (Exception e){
+            }
+            player.getInventory().addItem(ItemSystem.itemMap.get("recipeBook"));
+        }
         new BukkitRunnable() {
             @Override
             public void run() {

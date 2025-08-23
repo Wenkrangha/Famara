@@ -3,6 +3,7 @@ package com.wenkrang.famara.command;
 import com.wenkrang.famara.Famara;
 import com.wenkrang.famara.Loader.LoadResourcePack;
 import com.wenkrang.famara.itemSystem.RecipeBook;
+import com.wenkrang.famara.lib.ConsoleLoger;
 import com.wenkrang.famara.lib.text;
 import org.apache.commons.lang3.Range;
 import org.bukkit.Material;
@@ -66,8 +67,8 @@ public class fa implements CommandExecutor {
                 help = false;
             }
             if (commandSender.isOp()) {
-                if (strings[0].equalsIgnoreCase("amount")) {
-                    commandSender.sendMessage(String.valueOf((long) excludingBlocks.size()));
+                if (strings[0].equalsIgnoreCase("color")) {
+                    ConsoleLoger.info("缺失方块颜色数量： " + String.valueOf((long) excludingBlocks.size()));
                     help = false;
                 }
                 if (strings[0].equalsIgnoreCase("inv")) {

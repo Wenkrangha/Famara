@@ -7,6 +7,7 @@ import com.wenkrang.famara.itemSystem.BookPage;
 import com.wenkrang.famara.Loader.LoadItem;
 import com.wenkrang.famara.itemSystem.RecipeBook;
 import com.wenkrang.famara.lib.ConsoleLoger;
+import com.wenkrang.famara.lib.UnsafeDownloader;
 import com.wenkrang.famara.lib.VersionChecker;
 import com.wenkrang.famara.lib.text;
 import com.wenkrang.famara.render.RenderRunner;
@@ -135,8 +136,14 @@ public final class Famara extends JavaPlugin {
             Logger.getGlobal().warning("§c§l[-] §r文件加载失败：" + name);
         }
 
-
-
+    }
+    public static void mkdir(File file) {
+        if (!file.exists()) {
+            boolean mkdir = file.mkdirs();
+            if (!mkdir) {
+                Logger.getGlobal().warning("Failed to create directory");
+            }
+        }
     }
     @Override
     public void onEnable() {
@@ -168,13 +175,11 @@ public final class Famara extends JavaPlugin {
 
         ConsoleLoger.info("Initializing photo storage directory");
         // 初始化照片存储目录
-        File pictureDir = new File("./plugins/Famara/pictures");
-        if (!pictureDir.exists()) {
-            boolean mkdir = pictureDir.mkdirs();
-            if (!mkdir) {
-                Logger.getGlobal().warning("Failed to create directory");
-            }
-        }
+        mkdir(new File("./plugins/Famara/pictures"));
+
+        mkdir(new File("./plugins/Famara/players"));
+
+        mkdir(new File("./plugins/Famara/update"));
 
         ConsoleLoger.info("Loading color configuration file");
         // 加载颜色配置文件
@@ -240,6 +245,27 @@ public final class Famara extends JavaPlugin {
             }
         }.runTaskTimerAsynchronously(Famara.getPlugin(Famara.class), 0, 20);
 
+        // 定时更新Colors.yml
+        new BukkitRunnable() {
+            @Override
+            public void run() {
+                try {
+                    UnsafeDownloader.downloadFile("https://gitee.com/wenkrang/Famara/raw/master/colors.yml", "./plugins/Famara/update/colors.yml");
+                    if (new File("./plugins/Famara/update/colors.yml").exists()) {
+                        YamlConfiguration updateYaml = YamlConfiguration.loadConfiguration(new File("./plugins/Famara/update/colors.yml"));
+                        if (updateYaml.getInt("version") > yamlConfiguration.getInt("version")) {
+                            new File("./plugins/Famara/colors.yml").delete();
+                            Files.copy(new File("./plugins/Famara/update/colors.yml").toPath(), new File("./plugins/Famara/colors.yml").toPath());
+                            yamlConfiguration.load(new File("./plugins/Famara/colors.yml"));
+                            ConsoleLoger.info("Colors.yml updated");
+                        }
+                    }
+                } catch (Exception e) {
+
+                }
+            }
+        }.runTaskTimerAsynchronously(Famara.getPlugin(Famara.class), 0, 6000);
+
         // 完成照片渲染
         new BukkitRunnable() {
             @Override
@@ -251,7 +277,10 @@ public final class Famara extends JavaPlugin {
         }.runTaskTimer(Famara.getPlugin(Famara.class), 0 , 20);
 
         // 对在线玩家执行加入检查
+
         getServer().getOnlinePlayers().forEach(OnPlayerJoinE::startCheck);
+
+
 
         ConsoleLoger.info("Initializing recipe book");
         // 初始化配方书主页面
