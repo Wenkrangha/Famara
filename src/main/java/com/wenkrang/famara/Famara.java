@@ -34,6 +34,8 @@ import java.net.URL;
 import java.nio.file.Files;
 import java.util.*;
 import java.util.List;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.logging.Logger;
 
 import static com.wenkrang.famara.Loader.LoadPhoto.loadPhoto;
@@ -47,7 +49,7 @@ public final class Famara extends JavaPlugin {
     /**
      * 存储渲染进度的映射表，键为任务标识符，值为当前进度。
      */
-    public static Map<String, Integer> progress = new HashMap<>();
+    public static ConcurrentHashMap<String, Integer> progress = new ConcurrentHashMap<>();
 
     /**
      * 颜色配置文件的YAML配置对象。
@@ -57,7 +59,7 @@ public final class Famara extends JavaPlugin {
     /**
      * 渲染任务列表。
      */
-    public static ArrayList<RenderTask> tasks = new ArrayList<>();
+    public static CopyOnWriteArrayList<RenderTask> tasks = new CopyOnWriteArrayList<>();
 
     /**
      * 渲染速度设置，默认为7。
@@ -67,27 +69,27 @@ public final class Famara extends JavaPlugin {
     /**
      * 颜色缓存，用于快速查找颜色值。
      */
-    public static Map<String, Color> colorCache = new HashMap<>();
+    public static ConcurrentHashMap<String, Color> colorCache = new ConcurrentHashMap<>();
 
     /**
      * 渲染结果缓存，键为任务ID，值为对应的物品堆。
      */
-    public static Map<Integer, ItemStack> results = new HashMap<>();
+    public static ConcurrentHashMap<Integer, ItemStack> results = new ConcurrentHashMap<>();
 
     /**
      * 存储每个图片的渲染速度。
      */
-    public static Map<String,Integer> renderSpeeds = new HashMap<>();
+    public static ConcurrentHashMap<String,Integer> renderSpeeds = new ConcurrentHashMap<>();
 
     /**
      * 实际使用的渲染速度映射。
      */
-    public static Map<String,Integer> renderRealSpeeds = new HashMap<>();
+    public static ConcurrentHashMap<String,Integer> renderRealSpeeds = new ConcurrentHashMap<>();
 
     /**
      * 排除的方块列表，表示没有上色的方块。
      */
-    public static ArrayList<String> excludingBlocks = new ArrayList<>();
+    public static CopyOnWriteArrayList<String> excludingBlocks = new CopyOnWriteArrayList<>();
 
     /**
      * 当前颜色配置版本号。
@@ -270,9 +272,15 @@ public final class Famara extends JavaPlugin {
         new BukkitRunnable() {
             @Override
             public void run() {
-                Famara.progress.forEach((id, progress) -> {
-                    if (progress >= 16384) Famara.progress.remove(id);
-                });
+                try {
+                    if (!Famara.progress.isEmpty()) {
+                        Famara.progress.forEach((id, progress) -> {
+                            if (Famara.progress.containsKey(id) && progress >= 16384) Famara.progress.remove(id);
+                        });}
+                }catch (Exception e) {
+                    //Ignore
+                }
+
             }
         }.runTaskTimer(Famara.getPlugin(Famara.class), 0 , 20);
 

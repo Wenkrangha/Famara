@@ -93,9 +93,9 @@ public class fa implements CommandExecutor {
                         }
 
                         Range<Integer> range = Range.of(0, 255);
-                        if (range.contains(Integer.parseInt(strings[2])) ||
-                                range.contains(Integer.parseInt(strings[3])) ||
-                                range.contains(Integer.parseInt(strings[4]))) {
+                        if (!range.contains(Integer.parseInt(strings[2])) ||
+                                !range.contains(Integer.parseInt(strings[3])) ||
+                                !range.contains(Integer.parseInt(strings[4]))) {
                             commandSender.sendMessage(text.get("setError1"));
                             return true;
                         }
@@ -135,18 +135,18 @@ public class fa implements CommandExecutor {
             //检测对象是否为玩家
             if (strings[0].equalsIgnoreCase("resource")) {
                 if (commandSender instanceof Player player) {
-                    if (strings.length > 2) {
+                    if (strings.length >= 2) {
                         if (strings[1].equalsIgnoreCase("china")){
+                            player.addScoreboardTag("FromChina");
                             LoadResourcePack.load(player, true);
                             return true;
                         }
                         LoadResourcePack.load(player, false);
                     }
-                    help = false;
                 } else {
                     commandSender.sendMessage(text.get("useInGame"));
-                    help = false;
                 }
+                help = false;
             }
             if (strings[0].equalsIgnoreCase("guide")) {
                 if (commandSender instanceof Player player) {
