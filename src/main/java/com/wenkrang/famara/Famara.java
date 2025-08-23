@@ -1,7 +1,6 @@
 package com.wenkrang.famara;
 
 import com.wenkrang.famara.Loader.LoadRecipe;
-import com.wenkrang.famara.command.faTabComplete;
 import com.wenkrang.famara.event.*;
 import com.wenkrang.famara.itemSystem.BookPage;
 import com.wenkrang.famara.Loader.LoadItem;
@@ -260,7 +259,7 @@ public final class Famara extends JavaPlugin {
                             ConsoleLogger.info("Colors.yml updated");
                         }
                     }
-                } catch (Exception e) {
+                } catch (Exception ignored) {
 
                 }
             }

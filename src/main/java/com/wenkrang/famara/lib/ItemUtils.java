@@ -35,7 +35,9 @@ public class ItemUtils {
         }
         lore.set(2, "§7已装填彩色胶卷（16 / " + i + "）");
         itemMeta.setLore(lore);
-        itemStack.setItemMeta(itemMeta);
-        return itemStack;
+
+        final var newItem = itemStack.clone();
+        newItem.setItemMeta(itemMeta);
+        return newItem;
     }
 }
