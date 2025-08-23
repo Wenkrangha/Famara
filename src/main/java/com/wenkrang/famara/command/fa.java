@@ -1,12 +1,12 @@
 package com.wenkrang.famara.command;
 
+import com.google.common.collect.Range;
 import com.wenkrang.famara.Famara;
 import com.wenkrang.famara.Loader.LoadResourcePack;
 import com.wenkrang.famara.itemSystem.RecipeBook;
-import com.wenkrang.famara.lib.ConsoleLoger;
-import com.wenkrang.famara.lib.text;
-import org.apache.commons.lang3.Range;
-import org.bukkit.Material;
+import com.wenkrang.famara.lib.ConsoleLogger;
+import com.wenkrang.famara.lib.Translation;
+import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -23,6 +23,7 @@ import java.util.List;
 
 
 import static com.wenkrang.famara.Famara.*;
+import static com.wenkrang.famara.command.FaCommand.getHelp;
 
 public class fa implements CommandExecutor {
 
@@ -56,6 +57,8 @@ public class fa implements CommandExecutor {
 
         return new Color(mostFrequentRGB);
     }
+
+    @Deprecated(forRemoval = true)
     @Override
     public boolean onCommand(@NotNull CommandSender commandSender,@NotNull Command command,@NotNull String s, String[] strings) {
         //Famara命令处理
@@ -68,7 +71,7 @@ public class fa implements CommandExecutor {
             }
             if (commandSender.isOp()) {
                 if (strings[0].equalsIgnoreCase("color")) {
-                    ConsoleLoger.info("缺失方块颜色数量： " + String.valueOf((long) excludingBlocks.size()));
+                    ConsoleLogger.info("缺失方块颜色数量： " + (long) excludingBlocks.size());
                     help = false;
                 }
                 if (strings[0].equalsIgnoreCase("inv")) {
@@ -88,22 +91,24 @@ public class fa implements CommandExecutor {
                 if (strings[0].equalsIgnoreCase("set")) {
                     try {
                         if (strings.length < 5) {
-                            commandSender.sendMessage(text.get("lostArguments"));
+                            commandSender.sendMessage(Translation.CURRENT.of("lostArguments"));
                             return true;
                         }
 
-                        Range<Integer> range = Range.of(0, 255);
-                        if (range.contains(Integer.parseInt(strings[2])) ||
-                                range.contains(Integer.parseInt(strings[3])) ||
-                                range.contains(Integer.parseInt(strings[4]))) {
-                            commandSender.sendMessage(text.get("setError1"));
+                        if (Range.closed(0, 255)
+                                .containsAll(Set.of(
+                                        Integer.parseInt(strings[2]),
+                                        Integer.parseInt(strings[3]),
+                                        Integer.parseInt(strings[4])
+                                ))) {
+                            commandSender.sendMessage(Translation.CURRENT.of("setError1"));
                             return true;
                         }
                         yamlConfiguration.set(strings[1] + ".r", Integer.parseInt(strings[2]));
                         yamlConfiguration.set(strings[1] + ".g", Integer.parseInt(strings[3]));
                         yamlConfiguration.set(strings[1] + ".b", Integer.parseInt(strings[4]));
                     }catch (NumberFormatException e){
-                        commandSender.sendMessage(text.get("setError2"));
+                        commandSender.sendMessage(Translation.CURRENT.of("setError2"));
                         return true;
                     }
 
@@ -112,22 +117,22 @@ public class fa implements CommandExecutor {
                     } catch (IOException e) {
                         throw new RuntimeException(e);
                     }
-                    commandSender.sendMessage(text.get("setSuccessfully"));
+                    commandSender.sendMessage(Translation.CURRENT.of("setSuccessfully"));
                     help = false;
                 }
 
                 if (strings[0].equalsIgnoreCase("speed")) {
                     try {
                         if (Famara.speed > 50) {
-                            commandSender.sendMessage(text.get("warning1"));
+                            commandSender.sendMessage(Translation.CURRENT.of("warning1"));
                         }
                         Famara.speed = Integer.parseInt(strings[1]);
                     }catch (NumberFormatException e) {
-                        commandSender.sendMessage(text.get("warning2"));
+                        commandSender.sendMessage(Translation.CURRENT.of("warning2"));
                         return true;
                     }
 
-                    commandSender.sendMessage(text.get("speedSetSuccessfully") + Famara.speed);
+                    commandSender.sendMessage(Translation.CURRENT.of("speedSetSuccessfully") + Famara.speed);
                     help = false;
                 }
             }
@@ -144,7 +149,7 @@ public class fa implements CommandExecutor {
                     }
                     help = false;
                 } else {
-                    commandSender.sendMessage(text.get("useInGame"));
+                    commandSender.sendMessage(Translation.CURRENT.of("useInGame"));
                     help = false;
                 }
             }
@@ -153,7 +158,7 @@ public class fa implements CommandExecutor {
                     player.getWorld().dropItem(player.getLocation(), RecipeBook.RecipeBookItem);
                     help = false;
                 } else {
-                    commandSender.sendMessage(text.get("useInGame"));
+                    commandSender.sendMessage(Translation.CURRENT.of("useInGame"));
                     help = false;
                 }
             }
@@ -171,13 +176,108 @@ public class fa implements CommandExecutor {
         return true;
     }
 
-    private static void getHelp(@NotNull CommandSender commandSender) {
-        commandSender.sendMessage(text.get("help1"));
-        commandSender.sendMessage(text.get("help2"));
-        commandSender.sendMessage(text.get("help3"));
-        commandSender.sendMessage(text.get("help4"));
-        commandSender.sendMessage(text.get("help5"));
-        commandSender.sendMessage(text.get("help6"));
-        commandSender.sendMessage(text.get("help7"));
+    public static void registerNewCommand() {
+
+        FaCommand.register(new FaCommand("help", new CommandArgument[]{},
+                (i, j) -> getHelp(i)));
+
+        FaCommand.register(new FaCommand("color", new CommandArgument[]{},
+                (i, j) -> {
+            if (i.isOp()) ConsoleLogger.info("缺失方块颜色数量： " + excludingBlocks.size());
+        }));
+
+        FaCommand.register(new FaCommand("inv", new CommandArgument[]{},
+                (i, j) -> {if (i.isOp() && i instanceof Player)
+                    ((Player) i).openInventory(excludingBlocksInv);}));
+
+        FaCommand.register(new FaCommand(
+                "version", new CommandArgument[]{
+                        new CommandArgument.IntArgument("int", false)
+                }, (i, j) -> {
+                    if (i.isOp()) {
+                        yamlConfiguration.set("version", Integer.parseInt(j.getFirst()));
+                        try {
+                            yamlConfiguration.save("./plugins/Famara/colors.yml");
+                        } catch (IOException e) {
+                            throw new RuntimeException(e);
+                        }
+                    }
+                }
+        ));
+
+        FaCommand.register(new FaCommand(
+                "set", new CommandArgument[]{
+                        new CommandArgument.WeakFixedArgument(excludingBlocks, false),
+                        new CommandArgument.IntArgument("RED", false),
+                        new CommandArgument.IntArgument("GREEN", false),
+                        new CommandArgument.IntArgument("BLUE", false)
+                }, (i, j) -> {
+
+                if (!i.isOp()) return;
+
+                if (!Range.closed(0, 255)
+                        .containsAll(Set.of(
+                                Integer.parseInt(j.get(1)),
+                                Integer.parseInt(j.get(2)),
+                                Integer.parseInt(j.get(3))
+                        ))) i.sendMessage(Translation.CURRENT.of("setError1"));
+
+                yamlConfiguration.set(j.getFirst() + ".r", Integer.parseInt(j.get(1)));
+                yamlConfiguration.set(j.getFirst() + ".g", Integer.parseInt(j.get(2)));
+                yamlConfiguration.set(j.getFirst() + ".b", Integer.parseInt(j.get(3)));
+
+                try {
+                    yamlConfiguration.save("./plugins/Famara/colors.yml");
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+                i.sendMessage(Translation.CURRENT.of("setSuccessfully"));
+            }
+        ));
+
+        FaCommand.register(new FaCommand(
+                "speed", new CommandArgument[]{
+                        new CommandArgument.IntArgument("speed", false)
+        }, (i, j) -> {
+                    if (!i.isOp()) return;
+
+                    Famara.speed = Integer.parseInt(j.getFirst());
+
+                    if (Famara.speed > 50)
+                        i.sendMessage(Translation.CURRENT.of("warning1"));
+
+                    i.sendMessage(String.format(
+                            Translation.CURRENT.of("speedSetSuccessfully"), Famara.speed));
+                }));
+
+        FaCommand.register(new FaCommand(
+                "resource", new CommandArgument[]{
+                        new CommandArgument.FixedArgument(List.of("china"), true)
+        }, (i, j) -> {
+                    if (i instanceof Player) {
+                        LoadResourcePack.load(
+                                (Player) i,
+                                // boolean “&&” 符号如果前面为 false 会停止计算
+                                !j.isEmpty() && "china".equals(j.getFirst())
+                        );
+                    } else {
+                        i.sendMessage(Translation.CURRENT.of("useInGame"));
+                    }
+        }));
+
+        FaCommand.register(new FaCommand(
+                "guide", new CommandArgument[]{}, (i, j) -> {
+            if (i instanceof Player player) {
+                player.getWorld().dropItem(player.getLocation(), RecipeBook.RecipeBookItem);
+            } else {
+                i.sendMessage(Translation.CURRENT.of("useInGame"));
+            }
+        }));
+
+        Objects.requireNonNull(Bukkit.getServer().getPluginCommand("fa"))
+                .setExecutor(FaCommand.exec);
+        Objects.requireNonNull(Bukkit.getServer().getPluginCommand("fa"))
+                .setTabCompleter(FaCommand.tabCompleter);
+
     }
 }

@@ -14,6 +14,7 @@ import java.util.Collections;
 import java.util.List;
 
 public class faTabComplete implements TabCompleter{
+    @Deprecated(forRemoval = true)
     @Override
     public @Nullable List<String> onTabComplete(@NotNull CommandSender commandSender, @NotNull Command command, @NotNull String s, @NotNull String[] strings) {
 

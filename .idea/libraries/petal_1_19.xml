@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="petal-1.19">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/petal-1.19.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

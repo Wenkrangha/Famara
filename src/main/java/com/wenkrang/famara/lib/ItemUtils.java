@@ -8,11 +8,11 @@ import java.util.List;
 
 public class ItemUtils {
     public static boolean checkName(ItemStack itemStack, String s) {
-        if (itemStack == null) return false;
+        if (itemStack == null || itemStack.getItemMeta() == null) return false;
         return itemStack.getItemMeta().getDisplayName().equalsIgnoreCase(s);
     }
 
-    public static void setCamera (Player player) {
+    public static void setCamera(Player player) {
         ItemStack itemInMainHand = player.getInventory().getItemInMainHand();
         if (itemInMainHand.getItemMeta() != null) {
             ItemStack itemStack = setFilmAmount(itemInMainHand, 16);
