@@ -18,8 +18,8 @@ jobs:
             #请更改用户为你的用户名
             repository: 'Famara'
         - name: 编译 Famara 本体
-          run: mvn package
+          run: mvn package -q
         - uses: actions/upload-artifact@v4
           with:
             name: Famara  
-            path: Famara/target/Famara-1.0-SNAPSHOT.jar
+            path: target/Famara-1.0-SNAPSHOT.jar
