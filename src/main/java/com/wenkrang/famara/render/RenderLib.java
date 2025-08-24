@@ -5,12 +5,6 @@ import com.wenkrang.famara.itemSystem.ItemSystem;
 import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
-import org.bukkit.boss.BarColor;
-import org.bukkit.boss.BarStyle;
-import org.bukkit.boss.BossBar;
-import org.bukkit.configuration.InvalidConfigurationException;
-import org.bukkit.configuration.file.YamlConfiguration;
-import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -18,9 +12,6 @@ import org.bukkit.inventory.meta.MapMeta;
 import org.bukkit.map.MapCanvas;
 import org.bukkit.map.MapRenderer;
 import org.bukkit.map.MapView;
-import org.bukkit.persistence.PersistentDataContainer;
-import org.bukkit.persistence.PersistentDataType;
-import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.RayTraceResult;
 import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NotNull;
@@ -30,7 +21,6 @@ import java.awt.Color;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-import java.util.UUID;
 import java.util.logging.Logger;
 
 import static com.wenkrang.famara.Famara.renderSpeeds;
@@ -98,15 +88,15 @@ public class RenderLib {
         itemStack.setItemMeta(mapMeta);
         return itemStack;
     }
-
     public static void render(int x, int y, Location eyes, double pitchRad, double yawRad, double fieldOfView,String id, BufferedImage image, Player player, File picture){
         //TODO:1.添加液体渲染 2.添加UP阴影
-                double cos = Math.cos(pitchRad - (y - 64) * fieldOfView);
+        double cos = Math.cos(pitchRad - (y - 64) * fieldOfView);
         Vector direction = new Vector(
                 Math.cos(yawRad + (x - 64) * fieldOfView) * cos,
                 Math.sin(pitchRad - (y - 64) * fieldOfView),
                 Math.sin(yawRad + (x - 64) * fieldOfView) * cos
         );
+        //TODO:改进为矩阵计算
 
 
         //光线追踪

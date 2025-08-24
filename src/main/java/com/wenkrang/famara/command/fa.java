@@ -10,6 +10,7 @@ import org.bukkit.Material;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
@@ -59,8 +60,12 @@ public class fa implements CommandExecutor {
     @Override
     public boolean onCommand(@NotNull CommandSender commandSender,@NotNull Command command,@NotNull String s, String[] strings) {
         //Famara命令处理
-
+        //TODO:改为Switch处理
         boolean help = true;
+        if (strings.length == 0) {
+            getHelp(commandSender);
+            return true;
+        }
         try {
             if (strings[0].equalsIgnoreCase("help")) {
                 getHelp(commandSender);
@@ -68,7 +73,7 @@ public class fa implements CommandExecutor {
             }
             if (commandSender.isOp()) {
                 if (strings[0].equalsIgnoreCase("color")) {
-                    ConsoleLoger.info("缺失方块颜色数量： " + String.valueOf((long) excludingBlocks.size()));
+                    ConsoleLoger.info("缺失方块颜色数量： " + (long) excludingBlocks.size());
                     help = false;
                 }
                 if (strings[0].equalsIgnoreCase("inv")) {
@@ -157,7 +162,6 @@ public class fa implements CommandExecutor {
                     help = false;
                 }
             }
-
 
         } catch (Exception e) {
             e.printStackTrace();
