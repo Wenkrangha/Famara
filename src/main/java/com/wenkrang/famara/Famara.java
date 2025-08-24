@@ -289,16 +289,6 @@ public final class Famara extends JavaPlugin {
             }
         }.runTaskTimer(Famara.getPlugin(Famara.class), 0 , 20);
 
-        // 对在线玩家执行加入检查
-        new BukkitRunnable() {
-            @Override
-            public void run() {
-                getServer().getOnlinePlayers().forEach(playerJoinEvent::startCheck);
-            }
-        }.runTaskLater(Famara.getPlugin(Famara.class), 20);
-
-
-
 
         ConsoleLoger.info("Initializing recipe book");
         // 初始化配方书主页面
@@ -309,6 +299,9 @@ public final class Famara extends JavaPlugin {
         LoadItem.loadItem();
         loadPhoto(getDataFolder());
         LoadRecipe.loadRecipe();
+
+        // 对在线玩家执行加入检查
+        getServer().getOnlinePlayers().forEach(playerJoinEvent::startCheck);
 
         ConsoleLoger.info("Loading complete, current version: alpine 1.0");
 
