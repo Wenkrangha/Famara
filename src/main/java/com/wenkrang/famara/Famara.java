@@ -117,7 +117,8 @@ public final class Famara extends JavaPlugin {
                     inputStream.close();
 
                 } catch (IOException e) {
-                    throw new RuntimeException(e);
+                    e.printStackTrace();
+
                 }
             };
             if (file.exists()) {
@@ -136,6 +137,7 @@ public final class Famara extends JavaPlugin {
             }
         }catch (Exception e) {
             Logger.getGlobal().warning("§c§l[-] §r文件加载失败：" + name);
+            e.printStackTrace();
         }
 
     }
@@ -150,8 +152,7 @@ public final class Famara extends JavaPlugin {
     @Override
     public void onEnable() {
 
-        loadPack("language.yml", new File("./plugins/Famara/language.yml"));
-        text.config = YamlConfiguration.loadConfiguration(new File("./plugins/Famara/language.yml"));
+
 
         ConsoleCommandSender consoleSender = getServer().getConsoleSender();
         consoleSender.sendMessage("    ____                                ");
@@ -167,6 +168,8 @@ public final class Famara extends JavaPlugin {
         Objects.requireNonNull(this.getCommand("fa")).setTabCompleter(new faTabComplete());
 
         ConsoleLoger.info("Registering event listeners");
+
+
         // 注册事件监听器
         getServer().getPluginManager().registerEvents(new OpenBookE(), this);
         getServer().getPluginManager().registerEvents(new BookClickE(), this);
@@ -182,7 +185,8 @@ public final class Famara extends JavaPlugin {
         mkdir(new File("./plugins/Famara/players"));
 
         mkdir(new File("./plugins/Famara/update"));
-
+        loadPack("language.yml", new File("./plugins/Famara/language.yml"));
+        text.config = YamlConfiguration.loadConfiguration(new File("./plugins/Famara/language.yml"));
         ConsoleLoger.info("Loading color configuration file");
         // 加载颜色配置文件
         File file = new File("./plugins/Famara/colors.yml");

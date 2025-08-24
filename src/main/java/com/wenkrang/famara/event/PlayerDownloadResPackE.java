@@ -21,8 +21,8 @@ public class PlayerDownloadResPackE implements Listener {
             event.getPlayer().sendMessage("§e§l[!]§r 如果您位于中国，请输入/fa resource china来使用加速镜像");
         }
         if (status.equals(PlayerResourcePackStatusEvent.Status.SUCCESSFULLY_LOADED)) {
-            event.getPlayer().sendMessage(text.get("resSuccessfully"));
             event.getPlayer().addScoreboardTag("FamaraResPackIncluded");
+            event.getPlayer().sendMessage(text.get("resSuccessfully"));
         }
     }
 }
