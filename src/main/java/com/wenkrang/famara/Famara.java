@@ -94,7 +94,7 @@ public final class Famara extends JavaPlugin {
     /**
      * 当前颜色配置版本号。
      */
-    public static int Version = 1;
+    public static int Version = 3;
 
     /**
      * 插件启用时调用的方法。
