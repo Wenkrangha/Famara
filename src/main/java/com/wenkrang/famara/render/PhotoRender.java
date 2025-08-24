@@ -37,7 +37,7 @@ public class PhotoRender {
 //    }
 
 
-    public static ItemStack TakePhoto(Player player) throws IOException {
+    public static ItemStack TakePhoto(Player player, File pictureFolder) throws IOException {
 
         MapView map = Bukkit.createMap(player.getWorld());
 
@@ -46,7 +46,7 @@ public class PhotoRender {
 
         //初始化照片
         BufferedImage image = new BufferedImage(128, 128, BufferedImage.TYPE_INT_RGB);
-        File picture = new File("./plugins/Famara/pictures/" + id + ".png");
+        File picture = new File(pictureFolder, id + ".png");
         try {
             boolean newFile = picture.createNewFile();
             if (!newFile) {

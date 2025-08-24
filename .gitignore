@@ -1,0 +1,25 @@
+# Maven target directory
+target/
+
+# Maven POM backup files
+pom.xml.tag
+pom.xml.releaseBackup
+pom.xml.versionsBackup
+pom.xml.next
+release.properties
+dependency-reduced-pom.xml
+buildNumber.properties
+
+# Maven wrapper files
+mvn/timing.properties
+mvn/wrapper/maven-wrapper.jar
+
+# Eclipse-specific files (if using Eclipse IDE)
+project
+classpath
+
+### IntelliJ IDEA ###
+.idea
+*.iws
+*.iml
+*.ipr

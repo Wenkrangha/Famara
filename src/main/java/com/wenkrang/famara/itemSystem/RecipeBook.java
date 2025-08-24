@@ -40,7 +40,7 @@ public class RecipeBook {
 
         Map<Integer, ItemStack> items = mainPage.items();
         items.forEach((index, itemStack) -> {
-            inventory.setItem(index + 9, itemStack);
+            inventory.setItem(index + 9, itemStack.clone());
         });
     }
 }

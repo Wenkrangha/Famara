@@ -1,12 +1,13 @@
 package com.wenkrang.famara.lib;
 
 import javax.net.ssl.HttpsURLConnection;
+import java.io.File;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.net.URL;
 
 public class UnsafeDownloader {
-    public static void downloadFile(String urlString, String destinationFile) throws Exception {
+    public static void downloadFile(String urlString, File destinationFile) throws Exception {
         // 创建URL对象
         URL url = new URL(urlString);
         HttpsURLConnection connection = (HttpsURLConnection) url.openConnection();
