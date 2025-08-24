@@ -41,7 +41,6 @@ public class OnUseCameraE implements Listener {
                 (event.getAction().equals(Action.RIGHT_CLICK_AIR) ||
                         event.getAction().equals(Action.RIGHT_CLICK_BLOCK))) {
             if (event.getPlayer().getInventory().getItemInMainHand().getItemMeta() == null) return;
-            //TODO:这里有大问题，会修改ItemMap
             if (!event.getPlayer().isSneaking() && event.getPlayer().getInventory().getItemInMainHand().getItemMeta().getDisplayName().equalsIgnoreCase("§f相机")) {
                 ItemStack itemInMainHand = event.getPlayer().getInventory().getItemInMainHand();
                 NamespacedKey itemModel = itemInMainHand.getItemMeta().getItemModel();
@@ -66,7 +65,7 @@ public class OnUseCameraE implements Listener {
                     ItemStack itemStack = PhotoRender.TakePhoto(event.getPlayer(), new File(plugin.getDataFolder(), "pictures"));
                     MapMeta mapMeta = (MapMeta) itemStack.getItemMeta();
                     int mapId = mapMeta.getMapId();
-                    ItemStack cameraFilmed = ItemSystem.itemMap.get("camera_filmed");
+                    ItemStack cameraFilmed = ItemSystem.get("camera_filmed");
                     List<String> lore = cameraFilmed.getItemMeta().getLore();
                     lore.set(3, "§7照片编号：" + mapId);
                     ItemMeta itemMeta = cameraFilmed.getItemMeta();
@@ -87,7 +86,7 @@ public class OnUseCameraE implements Listener {
                 int i = getId(event.getPlayer().getInventory().getItemInMainHand(), 3);
                 try {
                     event.getPlayer().getWorld().playSound(event.getPlayer().getLocation(), "famara:famara.pull.film", 1, 1);
-                    ItemStack itemStack = ItemSystem.itemMap.get("photo_unPull");
+                    ItemStack itemStack = ItemSystem.get("photo_unPull");
                     ItemMeta itemMeta = itemStack.getItemMeta();
                     itemMeta.setItemModel(new NamespacedKey("famara", "photo"));
                     List<String> lore = itemMeta.getLore();
@@ -99,7 +98,7 @@ public class OnUseCameraE implements Listener {
                     itemMeta.setLore(lore);
                     itemStack.setItemMeta(itemMeta);
                     event.getPlayer().getInventory().addItem(itemStack);
-                    ItemStack itemStack1 = ItemSystem.itemMap.get("camera");
+                    ItemStack itemStack1 = ItemSystem.get("camera");
                     ItemStack itemStack2 = ItemUtils.setFilmAmount(itemStack1, ItemUtils.getFilmAmount(event.getPlayer().getInventory().getItemInMainHand()));
                     event.getPlayer().getInventory().setItemInMainHand(itemStack2);
                 } catch (Exception e) {

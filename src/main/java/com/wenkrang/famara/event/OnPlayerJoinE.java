@@ -51,7 +51,7 @@ public class OnPlayerJoinE implements Listener {
                 PlayerFile.createNewFile();
             }catch (Exception e){
             }
-            player.getInventory().addItem(ItemSystem.itemMap.get("recipeBook"));
+            player.getInventory().addItem(ItemSystem.get("recipeBook"));
         }
         new BukkitRunnable() {
             @Override

@@ -78,7 +78,7 @@ public class RenderLib {
         map.addRenderer(mapRenderer);
 
         //发放照片
-        ItemStack itemStack = ItemSystem.itemMap.get("photo");
+        ItemStack itemStack = ItemSystem.get("photo");
         ItemMeta itemMeta = itemStack.getItemMeta();
         itemMeta.setItemModel(new NamespacedKey("famara", "photo"));
         MapMeta mapMeta = (MapMeta) itemMeta;
