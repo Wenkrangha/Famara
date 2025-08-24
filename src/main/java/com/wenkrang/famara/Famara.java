@@ -289,8 +289,13 @@ public final class Famara extends JavaPlugin {
         }.runTaskTimer(Famara.getPlugin(Famara.class), 0 , 20);
 
         // 对在线玩家执行加入检查
+        new BukkitRunnable() {
+            @Override
+            public void run() {
+                getServer().getOnlinePlayers().forEach(OnPlayerJoinE::startCheck);
+            }
+        }.runTaskLater(Famara.getPlugin(Famara.class), 20);
 
-        getServer().getOnlinePlayers().forEach(OnPlayerJoinE::startCheck);
 
 
 
