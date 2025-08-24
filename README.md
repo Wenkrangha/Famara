@@ -22,6 +22,8 @@
 
 ### 特别感谢 :
 - 来自粘液科技的多方快结构与配方界面
+- exposure mod的思路启发
+- Cup0fCode/Cameras 插件的向量算法借鉴
 - 来自通义千问大模型的帮助,通义千问能帮助开发者快速完成开发
 - bukkit.windit.net 中文Spigot Api文档
 

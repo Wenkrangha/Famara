@@ -16,7 +16,7 @@ public class LoadItem {
         {
             ItemStack itemStack = new ItemStack(Material.WRITABLE_BOOK);
             @NotNull ItemMeta itemMeta = Objects.requireNonNull(itemStack.getItemMeta());
-            itemMeta.setDisplayName("§9§lFamara§f-法玛拉相机配方");
+            itemMeta.setDisplayName("§9§lFamara§f-相机配方");
             ArrayList<String> lore = new ArrayList<>();
             lore.add("§7你有没有一些想记录下来的风景呢？");
             lore.add("§7快用相机拍下来吧！");

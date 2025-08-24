@@ -15,7 +15,7 @@ public class OpenBookE implements Listener {
                         .getInventory().getItemInMainHand()
                         .getItemMeta()
                         .getDisplayName()
-                        .equals("§9§lFamara§f-法玛拉相机配方")) {
+                        .equals("§9§lFamara§f-相机配方")) {
                     LoadResourcePack.load(event.getPlayer(),false);
                     RecipeBook.openBook(event.getPlayer());
                 }
