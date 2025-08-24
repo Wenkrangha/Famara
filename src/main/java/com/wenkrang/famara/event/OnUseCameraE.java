@@ -63,7 +63,7 @@ public class OnUseCameraE implements Listener {
                         ItemStack itemInMainHand1 = ItemUtils.setFilmAmount(itemInMainHand, filmAmount - 1);
                         event.getPlayer().getInventory().setItemInMainHand(itemInMainHand1);
                     }
-                    ItemStack itemStack = PhotoRender.TakePhoto(event.getPlayer());
+                    ItemStack itemStack = PhotoRender.TakePhoto(event.getPlayer(), new File(plugin.getDataFolder(), "pictures"));
                     MapMeta mapMeta = (MapMeta) itemStack.getItemMeta();
                     int mapId = mapMeta.getMapId();
                     ItemStack cameraFilmed = ItemSystem.itemMap.get("camera_filmed");
@@ -122,15 +122,16 @@ public class OnUseCameraE implements Listener {
                     }else {
                         if (Bukkit.getMap(i) == null) return;
                         MapView map = null;
+                        File pictureFile = new File(plugin.getDataFolder(), "pictures/" + i + ".png");
                         if (Bukkit.getMap(i) == null) {
-                            if (new File("./plugins/Famara/pictures/" + i + ".png").exists()) {
+                            if (pictureFile.exists()) {
                                 map = Bukkit.createMap(event.getPlayer().getWorld());
                             }
                         } else {
                             map = Bukkit.getMap(i);
                         }
                         if (map != null) {
-                            itemStack = RenderLib.getPhoto(ImageIO.read(new File("./plugins/Famara/pictures/" + i + ".png")), map);
+                            itemStack = RenderLib.getPhoto(ImageIO.read(pictureFile), map);
                         }
                     }
                     event.getPlayer().getInventory().setItemInMainHand(itemStack);

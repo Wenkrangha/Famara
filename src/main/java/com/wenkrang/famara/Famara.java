@@ -179,16 +179,16 @@ public final class Famara extends JavaPlugin {
 
         ConsoleLoger.info("Initializing photo storage directory");
         // 初始化照片存储目录
-        mkdir(new File("./plugins/Famara/pictures"));
+        mkdir(new File(getDataFolder(), "pictures"));
 
-        mkdir(new File("./plugins/Famara/players"));
+        mkdir(new File(getDataFolder(), "players"));
 
-        mkdir(new File("./plugins/Famara/update"));
-        loadPack("language.yml", new File("./plugins/Famara/language.yml"));
-        text.config = YamlConfiguration.loadConfiguration(new File("./plugins/Famara/language.yml"));
+        mkdir(new File(getDataFolder(), "update"));
+        loadPack("language.yml", new File(getDataFolder(), "language.yml"));
+        text.config = YamlConfiguration.loadConfiguration(new File(getDataFolder(), "language.yml"));
         ConsoleLoger.info("Loading color configuration file");
         // 加载颜色配置文件
-        File file = new File("./plugins/Famara/colors.yml");
+        File file = new File(getDataFolder(), "colors.yml");
         loadPack("colors.yml", file);
         try {
             yamlConfiguration.load(file);
@@ -255,13 +255,15 @@ public final class Famara extends JavaPlugin {
             @Override
             public void run() {
                 try {
-                    UnsafeDownloader.downloadFile("https://gitee.com/wenkrang/Famara/raw/master/colors.yml", "./plugins/Famara/update/colors.yml");
-                    if (new File("./plugins/Famara/update/colors.yml").exists()) {
-                        YamlConfiguration updateYaml = YamlConfiguration.loadConfiguration(new File("./plugins/Famara/update/colors.yml"));
+                    File file = new File(getDataFolder(), "colors.yml");
+                    File updateFile = new File(getDataFolder(), "update/colors.yml");
+                    UnsafeDownloader.downloadFile("https://gitee.com/wenkrang/Famara/raw/master/colors.yml", updateFile);
+                    if (updateFile.exists()) {
+                        YamlConfiguration updateYaml = YamlConfiguration.loadConfiguration(updateFile);
                         if (updateYaml.getInt("version") > yamlConfiguration.getInt("version")) {
-                            new File("./plugins/Famara/colors.yml").delete();
-                            Files.copy(new File("./plugins/Famara/update/colors.yml").toPath(), new File("./plugins/Famara/colors.yml").toPath());
-                            yamlConfiguration.load(new File("./plugins/Famara/colors.yml"));
+                            file.delete();
+                            Files.copy(updateFile.toPath(), file.toPath());
+                            yamlConfiguration.load(file);
                             ConsoleLoger.info("Colors.yml updated");
                         }
                     }
@@ -305,7 +307,7 @@ public final class Famara extends JavaPlugin {
         ConsoleLoger.info("Loading items, photos and recipes");
         // 加载物品、照片和配方
         LoadItem.loadItem();
-        loadPhoto();
+        loadPhoto(getDataFolder());
         LoadRecipe.loadRecipe();
 
         ConsoleLoger.info("Loading complete, current version: alpine 1.0");

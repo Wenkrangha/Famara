@@ -44,7 +44,7 @@ public class OnPlayerJoinE implements Listener {
     public void startCheck(Player player) {
 
         BossBar progress = Bukkit.createBossBar("冲洗进度", BarColor.WHITE, BarStyle.SOLID);
-        File PlayerFile = new File("./plugins/Famara/players/" + player.getName() + ".yml");
+        File PlayerFile = new File(plugin.getDataFolder(), "players/" + player.getName() + ".yml");
 
         if(!PlayerFile.exists()) {
             try {
