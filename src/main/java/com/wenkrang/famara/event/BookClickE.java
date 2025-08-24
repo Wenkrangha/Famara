@@ -1,5 +1,6 @@
 package com.wenkrang.famara.event;
 
+import com.wenkrang.famara.Famara;
 import com.wenkrang.famara.itemSystem.RecipeBook;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
@@ -17,8 +18,14 @@ import java.util.ArrayList;
 import java.util.Map;
 
 public class BookClickE implements Listener {
+    Famara plugin;
+    public BookClickE(Famara plugin) {
+        this.plugin = plugin;
+        plugin.getServer().getPluginManager().registerEvents(this, plugin);
+    }
+
     @EventHandler
-    public static void onClick(InventoryClickEvent event) {
+    public void onClick(InventoryClickEvent event) {
         if (event.getView().getTitle().equalsIgnoreCase("相机具体配方")) {
             if (event.getRawSlot() == 1) {
                 RecipeBook.openBook((Player) event.getWhoClicked());

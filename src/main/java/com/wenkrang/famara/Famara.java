@@ -24,7 +24,6 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
-import org.yaml.snakeyaml.Yaml;
 
 import java.awt.*;
 import java.io.File;
@@ -171,12 +170,12 @@ public final class Famara extends JavaPlugin {
 
 
         // 注册事件监听器
-        getServer().getPluginManager().registerEvents(new OpenBookE(), this);
-        getServer().getPluginManager().registerEvents(new BookClickE(), this);
-        getServer().getPluginManager().registerEvents(new OnUseCameraE(), this);
-        getServer().getPluginManager().registerEvents(new OnPlayerJoinE(), this);
-        getServer().getPluginManager().registerEvents(new OnLoadFilm(), this);
-        getServer().getPluginManager().registerEvents(new PlayerDownloadResPackE(), this);
+        new OpenBookE(this);
+        new BookClickE(this);
+        new OnUseCameraE(this);
+        OnPlayerJoinE playerJoinEvent = new OnPlayerJoinE(this);
+        new OnLoadFilm(this);
+        new PlayerDownloadResPackE(this);
 
         ConsoleLoger.info("Initializing photo storage directory");
         // 初始化照片存储目录
@@ -292,7 +291,7 @@ public final class Famara extends JavaPlugin {
         new BukkitRunnable() {
             @Override
             public void run() {
-                getServer().getOnlinePlayers().forEach(OnPlayerJoinE::startCheck);
+                getServer().getOnlinePlayers().forEach(playerJoinEvent::startCheck);
             }
         }.runTaskLater(Famara.getPlugin(Famara.class), 20);
 

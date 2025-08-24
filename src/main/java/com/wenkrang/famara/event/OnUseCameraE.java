@@ -25,12 +25,18 @@ import java.io.IOException;
 import java.util.List;
 
 public class OnUseCameraE implements Listener {
+    Famara plugin;
+    public OnUseCameraE(Famara plugin) {
+        this.plugin = plugin;
+        plugin.getServer().getPluginManager().registerEvents(this, plugin);
+    }
+
     public static int getId(ItemStack itemStack, int index) {
         String s = itemStack.getItemMeta().getLore().get(index);
         return Integer.parseInt(s.replace("§7照片编号：", ""));
     }
     @EventHandler
-    public static void onUseCamera(PlayerInteractEvent event) {
+    public void onUseCamera(PlayerInteractEvent event) {
         if (event.getHand() == EquipmentSlot.HAND &&
                 (event.getAction().equals(Action.RIGHT_CLICK_AIR) ||
                         event.getAction().equals(Action.RIGHT_CLICK_BLOCK))) {

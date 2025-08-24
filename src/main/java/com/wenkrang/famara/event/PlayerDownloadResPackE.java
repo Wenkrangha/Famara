@@ -1,11 +1,18 @@
 package com.wenkrang.famara.event;
 
+import com.wenkrang.famara.Famara;
 import com.wenkrang.famara.lib.text;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerResourcePackStatusEvent;
 
 public class PlayerDownloadResPackE implements Listener {
+    Famara plugin;
+    public PlayerDownloadResPackE(Famara plugin) {
+        this.plugin = plugin;
+        plugin.getServer().getPluginManager().registerEvents(this, plugin);
+    }
+
     @EventHandler
     public static void onPlayerDownloadResPack(org.bukkit.event.player.PlayerResourcePackStatusEvent event) {
         PlayerResourcePackStatusEvent.Status status = event.getStatus();

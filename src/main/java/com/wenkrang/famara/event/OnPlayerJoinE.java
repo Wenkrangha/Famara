@@ -26,9 +26,14 @@ import java.util.Objects;
 import static com.wenkrang.famara.event.OnUseCameraE.getId;
 
 public class OnPlayerJoinE implements Listener {
+    Famara plugin;
+    public OnPlayerJoinE(Famara plugin) {
+        this.plugin = plugin;
+        plugin.getServer().getPluginManager().registerEvents(this, plugin);
+    }
 
     @EventHandler
-    public static void onHoldFilm(PlayerJoinEvent event) throws IOException {
+    public void onHoldFilm(PlayerJoinEvent event) throws IOException {
         if (event.getPlayer().getScoreboardTags().contains("FamaraResPackIncluded")) {
             event.getPlayer().removeScoreboardTag("FamaraResPackIncluded");
             LoadResourcePack.load(event.getPlayer(),false);
@@ -36,7 +41,7 @@ public class OnPlayerJoinE implements Listener {
         startCheck(event.getPlayer());
     }
 
-    public static void startCheck(Player player) {
+    public void startCheck(Player player) {
 
         BossBar progress = Bukkit.createBossBar("冲洗进度", BarColor.WHITE, BarStyle.SOLID);
         File PlayerFile = new File("./plugins/Famara/players/" + player.getName() + ".yml");
