@@ -1,18 +1,17 @@
 package com.wenkrang.famara;
 
+import com.wenkrang.famara.Loader.LoadCommand;
 import com.wenkrang.famara.Loader.LoadRecipe;
-import com.wenkrang.famara.command.faTabComplete;
 import com.wenkrang.famara.event.*;
 import com.wenkrang.famara.itemSystem.BookPage;
 import com.wenkrang.famara.Loader.LoadItem;
 import com.wenkrang.famara.itemSystem.RecipeBook;
-import com.wenkrang.famara.lib.ConsoleLoger;
+import com.wenkrang.famara.lib.ConsoleLogger;
+import com.wenkrang.famara.lib.Translation;
 import com.wenkrang.famara.lib.UnsafeDownloader;
 import com.wenkrang.famara.lib.VersionChecker;
-import com.wenkrang.famara.lib.text;
 import com.wenkrang.famara.render.RenderRunner;
 import com.wenkrang.famara.render.RenderTask;
-import com.wenkrang.famara.command.fa;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -24,7 +23,6 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
-import org.yaml.snakeyaml.Yaml;
 
 import java.awt.*;
 import java.io.File;
@@ -118,7 +116,6 @@ public final class Famara extends JavaPlugin {
 
                 } catch (IOException e) {
                     e.printStackTrace();
-
                 }
             };
             if (file.exists()) {
@@ -152,7 +149,8 @@ public final class Famara extends JavaPlugin {
     @Override
     public void onEnable() {
 
-
+        loadPack("language.yml", new File("./plugins/Famara/language.yml"));
+        Translation.setCurrent(YamlConfiguration.loadConfiguration(new File("./plugins/Famara/language.yml")));
 
         ConsoleCommandSender consoleSender = getServer().getConsoleSender();
         consoleSender.sendMessage("    ____                                ");
@@ -160,16 +158,13 @@ public final class Famara extends JavaPlugin {
         consoleSender.sendMessage("  / /_/ __ `/ __ `__ \\/ __ `/ ___/ __ `/");
         consoleSender.sendMessage(" / __/ /_/ / / / / / / /_/ / /  / /_/ / ");
         consoleSender.sendMessage("/_/  \\__,_/_/ /_/ /_/\\__,_/_/   \\__,_/  \n");
-        ConsoleLoger.info("Server version: " + VersionChecker.getVersion());
+        ConsoleLogger.info("Server version: " + VersionChecker.getVersion());
 
-        ConsoleLoger.info("Registering commands");
-        // 注册命令执行器和补全器
-        Objects.requireNonNull(this.getCommand("fa")).setExecutor(new fa());
-        Objects.requireNonNull(this.getCommand("fa")).setTabCompleter(new faTabComplete());
+        ConsoleLogger.info("Registering commands");
+        // 注册命令执行器和 completor
+        LoadCommand.registerCommands();
 
-        ConsoleLoger.info("Registering event listeners");
-
-
+        ConsoleLogger.info("Registering event listeners");
         // 注册事件监听器
         getServer().getPluginManager().registerEvents(new OpenBookE(), this);
         getServer().getPluginManager().registerEvents(new BookClickE(), this);
@@ -178,16 +173,15 @@ public final class Famara extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new OnLoadFilm(), this);
         getServer().getPluginManager().registerEvents(new PlayerDownloadResPackE(), this);
 
-        ConsoleLoger.info("Initializing photo storage directory");
+        ConsoleLogger.info("Initializing photo storage directory");
         // 初始化照片存储目录
         mkdir(new File("./plugins/Famara/pictures"));
 
         mkdir(new File("./plugins/Famara/players"));
 
         mkdir(new File("./plugins/Famara/update"));
-        loadPack("language.yml", new File("./plugins/Famara/language.yml"));
-        text.config = YamlConfiguration.loadConfiguration(new File("./plugins/Famara/language.yml"));
-        ConsoleLoger.info("Loading color configuration file");
+
+        ConsoleLogger.info("Loading color configuration file");
         // 加载颜色配置文件
         File file = new File("./plugins/Famara/colors.yml");
         loadPack("colors.yml", file);
@@ -197,11 +191,11 @@ public final class Famara extends JavaPlugin {
             throw new RuntimeException(e);
         }
 
-        ConsoleLoger.info("Starting renderer");
+        ConsoleLogger.info("Starting renderer");
         // 启动渲染器
         RenderRunner.Runner();
 
-        ConsoleLoger.info("Starting scheduled tasks");
+        ConsoleLogger.info("Starting scheduled tasks");
         // 定时清理颜色缓存
         new BukkitRunnable() {
             @Override
@@ -209,14 +203,6 @@ public final class Famara extends JavaPlugin {
                 colorCache.clear();
             }
         }.runTaskTimer(this, 0, 200);
-
-        /*TODO:在进行多次拍摄后，我发现拉出相片时（好像要多拍几次才会出发这个bug），配方书中的相机胶卷数也会变成与手中相机的一样，
-         * 比如说原本配方书中的相机应该是没有装胶卷的，我用一台由14张胶卷的相机拍照，拉出胶卷后，打开配方书，配方书中的相机
-         * 居然也变成14张胶卷的了，我检查了与RecipeBook.MainPage的相关调用，除了LoadItem的合法调用，没有发现其他的异常
-         * 使用，十分神奇，我修了半天，也不知道问题在哪里，但用下面的东西可以很好的修复问题，但我也很担心gc和内存会不会爆炸，毕竟
-         * 是往Map写重复的东西，但愿有人看到这篇文字，并且来修复它
-         * 2025.8.19    --Wenkrang
-         */
 
         // 定时重新加载物品缓存
         new BukkitRunnable() {
@@ -263,10 +249,10 @@ public final class Famara extends JavaPlugin {
                             new File("./plugins/Famara/colors.yml").delete();
                             Files.copy(new File("./plugins/Famara/update/colors.yml").toPath(), new File("./plugins/Famara/colors.yml").toPath());
                             yamlConfiguration.load(new File("./plugins/Famara/colors.yml"));
-                            ConsoleLoger.info("Colors.yml updated");
+                            ConsoleLogger.info("Colors.yml updated");
                         }
                     }
-                } catch (Exception e) {
+                } catch (Exception ignored) {
 
                 }
             }
@@ -276,40 +262,29 @@ public final class Famara extends JavaPlugin {
         new BukkitRunnable() {
             @Override
             public void run() {
-                try {
-                    if (!Famara.progress.isEmpty()) {
-                        Famara.progress.forEach((id, progress) -> {
-                            if (Famara.progress.containsKey(id) && progress >= 16384) Famara.progress.remove(id);
-                        });}
-                }catch (Exception e) {
-                    //Ignore
-                }
-
+                Famara.progress.forEach((id, progress) -> {
+                    if (progress >= 16384) Famara.progress.remove(id);
+                });
             }
         }.runTaskTimer(Famara.getPlugin(Famara.class), 0 , 20);
 
         // 对在线玩家执行加入检查
-        new BukkitRunnable() {
-            @Override
-            public void run() {
-                getServer().getOnlinePlayers().forEach(OnPlayerJoinE::startCheck);
-            }
-        }.runTaskLater(Famara.getPlugin(Famara.class), 20);
+
+        getServer().getOnlinePlayers().forEach(OnPlayerJoinE::startCheck);
 
 
 
-
-        ConsoleLoger.info("Initializing recipe book");
+        ConsoleLogger.info("Initializing recipe book");
         // 初始化配方书主页面
         RecipeBook.mainPage = new BookPage("相机配方", new HashMap<>(), new HashMap<>(), new HashMap<>());
 
-        ConsoleLoger.info("Loading items, photos and recipes");
+        ConsoleLogger.info("Loading items, photos and recipes");
         // 加载物品、照片和配方
         LoadItem.loadItem();
         loadPhoto();
         LoadRecipe.loadRecipe();
 
-        ConsoleLoger.info("Loading complete, current version: alpine 1.0");
+        ConsoleLogger.info("Loading complete, current version: alpine 1.0");
 
     }
 

@@ -8,11 +8,11 @@ import java.util.List;
 
 public class ItemUtils {
     public static boolean checkName(ItemStack itemStack, String s) {
-        if (itemStack == null) return false;
+        if (itemStack == null || itemStack.getItemMeta() == null) return false;
         return itemStack.getItemMeta().getDisplayName().equalsIgnoreCase(s);
     }
 
-    public static void setCamera (Player player) {
+    public static void setCamera(Player player) {
         ItemStack itemInMainHand = player.getInventory().getItemInMainHand();
         if (itemInMainHand.getItemMeta() != null) {
             ItemStack itemStack = setFilmAmount(itemInMainHand, 16);
@@ -35,7 +35,9 @@ public class ItemUtils {
         }
         lore.set(2, "§7已装填彩色胶卷（16 / " + i + "）");
         itemMeta.setLore(lore);
-        itemStack.setItemMeta(itemMeta);
-        return itemStack;
+
+        final var newItem = itemStack.clone();
+        newItem.setItemMeta(itemMeta);
+        return newItem;
     }
 }

@@ -15,7 +15,7 @@ import java.io.IOException;
 
 public class PhotoRender {
 
-    
+
     // 添加边缘阴影检测方法
 //    public static Color addEdgeShadow(Block block, BlockFace face, Color color) {
 //        if (block == null || face != BlockFace.UP) return color;
@@ -69,21 +69,21 @@ public class PhotoRender {
         //为照片每一个像素进行渲染
         for (int x = 0; x < 128; x++) {
             for (int y = 0; y < 128; y++) {
-                RenderTask renderTask = new RenderTask();
-                renderTask.x = x;
-                renderTask.y = y;
-                renderTask.eyes = eyes;
-                renderTask.pitchRad = pitchRad;
-                renderTask.yawRad = yawRad;
-                renderTask.fieldOfView = fieldOfView;
-                renderTask.id = id;
-                renderTask.image = image;
-                renderTask.player = player;
-                renderTask.picture = picture;
+                RenderTask renderTask = new RenderTask(
+                        x,
+                        y,
+                        eyes,
+                        pitchRad,
+                        yawRad,
+                        fieldOfView,
+                        id,
+                        image,
+                        player,
+                        picture
+                );
                 Famara.tasks.add(renderTask);
             }
         }
-
         return RenderLib.getPhoto(image, map);
     }
 }

@@ -1,6 +1,5 @@
 package com.wenkrang.famara.itemSystem;
 
-import org.bukkit.inventory.CraftingRecipe;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.ArrayList;

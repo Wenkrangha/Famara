@@ -10,13 +10,14 @@ import java.io.File;
 import java.io.InputStreamReader;
 import java.math.BigInteger;
 import java.net.InetAddress;
+import java.net.URI;
 import java.net.URL;
 
 public class LoadResourcePack {
     private static DatabaseReader reader;
     public static String getOutIP() {
         try {
-            URL whatismyip = new URL("http://checkip.amazonaws.com");
+            URL whatismyip = URI.create("http://checkip.amazonaws.com").toURL();
             BufferedReader in = new BufferedReader(new InputStreamReader(whatismyip.openStream()));
 
             String ip = in.readLine();
@@ -49,10 +50,10 @@ public class LoadResourcePack {
         byte[] hash;
         String hashString = "51214ab019075b983f5689a0cc87be2577efbdae";
         hash = new BigInteger(hashString, 16).toByteArray();
-        if (isIPFromChina(getOutIP()) | isFromChina | player.getScoreboardTags().contains("FromChina")) {
+        if (isFromChina || player.getScoreboardTags().contains("FromChina") || isIPFromChina(getOutIP())) {
             player.addResourcePack(Famara.resPack, "https://gitee.com/wenkrang/Famara/raw/master/famara_textures.zip", hash, "Famara十分建议推荐搭配材质包使用，如果您不添加，使用将十分糟糕！！！", false);
             player.sendMessage("§9§l[*]§r 正在从中国镜像下载材质包");
-        }else {
+        } else {
             //https://github.com/Wenkrangha/Famara/raw/refs/heads/master/famara_textures.zip
             //目前只在minebbs发布该插件，因此直接使用gitee
             player.addResourcePack(Famara.resPack, "https://gitee.com/wenkrang/Famara/raw/master/famara_textures.zip", hash, "Famara十分建议推荐搭配材质包使用，如果您不添加，使用将十分糟糕！！！", false);
