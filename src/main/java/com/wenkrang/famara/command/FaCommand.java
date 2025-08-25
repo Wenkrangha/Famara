@@ -45,12 +45,12 @@ public record FaCommand(
                         // 去可空参数
                         .filter(i -> !i.test(""))
                         .toList();
-                        //匹配 子命令
-                return args[0].equalsIgnoreCase(c.subcommand) &&
                         // 确保数组长度足够（不会出现越界）
                         // 对于空数组情况，arguments 的长度是自然数，该条件不成立
                         // args 相比 c.arguments 和最终传入的参数列表多一个子命令
-                        args.length > nonNull.size() &&
+                return args.length > nonNull.size() &&
+                        //匹配 子命令
+                        args[0].equalsIgnoreCase(c.subcommand) &&
                         // 对每个参数进行精细匹配
                         IntStream.range(0, nonNull.size())
                                 .allMatch(i -> nonNull.get(i).test(args[i + 1]));
