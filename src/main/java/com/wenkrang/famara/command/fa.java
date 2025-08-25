@@ -7,11 +7,7 @@ import com.wenkrang.famara.itemSystem.RecipeBook;
 import com.wenkrang.famara.lib.ConsoleLogger;
 import com.wenkrang.famara.lib.Translation;
 import org.bukkit.Bukkit;
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandExecutor;
-import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import org.jetbrains.annotations.NotNull;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
@@ -25,7 +21,7 @@ import java.util.List;
 import static com.wenkrang.famara.Famara.*;
 import static com.wenkrang.famara.command.FaCommand.getHelp;
 
-public class fa implements CommandExecutor {
+public class fa {
 
     /**
      * 获取图片中出现最多的颜色
@@ -56,124 +52,6 @@ public class fa implements CommandExecutor {
         }
 
         return new Color(mostFrequentRGB);
-    }
-
-    @Deprecated(forRemoval = true)
-    @Override
-    public boolean onCommand(@NotNull CommandSender commandSender,@NotNull Command command,@NotNull String s, String[] strings) {
-        //Famara命令处理
-
-        boolean help = true;
-        try {
-            if (strings[0].equalsIgnoreCase("help")) {
-                getHelp(commandSender);
-                help = false;
-            }
-            if (commandSender.isOp()) {
-                if (strings[0].equalsIgnoreCase("color")) {
-                    ConsoleLogger.info("缺失方块颜色数量： " + (long) excludingBlocks.size());
-                    help = false;
-                }
-                if (strings[0].equalsIgnoreCase("inv")) {
-                    if (commandSender instanceof Player player) {
-                        player.openInventory(excludingBlocksInv);
-                        help = false;
-                    }
-                }
-                if (strings[0].equalsIgnoreCase("version")) {
-                    yamlConfiguration.set("version", Integer.parseInt(strings[1]));
-                    try {
-                        yamlConfiguration.save("./plugins/Famara/colors.yml");
-                    } catch (IOException e) {
-                        throw new RuntimeException(e);
-                    }
-                }
-                if (strings[0].equalsIgnoreCase("set")) {
-                    try {
-                        if (strings.length < 5) {
-                            commandSender.sendMessage(Translation.CURRENT.of("lostArguments"));
-                            return true;
-                        }
-
-                        if (Range.closed(0, 255)
-                                .containsAll(Set.of(
-                                        Integer.parseInt(strings[2]),
-                                        Integer.parseInt(strings[3]),
-                                        Integer.parseInt(strings[4])
-                                ))) {
-                            commandSender.sendMessage(Translation.CURRENT.of("setError1"));
-                            return true;
-                        }
-                        yamlConfiguration.set(strings[1] + ".r", Integer.parseInt(strings[2]));
-                        yamlConfiguration.set(strings[1] + ".g", Integer.parseInt(strings[3]));
-                        yamlConfiguration.set(strings[1] + ".b", Integer.parseInt(strings[4]));
-                    }catch (NumberFormatException e){
-                        commandSender.sendMessage(Translation.CURRENT.of("setError2"));
-                        return true;
-                    }
-
-                    try {
-                        yamlConfiguration.save("./plugins/Famara/colors.yml");
-                    } catch (IOException e) {
-                        throw new RuntimeException(e);
-                    }
-                    commandSender.sendMessage(Translation.CURRENT.of("setSuccessfully"));
-                    help = false;
-                }
-
-                if (strings[0].equalsIgnoreCase("speed")) {
-                    try {
-                        if (Famara.speed > 50) {
-                            commandSender.sendMessage(Translation.CURRENT.of("warning1"));
-                        }
-                        Famara.speed = Integer.parseInt(strings[1]);
-                    }catch (NumberFormatException e) {
-                        commandSender.sendMessage(Translation.CURRENT.of("warning2"));
-                        return true;
-                    }
-
-                    commandSender.sendMessage(Translation.CURRENT.of("speedSetSuccessfully") + Famara.speed);
-                    help = false;
-                }
-            }
-
-            //检测对象是否为玩家
-            if (strings[0].equalsIgnoreCase("resource")) {
-                if (commandSender instanceof Player player) {
-                    if (strings.length > 2) {
-                        if (strings[1].equalsIgnoreCase("china")){
-                            LoadResourcePack.load(player, true);
-                            return true;
-                        }
-                        LoadResourcePack.load(player, false);
-                    }
-                    help = false;
-                } else {
-                    commandSender.sendMessage(Translation.CURRENT.of("useInGame"));
-                    help = false;
-                }
-            }
-            if (strings[0].equalsIgnoreCase("guide")) {
-                if (commandSender instanceof Player player) {
-                    player.getWorld().dropItem(player.getLocation(), RecipeBook.RecipeBookItem);
-                    help = false;
-                } else {
-                    commandSender.sendMessage(Translation.CURRENT.of("useInGame"));
-                    help = false;
-                }
-            }
-
-
-        } catch (Exception e) {
-            e.printStackTrace();
-//            getHelp(commandSender);
-            help = false;
-        }
-
-        if (help) {
-            getHelp(commandSender);
-        }
-        return true;
     }
 
     public static void registerNewCommand() {

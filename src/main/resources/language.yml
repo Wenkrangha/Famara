@@ -1,10 +1,10 @@
-version: 2
+version: 3
 lostArguments: "§c§l[-]§r 参数缺少，请根据命令补全来填写"
 setError1: "§c§l[-]§r \"RED\",\"BLUE\",\"GREEN\"必须在0 ~ 255之间"
 setError2: "§c§l[-]§r \"RED\",\"BLUE\",\"GREEN\"必须为数字"
 setSuccessfully: "§9§l[*]§r 方块颜色设置成功"
-warning1: "§e§l[!]§r Integer过大可能会导致服务器卡顿!!!"
-warning2: "§c§l[-]§r Integer必须为数字"
+warning1: "§e§l[!]§r speed过大可能会导致服务器卡顿!!!"
+warning2: "§c§l[-]§r speed必须为数字"
 speedSetSuccessfully: "§9§l[*]§r 当前渲染速度设置为 %d"
 useInGame: "§c§l[-]§r 请在游戏中使用该命令"
 help1: "§7[!]  §4普通相机 - Famara §7正在运行"

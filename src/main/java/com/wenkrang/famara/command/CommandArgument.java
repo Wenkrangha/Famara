@@ -19,7 +19,7 @@ abstract class CommandArgument {
         }
         @Override
         public List<String> describe() {
-            return List.of("<" + description + ">" + (nullable ? "?" : null));
+            return List.of('<' + description + '>' + (nullable ? '?' : '\0'));
         }
 
         @Override

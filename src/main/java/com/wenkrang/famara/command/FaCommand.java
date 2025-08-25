@@ -22,7 +22,7 @@ public record FaCommand(
 
     public static void register(FaCommand command) {
         Stream.of(command.arguments())
-                .limit(command.arguments().length - 1)
+                .limit(command.arguments().length > 0 ? command.arguments().length - 1 : 0)
                 .filter(i -> i.test(""))
                 .findFirst()
                 .ifPresentOrElse(
@@ -40,26 +40,25 @@ public record FaCommand(
             s,
             args
     ) -> subs.stream()
-            .filter(c ->
-                    // 确保数组长度足够（不会出现越界）
-                    // 对于空数组情况，arguments 的长度是自然数，该条件不成立
-                    // args 相比 c.arguments 和最终传入的参数列表多一个子命令
-                    args.length > Stream.of(c.arguments())
-                            // 去可空参数
-                            .filter(i -> !i.test(""))
-                            .count() &&
-                    // 匹配子命令
-                    args[0].equals(c.subcommand()) &&
-                    // 对每个参数进行精细匹配
-                    IntStream.range(0, c.arguments().length)
-                            .allMatch(i -> c.arguments()[i].test(args[i + 1]))
-            )
+            .filter(c -> {
+                final var nonNull = Stream.of(c.arguments())
+                        // 去可空参数
+                        .filter(i -> !i.test(""))
+                        .toList();
+                        //匹配 子命令
+                return args[0].equalsIgnoreCase(c.subcommand) &&
+                        // 确保数组长度足够（不会出现越界）
+                        // 对于空数组情况，arguments 的长度是自然数，该条件不成立
+                        // args 相比 c.arguments 和最终传入的参数列表多一个子命令
+                        args.length > nonNull.size() &&
+                        // 对每个参数进行精细匹配
+                        IntStream.range(0, nonNull.size())
+                                .allMatch(i -> nonNull.get(i).test(args[i + 1]));
+            })
             .findFirst()
             .map(i -> {
                 try {
                     i.action.accept(sender, Stream.of(args).skip(1).toList());
-                } catch (IllegalArgumentException ignored) {
-                    sender.sendMessage(Translation.CURRENT.of("useInGame"));
                 } catch (Exception e) {
                     // 报错
                     sender.sendMessage(String.format(
@@ -79,12 +78,14 @@ public record FaCommand(
             cmd,
             s,
             args
-    ) -> args.length == 0 ? subs.stream().map(FaCommand::subcommand).toList() :
+            // args 呈现的：<sub command>, <arg1>, <arg2>, ...
+            // 这里所有的元素如果是空格也会被呈现
+    ) -> args.length == 1 ? subs.stream().map(FaCommand::subcommand).toList() :
             subs.stream()
-                    .filter(i -> args[0].equals(i.subcommand()))
+                    .filter(i -> args[0].equalsIgnoreCase(i.subcommand()) &&
+                            i.arguments().length > args.length - 2)
                     .findFirst()
-                    .filter(i -> args.length <= i.arguments().length)
-                    .map(i -> i.arguments()[args.length - 1].describe())
+                    .map(i -> i.arguments()[args.length - 2].describe())
                     .orElse(null);
 
     public static void getHelp(@NotNull CommandSender commandSender) {
