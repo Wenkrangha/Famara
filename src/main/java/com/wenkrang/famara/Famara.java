@@ -1,5 +1,6 @@
 package com.wenkrang.famara;
 
+import com.wenkrang.famara.Loader.LoadCommand;
 import com.wenkrang.famara.Loader.LoadRecipe;
 import com.wenkrang.famara.event.*;
 import com.wenkrang.famara.itemSystem.BookPage;
@@ -11,7 +12,6 @@ import com.wenkrang.famara.lib.UnsafeDownloader;
 import com.wenkrang.famara.lib.VersionChecker;
 import com.wenkrang.famara.render.RenderRunner;
 import com.wenkrang.famara.render.RenderTask;
-import com.wenkrang.famara.command.fa;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -161,8 +161,8 @@ public final class Famara extends JavaPlugin {
         ConsoleLogger.info("Server version: " + VersionChecker.getVersion());
 
         ConsoleLogger.info("Registering commands");
-        // 注册命令执行器和补全器
-        fa.registerNewCommand();
+        // 注册命令执行器和 completor
+        LoadCommand.registerCommands();
 
         ConsoleLogger.info("Registering event listeners");
         // 注册事件监听器
@@ -203,14 +203,6 @@ public final class Famara extends JavaPlugin {
                 colorCache.clear();
             }
         }.runTaskTimer(this, 0, 200);
-
-        /*TODO:在进行多次拍摄后，我发现拉出相片时（好像要多拍几次才会出发这个bug），配方书中的相机胶卷数也会变成与手中相机的一样，
-         * 比如说原本配方书中的相机应该是没有装胶卷的，我用一台由14张胶卷的相机拍照，拉出胶卷后，打开配方书，配方书中的相机
-         * 居然也变成14张胶卷的了，我检查了与RecipeBook.MainPage的相关调用，除了LoadItem的合法调用，没有发现其他的异常
-         * 使用，十分神奇，我修了半天，也不知道问题在哪里，但用下面的东西可以很好的修复问题，但我也很担心gc和内存会不会爆炸，毕竟
-         * 是往Map写重复的东西，但愿有人看到这篇文字，并且来修复它
-         * 2025.8.19    --Wenkrang
-         */
 
         // 定时重新加载物品缓存
         new BukkitRunnable() {
