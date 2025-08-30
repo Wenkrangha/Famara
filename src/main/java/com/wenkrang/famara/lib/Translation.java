@@ -2,18 +2,11 @@ package com.wenkrang.famara.lib;
 
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.Objects;
 
-public class Translation {
+public record Translation(YamlConfiguration ref) {
     public static Translation CURRENT = new Translation(null);
-    private final YamlConfiguration ref;
-
-    public Translation(@Nullable YamlConfiguration ref) {
-        this.ref = ref;
-    }
-
     @NotNull
     public String of(@NotNull String key) {
         if (Objects.isNull(ref)) {

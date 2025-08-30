@@ -180,9 +180,6 @@ public final class Famara extends JavaPlugin {
         mkdir(new File(getDataFolder(), "players"));
 
         mkdir(new File(getDataFolder(), "update"));
-        loadPack("language.yml", new File(getDataFolder(), "language.yml"));
-        text.config = YamlConfiguration.loadConfiguration(new File(getDataFolder(), "language.yml"));
-        ConsoleLoger.info("Loading color configuration file");
         // 加载颜色配置文件
         File file = new File(getDataFolder(), "colors.yml");
         loadPack("colors.yml", file);
@@ -253,7 +250,7 @@ public final class Famara extends JavaPlugin {
                             file.delete();
                             Files.copy(updateFile.toPath(), file.toPath());
                             yamlConfiguration.load(file);
-                            ConsoleLoger.info("Colors.yml updated");
+                            ConsoleLogger.info("Colors.yml updated");
 
                         }
                     }
@@ -288,7 +285,7 @@ public final class Famara extends JavaPlugin {
         // 对在线玩家执行加入检查
         getServer().getOnlinePlayers().forEach(playerJoinEvent::startCheck);
 
-        ConsoleLoger.info("Loading complete, current version: alpine 1.0");
+        ConsoleLogger.info("Loading complete, current version: alpine 1.0");
 
     }
 
