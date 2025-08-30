@@ -6,6 +6,12 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
 public class PlayerDownloadResPackE implements Listener {
+    Famara plugin;
+    public PlayerDownloadResPackE(Famara plugin) {
+        this.plugin = plugin;
+        plugin.getServer().getPluginManager().registerEvents(this, plugin);
+    }
+
     @EventHandler
     public static void onPlayerDownloadResPack(org.bukkit.event.player.PlayerResourcePackStatusEvent event) {
         if (!Famara.resPack.equals(event.getID())) return;

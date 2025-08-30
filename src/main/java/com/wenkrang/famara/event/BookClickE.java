@@ -1,5 +1,6 @@
 package com.wenkrang.famara.event;
 
+import com.wenkrang.famara.Famara;
 import com.wenkrang.famara.itemSystem.RecipeBook;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
@@ -16,8 +17,14 @@ import java.util.ArrayList;
 import java.util.Map;
 
 public class BookClickE implements Listener {
+    Famara plugin;
+    public BookClickE(Famara plugin) {
+        this.plugin = plugin;
+        plugin.getServer().getPluginManager().registerEvents(this, plugin);
+    }
+
     @EventHandler
-    public static void onClick(InventoryClickEvent event) {
+    public void onClick(InventoryClickEvent event) {
         if (event.getView().getTitle().equalsIgnoreCase("相机具体配方")) {
             if (event.getRawSlot() == 1) {
                 RecipeBook.openBook((Player) event.getWhoClicked());
@@ -62,15 +69,15 @@ public class BookClickE implements Listener {
 
                         inventory.setItem(16, event.getCurrentItem());
 
-                        inventory.setItem(3, recipes.get(event.getRawSlot() - 9).get(0));
-                        inventory.setItem(4, recipes.get(event.getRawSlot() - 9).get(1));
-                        inventory.setItem(5, recipes.get(event.getRawSlot() - 9).get(2));
-                        inventory.setItem(12, recipes.get(event.getRawSlot() - 9).get(3));
-                        inventory.setItem(13, recipes.get(event.getRawSlot() - 9).get(4));
-                        inventory.setItem(14, recipes.get(event.getRawSlot() - 9).get(5));
-                        inventory.setItem(21, recipes.get(event.getRawSlot() - 9).get(6));
-                        inventory.setItem(22, recipes.get(event.getRawSlot() - 9).get(7));
-                        inventory.setItem(23, recipes.get(event.getRawSlot() - 9).get(8));
+                        inventory.setItem(3, recipes.get(event.getRawSlot() - 9).get(0).clone());
+                        inventory.setItem(4, recipes.get(event.getRawSlot() - 9).get(1).clone());
+                        inventory.setItem(5, recipes.get(event.getRawSlot() - 9).get(2).clone());
+                        inventory.setItem(12, recipes.get(event.getRawSlot() - 9).get(3).clone());
+                        inventory.setItem(13, recipes.get(event.getRawSlot() - 9).get(4).clone());
+                        inventory.setItem(14, recipes.get(event.getRawSlot() - 9).get(5).clone());
+                        inventory.setItem(21, recipes.get(event.getRawSlot() - 9).get(6).clone());
+                        inventory.setItem(22, recipes.get(event.getRawSlot() - 9).get(7).clone());
+                        inventory.setItem(23, recipes.get(event.getRawSlot() - 9).get(8).clone());
 
                         event.getView().getPlayer().openInventory(inventory);
                     }

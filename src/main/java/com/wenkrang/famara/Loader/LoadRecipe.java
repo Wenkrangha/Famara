@@ -17,17 +17,17 @@ public class LoadRecipe {
         BookPage mainPage = RecipeBook.mainPage;
         Map<Integer, ArrayList<ItemStack>> recipes = mainPage.Recipes();
         recipes.forEach((index, itemStacks) -> {
-            ShapedRecipe shapedRecipe = new ShapedRecipe(new NamespacedKey(Famara.getPlugin(Famara.class), String.valueOf(index)),mainPage.items().get(index))
+            ShapedRecipe shapedRecipe = new ShapedRecipe(new NamespacedKey(Famara.getPlugin(Famara.class), String.valueOf(index)),mainPage.items().get(index).clone())
                     .shape("qwe","rty","uio");
-            shapedRecipe.setIngredient('q', new RecipeChoice.ExactChoice(itemStacks.get(0)));
-            shapedRecipe.setIngredient('w', new RecipeChoice.ExactChoice(itemStacks.get(1)));
-            shapedRecipe.setIngredient('e', new RecipeChoice.ExactChoice(itemStacks.get(2)));
-            shapedRecipe.setIngredient('r', new RecipeChoice.ExactChoice(itemStacks.get(3)));
-            shapedRecipe.setIngredient('t', new RecipeChoice.ExactChoice(itemStacks.get(4)));
-            shapedRecipe.setIngredient('y', new RecipeChoice.ExactChoice(itemStacks.get(5)));
-            shapedRecipe.setIngredient('u', new RecipeChoice.ExactChoice(itemStacks.get(6)));
-            shapedRecipe.setIngredient('i', new RecipeChoice.ExactChoice(itemStacks.get(7)));
-            shapedRecipe.setIngredient('o', new RecipeChoice.ExactChoice(itemStacks.get(8)));
+            shapedRecipe.setIngredient('q', new RecipeChoice.ExactChoice(itemStacks.get(0).clone()));
+            shapedRecipe.setIngredient('w', new RecipeChoice.ExactChoice(itemStacks.get(1).clone()));
+            shapedRecipe.setIngredient('e', new RecipeChoice.ExactChoice(itemStacks.get(2).clone()));
+            shapedRecipe.setIngredient('r', new RecipeChoice.ExactChoice(itemStacks.get(3).clone()));
+            shapedRecipe.setIngredient('t', new RecipeChoice.ExactChoice(itemStacks.get(4).clone()));
+            shapedRecipe.setIngredient('y', new RecipeChoice.ExactChoice(itemStacks.get(5).clone()));
+            shapedRecipe.setIngredient('u', new RecipeChoice.ExactChoice(itemStacks.get(6).clone()));
+            shapedRecipe.setIngredient('i', new RecipeChoice.ExactChoice(itemStacks.get(7).clone()));
+            shapedRecipe.setIngredient('o', new RecipeChoice.ExactChoice(itemStacks.get(8).clone()));
 
             try {
                 Bukkit.getServer().addRecipe(shapedRecipe);
