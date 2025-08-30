@@ -25,17 +25,22 @@ import java.io.IOException;
 import java.util.List;
 
 public class OnUseCameraE implements Listener {
+    Famara plugin;
+    public OnUseCameraE(Famara plugin) {
+        this.plugin = plugin;
+        plugin.getServer().getPluginManager().registerEvents(this, plugin);
+    }
+
     public static int getId(ItemStack itemStack, int index) {
         String s = itemStack.getItemMeta().getLore().get(index);
         return Integer.parseInt(s.replace("§7照片编号：", ""));
     }
     @EventHandler
-    public static void onUseCamera(PlayerInteractEvent event) {
+    public void onUseCamera(PlayerInteractEvent event) {
         if (event.getHand() == EquipmentSlot.HAND &&
                 (event.getAction().equals(Action.RIGHT_CLICK_AIR) ||
                         event.getAction().equals(Action.RIGHT_CLICK_BLOCK))) {
             if (event.getPlayer().getInventory().getItemInMainHand().getItemMeta() == null) return;
-            //TODO:这里有大问题，会修改ItemMap
             if (!event.getPlayer().isSneaking() && event.getPlayer().getInventory().getItemInMainHand().getItemMeta().getDisplayName().equalsIgnoreCase("§f相机")) {
                 ItemStack itemInMainHand = event.getPlayer().getInventory().getItemInMainHand();
                 NamespacedKey itemModel = itemInMainHand.getItemMeta().getItemModel();
@@ -57,10 +62,10 @@ public class OnUseCameraE implements Listener {
                         ItemStack itemInMainHand1 = ItemUtils.setFilmAmount(itemInMainHand, filmAmount - 1);
                         event.getPlayer().getInventory().setItemInMainHand(itemInMainHand1);
                     }
-                    ItemStack itemStack = PhotoRender.TakePhoto(event.getPlayer());
+                    ItemStack itemStack = PhotoRender.TakePhoto(event.getPlayer(), new File(plugin.getDataFolder(), "pictures"));
                     MapMeta mapMeta = (MapMeta) itemStack.getItemMeta();
                     int mapId = mapMeta.getMapId();
-                    ItemStack cameraFilmed = ItemSystem.itemMap.get("camera_filmed");
+                    ItemStack cameraFilmed = ItemSystem.get("camera_filmed");
                     List<String> lore = cameraFilmed.getItemMeta().getLore();
                     lore.set(3, "§7照片编号：" + mapId);
                     ItemMeta itemMeta = cameraFilmed.getItemMeta();
@@ -81,7 +86,7 @@ public class OnUseCameraE implements Listener {
                 int i = getId(event.getPlayer().getInventory().getItemInMainHand(), 3);
                 try {
                     event.getPlayer().getWorld().playSound(event.getPlayer().getLocation(), "famara:famara.pull.film", 1, 1);
-                    ItemStack itemStack = ItemSystem.itemMap.get("photo_unPull");
+                    ItemStack itemStack = ItemSystem.get("photo_unPull");
                     ItemMeta itemMeta = itemStack.getItemMeta();
                     itemMeta.setItemModel(new NamespacedKey("famara", "photo"));
                     List<String> lore = itemMeta.getLore();
@@ -93,7 +98,7 @@ public class OnUseCameraE implements Listener {
                     itemMeta.setLore(lore);
                     itemStack.setItemMeta(itemMeta);
                     event.getPlayer().getInventory().addItem(itemStack);
-                    ItemStack itemStack1 = ItemSystem.itemMap.get("camera");
+                    ItemStack itemStack1 = ItemSystem.get("camera");
                     ItemStack itemStack2 = ItemUtils.setFilmAmount(itemStack1, ItemUtils.getFilmAmount(event.getPlayer().getInventory().getItemInMainHand()));
                     event.getPlayer().getInventory().setItemInMainHand(itemStack2);
                 } catch (Exception e) {
@@ -116,15 +121,16 @@ public class OnUseCameraE implements Listener {
                     }else {
                         if (Bukkit.getMap(i) == null) return;
                         MapView map = null;
+                        File pictureFile = new File(plugin.getDataFolder(), "pictures/" + i + ".png");
                         if (Bukkit.getMap(i) == null) {
-                            if (new File("./plugins/Famara/pictures/" + i + ".png").exists()) {
+                            if (pictureFile.exists()) {
                                 map = Bukkit.createMap(event.getPlayer().getWorld());
                             }
                         } else {
                             map = Bukkit.getMap(i);
                         }
                         if (map != null) {
-                            itemStack = RenderLib.getPhoto(ImageIO.read(new File("./plugins/Famara/pictures/" + i + ".png")), map);
+                            itemStack = RenderLib.getPhoto(ImageIO.read(pictureFile), map);
                         }
                     }
                     event.getPlayer().getInventory().setItemInMainHand(itemStack);

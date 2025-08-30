@@ -25,7 +25,7 @@ public class LoadItem {
             itemMeta.setLore(lore);
             itemStack.setItemMeta(itemMeta);
 
-            ItemSystem.itemMap.put("recipeBook", itemStack);
+            ItemSystem.put("recipeBook", itemStack);
             RecipeBook.RecipeBookItem = itemStack;
         }
         {
@@ -39,7 +39,7 @@ public class LoadItem {
             itemMeta.setLore(lore);
             itemStack.setItemMeta(itemMeta);
 
-            ItemSystem.itemMap.put("photo", itemStack);
+            ItemSystem.put("photo", itemStack);
         }
         {
             ItemStack itemStack = new ItemStack(Material.FILLED_MAP);
@@ -52,7 +52,7 @@ public class LoadItem {
             itemMeta.setLore(lore);
             itemStack.setItemMeta(itemMeta);
 
-            ItemSystem.itemMap.put("photo_unPull", itemStack);
+            ItemSystem.put("photo_unPull", itemStack);
         }
         {
             ItemStack itemStack = new ItemStack(Material.STICK);
@@ -82,7 +82,7 @@ public class LoadItem {
             itemMeta.setItemModel(new NamespacedKey("famara", "famara_close"));
             itemMeta.setLore(lore);
             itemStack.setItemMeta(itemMeta);
-            ItemSystem.itemMap.put("camera", itemStack);
+            ItemSystem.put("camera", itemStack);
             RecipeBook.mainPage.items().put(0, itemStack);
             ArrayList<ItemStack> objects = new ArrayList<>();
             objects.add(new ItemStack(Material.LEVER));
@@ -126,7 +126,7 @@ public class LoadItem {
             itemMeta.setItemModel(new NamespacedKey("famara", "famara_close"));
             itemMeta.setLore(lore);
             itemStack.setItemMeta(itemMeta);
-            ItemSystem.itemMap.put("camera_filmed", itemStack);
+            ItemSystem.put("camera_filmed", itemStack);
         }
         {
             ItemStack itemStack = new ItemStack(Material.PAPER);
@@ -144,7 +144,7 @@ public class LoadItem {
             itemMeta.setLore(lore);
             itemMeta.setItemModel(new NamespacedKey("famara", "film_box"));
             itemStack.setItemMeta(itemMeta);
-            ItemSystem.itemMap.put("filmBox", itemStack);
+            ItemSystem.put("filmBox", itemStack);
             RecipeBook.mainPage.items().put(1, itemStack);
             ArrayList<ItemStack> objects = new ArrayList<>();
             //按照上面的写配方，配方写为：青金石，萤石，绿宝石，火药，火药，火药，纸，纸，纸

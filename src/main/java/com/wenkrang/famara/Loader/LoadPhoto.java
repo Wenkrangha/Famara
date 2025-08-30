@@ -14,12 +14,12 @@ import java.util.Objects;
 import java.util.logging.Logger;
 
 public class LoadPhoto {
-    public static void loadPhoto() {
-        File pictureDir = new File("./plugins/Famara/pictures/");
+    public static void loadPhoto(File dataFolder) {
+        File pictureDir = new File(dataFolder, "pictures");
         for (File file : Objects.requireNonNull(pictureDir.listFiles())) {
             String name = file.getName();
             String substring = name.substring(0, name.lastIndexOf('.'));
-            File picture = new File("./plugins/Famara/pictures/" + substring + ".png");
+            File picture = new File(dataFolder, "pictures/" + substring + ".png");
 
             try {
                 BufferedImage image = ImageIO.read(picture);
