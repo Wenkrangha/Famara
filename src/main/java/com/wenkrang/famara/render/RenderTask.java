@@ -5,17 +5,18 @@ import org.bukkit.entity.Player;
 
 import java.awt.image.BufferedImage;
 import java.io.File;
-import java.util.UUID;
 
-public class RenderTask {
-    int x;
-    int y;
-    Location eyes;
-    double pitchRad;
-    double yawRad;
-    double fieldOfView;
-    String id;
-    BufferedImage image;
-    Player player;
-    File picture;
+public record RenderTask (
+        int x,
+        int y,
+        Location eyes,
+        double pitchRad,
+        double yawRad,
+        double fieldOfView,
+        String uuid,
+        BufferedImage image,
+        Player player,
+        File picture
+) {
+
 }
