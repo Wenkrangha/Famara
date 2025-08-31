@@ -3,12 +3,12 @@ package com.wenkrang.famara.event;
 import com.wenkrang.famara.Famara;
 import com.wenkrang.famara.Loader.LoadResourcePack;
 import com.wenkrang.famara.itemSystem.ItemSystem;
+import com.wenkrang.famara.lib.ItemUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.NamespacedKey;
 import org.bukkit.boss.BarColor;
 import org.bukkit.boss.BarStyle;
 import org.bukkit.boss.BossBar;
-import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -20,10 +20,12 @@ import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.Objects;
+import java.util.logging.Logger;
+import java.util.stream.Stream;
 
 import static com.wenkrang.famara.event.OnUseCameraE.getId;
+import static com.wenkrang.famara.lib.ItemUtils.checkName;
 
 public class OnPlayerJoinE implements Listener {
     Famara plugin;
@@ -33,7 +35,7 @@ public class OnPlayerJoinE implements Listener {
     }
 
     @EventHandler
-    public void onHoldFilm(PlayerJoinEvent event) throws IOException {
+    public void onPlayerJoin(PlayerJoinEvent event) {
         if (event.getPlayer().getScoreboardTags().contains("FamaraResPackIncluded")) {
             event.getPlayer().removeScoreboardTag("FamaraResPackIncluded");
             LoadResourcePack.load(event.getPlayer(),false);
@@ -45,14 +47,17 @@ public class OnPlayerJoinE implements Listener {
 
         BossBar progress = Bukkit.createBossBar("冲洗进度", BarColor.WHITE, BarStyle.SOLID);
         File PlayerFile = new File(plugin.getDataFolder(), "players/" + player.getName() + ".yml");
-
+        
         if(!PlayerFile.exists()) {
             try {
-                PlayerFile.createNewFile();
-            }catch (Exception e){
+                if (!PlayerFile.createNewFile()) {
+                    Logger.getGlobal().warning("Failed to create PlayerFile");
+                }
+            }catch (Exception ignore){
             }
             player.getInventory().addItem(ItemSystem.get("recipeBook"));
         }
+        
         new BukkitRunnable() {
             @Override
             public void run() {
@@ -98,29 +103,28 @@ public class OnPlayerJoinE implements Listener {
                     progress.removeAll();
                 }
                 //TODO:更优雅的开镜放大
-                if (player.getInventory().getItemInMainHand().getItemMeta() != null) {
-                    if (Objects.requireNonNull(player.getInventory().getItemInMainHand().getItemMeta()).getDisplayName().equalsIgnoreCase("§f相机")) {
-                        ItemStack itemInMainHand = player.getInventory().getItemInMainHand();
-                        ItemMeta itemMeta = itemInMainHand.getItemMeta();
-                        NamespacedKey itemModel = itemInMainHand.getItemMeta().getItemModel();
-                        if (player.isSneaking()) {
-                            if (!itemModel.getKey().equalsIgnoreCase("famara_open")) return;
-                            itemMeta.setItemModel(new NamespacedKey("famara", "famara_close"));
-                            itemInMainHand.setItemMeta(itemMeta);
-                            player.getInventory().setItemInMainHand(itemInMainHand);
-                        }
-                        if (itemModel.getKey().equalsIgnoreCase("famara_open")) {
-                            player.addPotionEffect(new PotionEffect(PotionEffectType.SLOWNESS, 9999999, 4));
-                        } else {
-                            player.removePotionEffect(PotionEffectType.SLOWNESS);
-                        }
-                    } else {
-                        player.removePotionEffect(PotionEffectType.SLOWNESS);
-                    }
-                } else {
+                if (Stream.of(player.getInventory().getItemInMainHand())
+                        .filter(i -> ItemUtils.checkName(i, "§f相机") && ItemUtils.checkModel(i, "famara_open"))
+                        .map(i -> {
+                            ItemMeta itemMeta = i.getItemMeta();
+                            NamespacedKey itemModel = Objects.requireNonNull(i.getItemMeta()).getItemModel();
+                            if (itemModel != null && itemMeta != null) {
+                                if (player.isSneaking()) {
+                                    // 玩家潜行时关闭相机
+                                    itemMeta.setItemModel(new NamespacedKey("famara", "famara_close"));
+                                    i.setItemMeta(itemMeta);
+                                    player.getInventory().setItemInMainHand(i);
+                                } else {
+                                    // 相机开启时给玩家添加缓慢效果
+                                    player.addPotionEffect(new PotionEffect(PotionEffectType.SLOWNESS, 9999999, 4));
+                                    return true;
+                                }
+                            }
+                            return null;
+                        }).anyMatch(Objects::isNull) ||
+                        !ItemUtils.checkModel(player.getInventory().getItemInMainHand(), "famara_open"))
+                    //没有拿相机时也解除缓慢效果
                     player.removePotionEffect(PotionEffectType.SLOWNESS);
-                }
-
             }
         }.runTaskTimer(Famara.getPlugin(Famara.class), 0, 3);
     }

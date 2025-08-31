@@ -1,5 +1,6 @@
 package com.wenkrang.famara.lib;
 
+import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -7,6 +8,13 @@ import org.bukkit.inventory.meta.ItemMeta;
 import java.util.List;
 
 public class ItemUtils {
+    public static boolean checkModel(ItemStack itemStack, String id) {
+        if (itemStack == null ||
+                itemStack.getItemMeta() == null ||
+                itemStack.getItemMeta().getItemModel() == null) return false;
+        return itemStack.getItemMeta().getItemModel().getKey().equalsIgnoreCase(id);
+    }
+
     public static boolean checkName(ItemStack itemStack, String s) {
         if (itemStack == null || itemStack.getItemMeta() == null) return false;
         return itemStack.getItemMeta().getDisplayName().equalsIgnoreCase(s);
