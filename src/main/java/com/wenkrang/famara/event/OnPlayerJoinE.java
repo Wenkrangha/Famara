@@ -103,28 +103,49 @@ public class OnPlayerJoinE implements Listener {
                     progress.removeAll();
                 }
                 //TODO:更优雅的开镜放大
-                if (Stream.of(player.getInventory().getItemInMainHand())
-                        .filter(i -> ItemUtils.checkName(i, "§f相机") && ItemUtils.checkModel(i, "famara_open"))
-                        .map(i -> {
-                            ItemMeta itemMeta = i.getItemMeta();
-                            NamespacedKey itemModel = Objects.requireNonNull(i.getItemMeta()).getItemModel();
-                            if (itemModel != null && itemMeta != null) {
-                                if (player.isSneaking()) {
-                                    // 玩家潜行时关闭相机
-                                    itemMeta.setItemModel(new NamespacedKey("famara", "famara_close"));
-                                    i.setItemMeta(itemMeta);
-                                    player.getInventory().setItemInMainHand(i);
-                                } else {
-                                    // 相机开启时给玩家添加缓慢效果
-                                    player.addPotionEffect(new PotionEffect(PotionEffectType.SLOWNESS, 9999999, 4));
-                                    return true;
-                                }
-                            }
-                            return null;
-                        }).anyMatch(Objects::isNull) ||
-                        !ItemUtils.checkModel(player.getInventory().getItemInMainHand(), "famara_open"))
-                    //没有拿相机时也解除缓慢效果
-                    player.removePotionEffect(PotionEffectType.SLOWNESS);
+                ItemStack itemInMainHand = player.getInventory().getItemInMainHand();
+                //检测手中是否拿相机
+                if (ItemUtils.checkName(itemInMainHand, "§f相机") && ItemUtils.checkModel(itemInMainHand, "famara_open")) {
+                    ItemMeta itemMeta = itemInMainHand.getItemMeta();
+                    if (player.isSneaking()) {
+                        // 玩家潜行时关闭相机
+                        itemMeta.setItemModel(new NamespacedKey("famara", "famara_close"));
+                        itemInMainHand.setItemMeta(itemMeta);
+                        player.getInventory().setItemInMainHand(itemInMainHand);
+                    } else {
+                        // 相机开启时给玩家添加缓慢效果
+                        player.addPotionEffect(new PotionEffect(PotionEffectType.SLOWNESS, 9999999, 4));
+                    }
+                } else {
+                    //如果手中不是相机，就去掉缓慢效果
+                    //TODO:检测是否是相机添加的效果，目前不是相机添加的缓慢也会被去除
+                    if (player.hasPotionEffect(PotionEffectType.SLOWNESS) &&
+                            Objects.requireNonNull(player.getPotionEffect(PotionEffectType.SLOWNESS)).getAmplifier() == 4) {
+                        player.removePotionEffect(PotionEffectType.SLOWNESS);
+                    }
+                }
+//                if (Stream.of(player.getInventory().getItemInMainHand())
+//                        .filter(i -> ItemUtils.checkName(i, "§f相机") && ItemUtils.checkModel(i, "famara_open"))
+//                        .map(i -> {
+//                            ItemMeta itemMeta = i.getItemMeta();
+//                            NamespacedKey itemModel = Objects.requireNonNull(i.getItemMeta()).getItemModel();
+//                            if (itemModel != null && itemMeta != null) {
+//                                if (player.isSneaking()) {
+//                                    // 玩家潜行时关闭相机
+//                                    itemMeta.setItemModel(new NamespacedKey("famara", "famara_close"));
+//                                    i.setItemMeta(itemMeta);
+//                                    player.getInventory().setItemInMainHand(i);
+//                                } else {
+//                                    // 相机开启时给玩家添加缓慢效果
+//                                    player.addPotionEffect(new PotionEffect(PotionEffectType.SLOWNESS, 9999999, 4));
+//                                    return true;
+//                                }
+//                            }
+//                            return null;
+//                        }).anyMatch(Objects::isNull) ||
+//                        !ItemUtils.checkModel(player.getInventory().getItemInMainHand(), "famara_open"))
+//                    //没有拿相机时也解除缓慢效果
+//                    player.removePotionEffect(PotionEffectType.SLOWNESS);
             }
         }.runTaskTimer(Famara.getPlugin(Famara.class), 0, 3);
     }
