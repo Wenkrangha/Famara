@@ -2,8 +2,8 @@ package com.wenkrang.famara.Loader;
 
 import com.google.common.collect.Range;
 import com.wenkrang.famara.Famara;
-import com.wenkrang.famara.lib.command.CommandArgument;
-import com.wenkrang.famara.lib.command.FaCommand;
+import com.wenkrang.famara.command.CmdArgs;
+import com.wenkrang.famara.command.FaCmd;
 import com.wenkrang.famara.itemSystem.RecipeBook;
 import com.wenkrang.famara.lib.ConsoleLogger;
 import com.wenkrang.famara.lib.Translation;
@@ -19,24 +19,24 @@ import static com.wenkrang.famara.Famara.*;
 import static com.wenkrang.famara.Famara.excludingBlocks;
 import static com.wenkrang.famara.Famara.yamlConfiguration;
 
-public class LoadCommand {
+public class LoadCmd {
     public static void registerCommands() {
 
-        FaCommand.register(new FaCommand("help", new CommandArgument[]{},
-                (i, j) -> FaCommand.getHelp(i)));
+        FaCmd.register(new FaCmd("help", new CmdArgs[]{},
+                (i, j) -> FaCmd.getHelp(i)));
 
-        FaCommand.register(new FaCommand("color", new CommandArgument[]{},
+        FaCmd.register(new FaCmd("color", new CmdArgs[]{},
                 (i, j) -> {
                     if (i.isOp()) ConsoleLogger.info("缺失方块颜色数量： " + excludingBlocks.size());
                 }));
 
-        FaCommand.register(new FaCommand("inv", new CommandArgument[]{},
+        FaCmd.register(new FaCmd("inv", new CmdArgs[]{},
                 (i, j) -> {if (i.isOp() && i instanceof Player)
                     ((Player) i).openInventory(excludingBlocksInv);}));
 
-        FaCommand.register(new FaCommand(
-                "version", new CommandArgument[]{
-                new CommandArgument.IntArgument("int", false)
+        FaCmd.register(new FaCmd(
+                "version", new CmdArgs[]{
+                new CmdArgs.IntArgument("int", false)
         }, (i, j) -> {
             if (i.isOp()) {
                 yamlConfiguration.set("version", Integer.parseInt(j.getFirst()));
@@ -49,12 +49,12 @@ public class LoadCommand {
         }
         ));
 
-        FaCommand.register(new FaCommand(
-                "set", new CommandArgument[]{
-                new CommandArgument.WeakFixedArgument(excludingBlocks, false),
-                new CommandArgument.IntArgument("RED", false),
-                new CommandArgument.IntArgument("GREEN", false),
-                new CommandArgument.IntArgument("BLUE", false)
+        FaCmd.register(new FaCmd(
+                "set", new CmdArgs[]{
+                new CmdArgs.WeakFixedArgument(excludingBlocks, false),
+                new CmdArgs.IntArgument("RED", false),
+                new CmdArgs.IntArgument("GREEN", false),
+                new CmdArgs.IntArgument("BLUE", false)
         }, (i, j) -> {
 
             if (!i.isOp()) return;
@@ -79,9 +79,9 @@ public class LoadCommand {
         }
         ));
 
-        FaCommand.register(new FaCommand(
-                "speed", new CommandArgument[]{
-                new CommandArgument.IntArgument("speed", false)
+        FaCmd.register(new FaCmd(
+                "speed", new CmdArgs[]{
+                new CmdArgs.IntArgument("speed", false)
         }, (i, j) -> {
             if (!i.isOp()) return;
 
@@ -94,9 +94,9 @@ public class LoadCommand {
                     Translation.CURRENT.of("speedSetSuccessfully"), Famara.speed));
         }));
 
-        FaCommand.register(new FaCommand(
-                "resource", new CommandArgument[]{
-                new CommandArgument.FixedArgument(List.of("china"), true)
+        FaCmd.register(new FaCmd(
+                "resource", new CmdArgs[]{
+                new CmdArgs.FixedArgument(List.of("china"), true)
         }, (i, j) -> {
             if (i instanceof Player) {
                 LoadResourcePack.load(
@@ -109,8 +109,8 @@ public class LoadCommand {
             }
         }));
 
-        FaCommand.register(new FaCommand(
-                "guide", new CommandArgument[]{}, (i, j) -> {
+        FaCmd.register(new FaCmd(
+                "guide", new CmdArgs[]{}, (i, j) -> {
             if (i instanceof Player player) {
                 player.getWorld().dropItem(player.getLocation(), RecipeBook.RecipeBookItem);
             } else {
@@ -119,9 +119,9 @@ public class LoadCommand {
         }));
 
         Objects.requireNonNull(Bukkit.getServer().getPluginCommand("fa"))
-                .setExecutor(FaCommand.exec);
+                .setExecutor(FaCmd.exec);
         Objects.requireNonNull(Bukkit.getServer().getPluginCommand("fa"))
-                .setTabCompleter(FaCommand.tabCompleter);
+                .setTabCompleter(FaCmd.tabCompleter);
 
     }
 }

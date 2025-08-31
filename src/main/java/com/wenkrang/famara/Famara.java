@@ -1,6 +1,6 @@
 package com.wenkrang.famara;
 
-import com.wenkrang.famara.Loader.LoadCommand;
+import com.wenkrang.famara.Loader.LoadCmd;
 import com.wenkrang.famara.Loader.LoadRecipe;
 import com.wenkrang.famara.event.*;
 import com.wenkrang.famara.itemSystem.BookPage;
@@ -162,7 +162,7 @@ public final class Famara extends JavaPlugin {
 
         ConsoleLogger.info("Registering commands");
         // 注册命令执行器和 completor
-        LoadCommand.registerCommands();
+        LoadCmd.registerCommands();
 
         ConsoleLogger.info("Registering event listeners");
         // 注册事件监听器
