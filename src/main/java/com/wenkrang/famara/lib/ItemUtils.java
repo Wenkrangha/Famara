@@ -40,8 +40,7 @@ public class ItemUtils {
         List<String> lore = itemMeta.getLore();
         if (i <= 0) {
             lore.set(2, "§7未装填胶卷");
-        }
-        lore.set(2, "§7已装填彩色胶卷（16 / " + i + "）");
+        } else lore.set(2, "§7已装填彩色胶卷（16 / " + i + "）");
         itemMeta.setLore(lore);
 
         final var newItem = itemStack.clone();

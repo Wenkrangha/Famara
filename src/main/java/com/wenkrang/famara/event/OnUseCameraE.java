@@ -56,13 +56,15 @@ public class OnUseCameraE implements Listener {
                 }
                 event.getPlayer().getWorld().playSound(event.getPlayer().getLocation(), "famara:famara.shutter", 1, 1);
                 try {
-                    if (ItemUtils.getFilmAmount(itemInMainHand) <= 0)
+                    if (ItemUtils.getFilmAmount(itemInMainHand) <= 0){
                         return;
+                    }
                     else {
                         int filmAmount = ItemUtils.getFilmAmount(itemInMainHand);
                         ItemStack itemInMainHand1 = ItemUtils.setFilmAmount(itemInMainHand, filmAmount - 1);
                         event.getPlayer().getInventory().setItemInMainHand(itemInMainHand1);
                     }
+                    itemInMainHand = event.getPlayer().getInventory().getItemInMainHand();
                     ItemStack itemStack = PhotoRender.TakePhoto(event.getPlayer(), new File(plugin.getDataFolder(), "pictures"));
                     MapMeta mapMeta = (MapMeta) itemStack.getItemMeta();
                     int mapId = mapMeta.getMapId();
