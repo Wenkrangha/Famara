@@ -285,7 +285,7 @@ public final class Famara extends JavaPlugin {
         // 对在线玩家执行加入检查
         getServer().getOnlinePlayers().forEach(playerJoinEvent::startCheck);
 
-        ConsoleLogger.info("Loading complete, current version: alpine 1.0");
+        ConsoleLogger.info("Loading complete, current version: 1.2");
 
     }
 
