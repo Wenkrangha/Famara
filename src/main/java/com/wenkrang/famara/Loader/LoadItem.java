@@ -59,7 +59,7 @@ public class LoadItem {
             ItemSystem.put("photo_unPull", itemStack);
         }
         {
-            ItemStack itemStack = new ItemStack(Material.BRICK);
+            ItemStack itemStack = new ItemStack(Material.STICK);
             ItemMeta itemMeta = itemStack.getItemMeta();
             itemMeta.setCustomModelData(20);
             itemMeta.setDisplayName("§f相机");
@@ -102,7 +102,7 @@ public class LoadItem {
             RecipeBook.mainPage.Recipes().put(0, objects);
         }
         {
-            ItemStack itemStack = new ItemStack(Material.BRICK);
+            ItemStack itemStack = new ItemStack(Material.STICK);
             ItemMeta itemMeta = itemStack.getItemMeta();
             itemMeta.setCustomModelData(20);
             itemMeta.setDisplayName("§f相机（Shift + 右键拉出撕拉片）");
