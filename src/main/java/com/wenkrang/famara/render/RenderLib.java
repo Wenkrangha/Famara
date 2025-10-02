@@ -80,7 +80,6 @@ public class RenderLib {
         //发放照片
         ItemStack itemStack = ItemSystem.get("photo");
         ItemMeta itemMeta = itemStack.getItemMeta();
-        itemMeta.setItemModel(new NamespacedKey("famara", "photo"));
         MapMeta mapMeta = (MapMeta) itemMeta;
 
         mapMeta.setMapView(map);

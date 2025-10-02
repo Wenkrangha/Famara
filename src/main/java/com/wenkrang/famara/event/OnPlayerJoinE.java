@@ -38,7 +38,7 @@ public class OnPlayerJoinE implements Listener {
     public void onPlayerJoin(PlayerJoinEvent event) {
         if (event.getPlayer().getScoreboardTags().contains("FamaraResPackIncluded")) {
             event.getPlayer().removeScoreboardTag("FamaraResPackIncluded");
-            LoadResourcePack.load(event.getPlayer(),false);
+            LoadResourcePack.load(event.getPlayer());
         }
         startCheck(event.getPlayer());
     }

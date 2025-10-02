@@ -161,7 +161,7 @@ public final class Famara extends JavaPlugin {
         ConsoleLogger.info("Server version: " + VersionChecker.getVersion());
 
         ConsoleLogger.info("Registering commands");
-        // 注册命令执行器和 completor
+        // 注册命令执行器和 completer
         LoadCmd.registerCommands();
 
         ConsoleLogger.info("Registering event listeners");

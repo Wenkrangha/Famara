@@ -3,6 +3,7 @@ package com.wenkrang.famara.Loader;
 import com.maxmind.geoip2.DatabaseReader;
 import com.maxmind.geoip2.model.CountryResponse;
 import com.wenkrang.famara.Famara;
+import com.wenkrang.famara.lib.Translation;
 import org.bukkit.entity.Player;
 
 import java.io.BufferedReader;
@@ -42,21 +43,24 @@ public class LoadResourcePack {
             return false;
         }
     }
-    public static void load(Player player, boolean isFromChina) {
+    public static byte[] stringToHash(String string) {
+        return new BigInteger(string, 16).toByteArray();
+    }
+    public static void load(Player player) {
+        String mirrorURL = "https://gitee.com/wenkrang/Famara/raw/master/famara_textures.zip";
         if (player.getScoreboardTags().contains("FamaraResPackIncluded")){
             return;
         }
         player.sendMessage("§9§l[*]§r 正在下载材质包");
-        byte[] hash;
-        String hashString = "51214ab019075b983f5689a0cc87be2577efbdae";
-        hash = new BigInteger(hashString, 16).toByteArray();
-        if (isFromChina || player.getScoreboardTags().contains("FromChina") || isIPFromChina(getOutIP())) {
-            player.addResourcePack(Famara.resPack, "https://gitee.com/wenkrang/Famara/raw/master/famara_textures.zip", hash, "Famara十分建议推荐搭配材质包使用，如果您不添加，使用将十分糟糕！！！", false);
+        byte[] hash = stringToHash("51214ab019075b983f5689a0cc87be2577efbdae");
+        player.sendMessage(player.getLocale());
+        if (player.getScoreboardTags().contains("FromChina") || isIPFromChina(getOutIP()) || player.getLocale().equalsIgnoreCase("china")) {
+            player.addResourcePack(Famara.resPack, mirrorURL, hash, Translation.CURRENT.of("resourceInformation"), false);
             player.sendMessage("§9§l[*]§r 正在从中国镜像下载材质包");
         } else {
             //https://github.com/Wenkrangha/Famara/raw/refs/heads/master/famara_textures.zip
             //目前只在minebbs发布该插件，因此直接使用gitee
-            player.addResourcePack(Famara.resPack, "https://gitee.com/wenkrang/Famara/raw/master/famara_textures.zip", hash, "Famara十分建议推荐搭配材质包使用，如果您不添加，使用将十分糟糕！！！", false);
+            player.addResourcePack(Famara.resPack, mirrorURL, hash, Translation.CURRENT.of("resourceInformation"), false);
         }
 
     }

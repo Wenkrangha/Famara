@@ -45,9 +45,10 @@ public class OnUseCameraE implements Listener {
                 ItemStack itemInMainHand = event.getPlayer().getInventory().getItemInMainHand();
                 NamespacedKey itemModel = itemInMainHand.getItemMeta().getItemModel();
                 if (itemModel.getKey().equalsIgnoreCase("famara_close")) {
-                    LoadResourcePack.load(event.getPlayer(),false);
+                    LoadResourcePack.load(event.getPlayer());
                     ItemMeta itemMeta = itemInMainHand.getItemMeta();
                     itemMeta.setItemModel(new NamespacedKey("famara", "famara_open"));
+                    itemMeta.setCustomModelData(10);
                     itemInMainHand.setItemMeta(itemMeta);
                     event.getPlayer().getInventory().setItemInMainHand(itemInMainHand);
                     event.getPlayer().getWorld().playSound(event.getPlayer().getLocation(), "famara:famara.viewfinder", 1, 1);
@@ -88,7 +89,6 @@ public class OnUseCameraE implements Listener {
                     event.getPlayer().getWorld().playSound(event.getPlayer().getLocation(), "famara:famara.pull.film", 1, 1);
                     ItemStack itemStack = ItemSystem.get("photo_unPull");
                     ItemMeta itemMeta = itemStack.getItemMeta();
-                    itemMeta.setItemModel(new NamespacedKey("famara", "photo"));
                     List<String> lore = itemMeta.getLore();
 
                     if (lore.size() >= 4) {

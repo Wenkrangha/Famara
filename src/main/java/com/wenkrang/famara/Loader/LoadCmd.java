@@ -11,6 +11,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 import java.io.IOException;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
@@ -96,14 +97,9 @@ public class LoadCmd {
 
         FaCmd.register(new FaCmd(
                 "resource", new CmdArgs[]{
-                new CmdArgs.FixedArgument(List.of("china"), true)
         }, (i, j) -> {
             if (i instanceof Player) {
-                LoadResourcePack.load(
-                        (Player) i,
-                        // boolean “&&” 符号如果前面为 false 会停止计算
-                        !j.isEmpty() && "china".equals(j.getFirst())
-                );
+                LoadResourcePack.load((Player) i);
             } else {
                 i.sendMessage(Translation.CURRENT.of("useInGame"));
             }

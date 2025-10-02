@@ -19,3 +19,4 @@ resError2: "§e§l[!]§r 若无材质包，您的体验将会非常糟糕！！�
 resSuccessfully: "§9§l[*]§r 材质包下载成功"
 invalidNullable: "§e§l[!]§r 装载 %s 时出错：只有命令的最后一个参数可空！"
 unknownError: "§c§l[-]§r 寄！%s"
+resourceInformation: "Famara十分建议推荐搭配材质包使用，如果您不添加，使用将十分糟糕！！！"

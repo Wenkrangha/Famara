@@ -17,16 +17,12 @@ public class PlayerDownloadResPackE implements Listener {
         if (!Famara.resPack.equals(event.getID())) return;
         switch (event.getStatus()) {
             case DISCARDED,
-                 FAILED_RELOAD,
                  INVALID_URL,
-                 DECLINED:
+                 DECLINED,
+                 FAILED_RELOAD,
+                 FAILED_DOWNLOAD:
                 event.getPlayer().sendMessage(Translation.CURRENT.of("resError1"));
                 event.getPlayer().sendMessage(Translation.CURRENT.of("resError2"));
-                break;
-            case FAILED_DOWNLOAD:
-                event.getPlayer().sendMessage(Translation.CURRENT.of("resError1"));
-                event.getPlayer().sendMessage(Translation.CURRENT.of("resError2"));
-                event.getPlayer().sendMessage("§e§l[!]§r 如果您位于中国，请输入/fa resource china来使用加速镜像");
                 break;
             case SUCCESSFULLY_LOADED:
                 event.getPlayer().addScoreboardTag("FamaraResPackIncluded");

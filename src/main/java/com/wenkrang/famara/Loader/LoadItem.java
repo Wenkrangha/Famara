@@ -32,6 +32,8 @@ public class LoadItem {
             ItemStack itemStack = new ItemStack(Material.FILLED_MAP);
             @NotNull ItemMeta itemMeta = Objects.requireNonNull(itemStack.getItemMeta());
             itemMeta.setDisplayName("§f照片");
+            itemMeta.setCustomModelData(40);
+            itemMeta.setItemModel(new NamespacedKey("famara", "photo"));
             ArrayList<String> lore = new ArrayList<>();
             lore.add("§7一张看起来§7§l平平无奇的照片§7，");
             lore.add("§7也许你早已经忘却了照片上的§7§l人与事物§r，");
@@ -44,7 +46,9 @@ public class LoadItem {
         {
             ItemStack itemStack = new ItemStack(Material.FILLED_MAP);
             @NotNull ItemMeta itemMeta = Objects.requireNonNull(itemStack.getItemMeta());
+            itemMeta.setCustomModelData(40);
             itemMeta.setDisplayName("§f照片（按右键撕开拉片）");
+            itemMeta.setItemModel(new NamespacedKey("famara", "photo"));
             ArrayList<String> lore = new ArrayList<>();
             lore.add("§7一张看起来§7§l平平无奇的照片§7，");
             lore.add("§7也许你早已经忘却了照片上的§7§l人与事物，");
@@ -57,6 +61,7 @@ public class LoadItem {
         {
             ItemStack itemStack = new ItemStack(Material.STICK);
             ItemMeta itemMeta = itemStack.getItemMeta();
+            itemMeta.setCustomModelData(20);
             itemMeta.setDisplayName("§f相机");
             ArrayList<String> lore = new ArrayList<>();
             lore.add("§7这是一台老式的撕拉片相机，外观虽显陈旧，");
@@ -99,6 +104,7 @@ public class LoadItem {
         {
             ItemStack itemStack = new ItemStack(Material.STICK);
             ItemMeta itemMeta = itemStack.getItemMeta();
+            itemMeta.setCustomModelData(20);
             itemMeta.setDisplayName("§f相机（Shift + 右键拉出撕拉片）");
             ArrayList<String> lore = new ArrayList<>();
             lore.add("§7这是一台老式的撕拉片相机，外观虽显陈旧，");
