@@ -43,9 +43,22 @@ public class LoadResourcePack {
             return false;
         }
     }
-    public static byte[] stringToHash(String string) {
-        return new BigInteger(string, 16).toByteArray();
+    public static byte[] stringToHash(String hex) {
+        if (hex == null || hex.length() % 2 != 0) {
+            throw new IllegalArgumentException("Hex string must have even length: " + hex);
+        }
+        byte[] data = new byte[hex.length() / 2];
+        for (int i = 0; i < hex.length(); i += 2) {
+            int high = Character.digit(hex.charAt(i), 16);
+            int low = Character.digit(hex.charAt(i + 1), 16);
+            if (high == -1 || low == -1) {
+                throw new IllegalArgumentException("Invalid hex character in: " + hex);
+            }
+            data[i / 2] = (byte) ((high << 4) | low);
+        }
+        return data;
     }
+
     public static void load(Player player) {
         String mirrorURL = "https://gitee.com/wenkrang/Famara/raw/master/famara_compatible_textures.zip";
         if (player.getScoreboardTags().contains("FamaraResPackIncluded")){

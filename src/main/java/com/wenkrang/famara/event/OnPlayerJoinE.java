@@ -110,6 +110,7 @@ public class OnPlayerJoinE implements Listener {
                     if (player.isSneaking()) {
                         // 玩家潜行时关闭相机
                         itemMeta.setItemModel(new NamespacedKey("famara", "famara_close"));
+                        itemMeta.setCustomModelData(20);
                         itemInMainHand.setItemMeta(itemMeta);
                         player.getInventory().setItemInMainHand(itemInMainHand);
                     } else {

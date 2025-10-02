@@ -59,7 +59,7 @@ public class LoadItem {
             ItemSystem.put("photo_unPull", itemStack);
         }
         {
-            ItemStack itemStack = new ItemStack(Material.STICK);
+            ItemStack itemStack = new ItemStack(Material.BRICK);
             ItemMeta itemMeta = itemStack.getItemMeta();
             itemMeta.setCustomModelData(20);
             itemMeta.setDisplayName("§f相机");
@@ -102,7 +102,7 @@ public class LoadItem {
             RecipeBook.mainPage.Recipes().put(0, objects);
         }
         {
-            ItemStack itemStack = new ItemStack(Material.STICK);
+            ItemStack itemStack = new ItemStack(Material.BRICK);
             ItemMeta itemMeta = itemStack.getItemMeta();
             itemMeta.setCustomModelData(20);
             itemMeta.setDisplayName("§f相机（Shift + 右键拉出撕拉片）");
@@ -138,6 +138,7 @@ public class LoadItem {
             ItemStack itemStack = new ItemStack(Material.PAPER);
             ItemMeta itemMeta = itemStack.getItemMeta();
             itemMeta.setDisplayName("§f胶卷盒");
+            itemMeta.setCustomModelData(30);
             ArrayList<String> lore = new ArrayList<>();
             lore.add("§7当手指抚过这卷泛黄的胶片，银盐颗粒在指腹间沙沙作响——");
             lore.add("§7这是属于旧时代的情书载体，每一格35mm画幅都暗藏时光的密语。");
