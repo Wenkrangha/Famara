@@ -47,14 +47,13 @@ public class LoadResourcePack {
         return new BigInteger(string, 16).toByteArray();
     }
     public static void load(Player player) {
-        String mirrorURL = "https://gitee.com/wenkrang/Famara/raw/master/famara_textures.zip";
+        String mirrorURL = "https://gitee.com/wenkrang/Famara/raw/master/famara_compatible_textures.zip";
         if (player.getScoreboardTags().contains("FamaraResPackIncluded")){
             return;
         }
         player.sendMessage("§9§l[*]§r 正在下载材质包");
-        byte[] hash = stringToHash("51214ab019075b983f5689a0cc87be2577efbdae");
-        player.sendMessage(player.getLocale());
-        if (player.getScoreboardTags().contains("FromChina") || isIPFromChina(getOutIP()) || player.getLocale().equalsIgnoreCase("china")) {
+        byte[] hash = stringToHash("d8148fb023c11a5d2e11696a9ad6bf1d4acae94c");
+        if (player.getScoreboardTags().contains("FromChina") || isIPFromChina(getOutIP()) || player.getLocale().equalsIgnoreCase("zh_cn")) {
             player.addResourcePack(Famara.resPack, mirrorURL, hash, Translation.CURRENT.of("resourceInformation"), false);
             player.sendMessage("§9§l[*]§r 正在从中国镜像下载材质包");
         } else {
