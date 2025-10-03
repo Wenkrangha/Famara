@@ -13,6 +13,8 @@ import com.wenkrang.famara.lib.VersionChecker;
 import com.wenkrang.famara.render.RenderRunner;
 import com.wenkrang.famara.render.RenderTask;
 
+import org.bstats.bukkit.Metrics;
+import org.bstats.charts.SimplePie;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.command.ConsoleCommandSender;
@@ -106,11 +108,8 @@ public final class Famara extends JavaPlugin {
     public static void loadPack(String name, File file) {
         try {
             Runnable runnable = () -> {
-                ClassLoader classLoader = Famara.class.getClassLoader();
-                URL resource = classLoader.getResource(name);
-
                 try {
-                    InputStream inputStream = resource.openStream();
+                    InputStream inputStream = Famara.getPlugin(Famara.class).getResource(name);
                     Files.copy(inputStream, file.toPath());
                     inputStream.close();
 
@@ -146,11 +145,24 @@ public final class Famara extends JavaPlugin {
             }
         }
     }
+
+
     @Override
     public void onEnable() {
 
-        loadPack("language.yml", new File("./plugins/Famara/language.yml"));
-        Translation.setCurrent(YamlConfiguration.loadConfiguration(new File("./plugins/Famara/language.yml")));
+        new BukkitRunnable() {
+            @Override
+            public void run() {
+                loadPack("language.yml", new File("./plugins/Famara/language.yml"));
+                Translation.setCurrent(YamlConfiguration.loadConfiguration(new File("./plugins/Famara/language.yml")));
+            }
+        }.runTaskLater(this, 5);
+
+        //Bstats统计
+        int pluginId = 27448;
+        Metrics metrics = new Metrics(this, pluginId);
+
+        metrics.addCustomChart(new SimplePie("chart_id", () -> "My value"));
 
         ConsoleCommandSender consoleSender = getServer().getConsoleSender();
         consoleSender.sendMessage("    ____                                ");

@@ -43,12 +43,10 @@ public class OnUseCameraE implements Listener {
             if (event.getPlayer().getInventory().getItemInMainHand().getItemMeta() == null) return;
             if (!event.getPlayer().isSneaking() && event.getPlayer().getInventory().getItemInMainHand().getItemMeta().getDisplayName().equalsIgnoreCase("§f相机")) {
                 ItemStack itemInMainHand = event.getPlayer().getInventory().getItemInMainHand();
-                NamespacedKey itemModel = itemInMainHand.getItemMeta().getItemModel();
-                if (itemModel.getKey().equalsIgnoreCase("famara_close")) {
+                if (ItemUtils.matchKey(itemInMainHand.getItemMeta(), "famara_close", 20)) {
                     LoadResourcePack.load(event.getPlayer());
                     ItemMeta itemMeta = itemInMainHand.getItemMeta();
-                    itemMeta.setItemModel(new NamespacedKey("famara", "famara_open"));
-                    itemMeta.setCustomModelData(10);
+                    itemMeta = ItemUtils.setModelSafely(itemMeta, new NamespacedKey("famara", "famara_open"), 10);
                     itemInMainHand.setItemMeta(itemMeta);
                     event.getPlayer().getInventory().setItemInMainHand(itemInMainHand);
                     event.getPlayer().getWorld().playSound(event.getPlayer().getLocation(), "famara:famara.viewfinder", 1, 1);

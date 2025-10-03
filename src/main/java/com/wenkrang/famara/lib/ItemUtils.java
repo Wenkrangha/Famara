@@ -47,4 +47,40 @@ public class ItemUtils {
         newItem.setItemMeta(itemMeta);
         return newItem;
     }
+
+    /**
+     * 安全地设置物品模型，由于在1.21.4以下没有关于Model的方法，必须进行区别处理
+     *
+     * @param itemMeta 需要修改的ItemMeta
+     * @param namespacedKey 模型的命名空间
+     * @param i 兼容性的物品模型id
+     *
+     * @return 修改后的ItemMeta
+     **/
+    public static ItemMeta setModelSafely(ItemMeta itemMeta, NamespacedKey namespacedKey,Integer i) {
+        if (!VersionChecker.isVersionBelow("1.21.4")) {
+            itemMeta.setItemModel(namespacedKey);
+        } else {
+            itemMeta.setCustomModelData(i);
+            return itemMeta;
+        }
+        return itemMeta;
+    }
+
+    /**
+     * 匹配物品模型
+     *
+     * @param itemMeta 需要匹配的ItemMeta
+     * @param s 模型的命名空间
+     * @param i 兼容性的物品模型id
+     *
+     * @return 匹配结果
+     **/
+    public static boolean matchKey(ItemMeta itemMeta,String s,Integer i) {
+        if (!VersionChecker.isVersionBelow("1.21.4")) {
+            return itemMeta.getItemModel() != null && itemMeta.getItemModel().getKey().equalsIgnoreCase(s);
+        } else {
+            return itemMeta.getCustomModelData() == i;
+        }
+    }
 }

@@ -22,10 +22,9 @@ import org.bukkit.scheduler.BukkitRunnable;
 import java.io.File;
 import java.util.Objects;
 import java.util.logging.Logger;
-import java.util.stream.Stream;
 
 import static com.wenkrang.famara.event.OnUseCameraE.getId;
-import static com.wenkrang.famara.lib.ItemUtils.checkName;
+import static com.wenkrang.famara.lib.ItemUtils.setModelSafely;
 
 public class OnPlayerJoinE implements Listener {
     Famara plugin;
@@ -104,25 +103,26 @@ public class OnPlayerJoinE implements Listener {
                 }
                 //TODO:更优雅的开镜放大
                 ItemStack itemInMainHand = player.getInventory().getItemInMainHand();
+                
+                PotionEffectType type = PotionEffectType.getByKey(NamespacedKey.minecraft("slowness"));
                 //检测手中是否拿相机
                 if (ItemUtils.checkName(itemInMainHand, "§f相机") && ItemUtils.checkModel(itemInMainHand, "famara_open")) {
                     ItemMeta itemMeta = itemInMainHand.getItemMeta();
                     if (player.isSneaking()) {
                         // 玩家潜行时关闭相机
-                        itemMeta.setItemModel(new NamespacedKey("famara", "famara_close"));
-                        itemMeta.setCustomModelData(20);
+                        itemMeta = setModelSafely(itemMeta,new NamespacedKey("famara", "famara_close"), 20);
                         itemInMainHand.setItemMeta(itemMeta);
                         player.getInventory().setItemInMainHand(itemInMainHand);
                     } else {
                         // 相机开启时给玩家添加缓慢效果
-                        player.addPotionEffect(new PotionEffect(PotionEffectType.SLOWNESS, 9999999, 4));
+                        player.addPotionEffect(new PotionEffect(type, 9999999, 4));
                     }
                 } else {
                     //如果手中不是相机，就去掉缓慢效果
                     //TODO:检测是否是相机添加的效果，目前不是相机添加的缓慢也会被去除
-                    if (player.hasPotionEffect(PotionEffectType.SLOWNESS) &&
-                            Objects.requireNonNull(player.getPotionEffect(PotionEffectType.SLOWNESS)).getAmplifier() == 4) {
-                        player.removePotionEffect(PotionEffectType.SLOWNESS);
+                    if (player.hasPotionEffect(type) &&
+                            Objects.requireNonNull(player.getPotionEffect(type)).getAmplifier() == 4) {
+                        player.removePotionEffect(type);
                     }
                 }
 //                if (Stream.of(player.getInventory().getItemInMainHand())
@@ -138,7 +138,7 @@ public class OnPlayerJoinE implements Listener {
 //                                    player.getInventory().setItemInMainHand(i);
 //                                } else {
 //                                    // 相机开启时给玩家添加缓慢效果
-//                                    player.addPotionEffect(new PotionEffect(PotionEffectType.SLOWNESS, 9999999, 4));
+//                                    player.addPotionEffect(new PotionEffect(type, 9999999, 4));
 //                                    return true;
 //                                }
 //                            }
@@ -146,7 +146,7 @@ public class OnPlayerJoinE implements Listener {
 //                        }).anyMatch(Objects::isNull) ||
 //                        !ItemUtils.checkModel(player.getInventory().getItemInMainHand(), "famara_open"))
 //                    //没有拿相机时也解除缓慢效果
-//                    player.removePotionEffect(PotionEffectType.SLOWNESS);
+//                    player.removePotionEffect(type);
             }
         }.runTaskTimer(Famara.getPlugin(Famara.class), 0, 3);
     }

@@ -2,6 +2,7 @@ package com.wenkrang.famara.Loader;
 
 import com.wenkrang.famara.itemSystem.ItemSystem;
 import com.wenkrang.famara.itemSystem.RecipeBook;
+import com.wenkrang.famara.lib.ItemUtils;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.ItemStack;
@@ -32,8 +33,7 @@ public class LoadItem {
             ItemStack itemStack = new ItemStack(Material.FILLED_MAP);
             @NotNull ItemMeta itemMeta = Objects.requireNonNull(itemStack.getItemMeta());
             itemMeta.setDisplayName("§f照片");
-            itemMeta.setCustomModelData(40);
-            itemMeta.setItemModel(new NamespacedKey("famara", "photo"));
+            itemMeta = ItemUtils.setModelSafely(itemMeta, new NamespacedKey("famara", "photo"), 40);
             ArrayList<String> lore = new ArrayList<>();
             lore.add("§7一张看起来§7§l平平无奇的照片§7，");
             lore.add("§7也许你早已经忘却了照片上的§7§l人与事物§r，");
@@ -46,9 +46,8 @@ public class LoadItem {
         {
             ItemStack itemStack = new ItemStack(Material.FILLED_MAP);
             @NotNull ItemMeta itemMeta = Objects.requireNonNull(itemStack.getItemMeta());
-            itemMeta.setCustomModelData(40);
+            itemMeta = ItemUtils.setModelSafely(itemMeta, new NamespacedKey("famara", "photo"), 40);
             itemMeta.setDisplayName("§f照片（按右键撕开拉片）");
-            itemMeta.setItemModel(new NamespacedKey("famara", "photo"));
             ArrayList<String> lore = new ArrayList<>();
             lore.add("§7一张看起来§7§l平平无奇的照片§7，");
             lore.add("§7也许你早已经忘却了照片上的§7§l人与事物，");
@@ -61,7 +60,7 @@ public class LoadItem {
         {
             ItemStack itemStack = new ItemStack(Material.STICK);
             ItemMeta itemMeta = itemStack.getItemMeta();
-            itemMeta.setCustomModelData(20);
+            itemMeta = ItemUtils.setModelSafely(itemMeta, new NamespacedKey("famara", "camera"), 20);
             itemMeta.setDisplayName("§f相机");
             ArrayList<String> lore = new ArrayList<>();
             lore.add("§7这是一台老式的撕拉片相机，外观虽显陈旧，");
@@ -84,7 +83,6 @@ public class LoadItem {
             lore.add("§6§l按Shift§r§6关闭取景器");
             lore.add("§9§l-> §r§f拍摄后");
             lore.add("§6§lShift + 右键§r§6将拉片拉出");
-            itemMeta.setItemModel(new NamespacedKey("famara", "famara_close"));
             itemMeta.setLore(lore);
             itemStack.setItemMeta(itemMeta);
             ItemSystem.put("camera", itemStack);
@@ -104,7 +102,7 @@ public class LoadItem {
         {
             ItemStack itemStack = new ItemStack(Material.STICK);
             ItemMeta itemMeta = itemStack.getItemMeta();
-            itemMeta.setCustomModelData(20);
+            itemMeta = ItemUtils.setModelSafely(itemMeta, new NamespacedKey("famara", "camera"), 20);
             itemMeta.setDisplayName("§f相机（Shift + 右键拉出撕拉片）");
             ArrayList<String> lore = new ArrayList<>();
             lore.add("§7这是一台老式的撕拉片相机，外观虽显陈旧，");
@@ -129,7 +127,6 @@ public class LoadItem {
             lore.add("§6§l按Shift§r§6关闭取景器");
             lore.add("§9§l-> §r§f拍摄后");
             lore.add("§6§lShift + 右键§r§6将拉片拉出");
-            itemMeta.setItemModel(new NamespacedKey("famara", "famara_close"));
             itemMeta.setLore(lore);
             itemStack.setItemMeta(itemMeta);
             ItemSystem.put("camera_filmed", itemStack);
@@ -137,8 +134,8 @@ public class LoadItem {
         {
             ItemStack itemStack = new ItemStack(Material.PAPER);
             ItemMeta itemMeta = itemStack.getItemMeta();
+            itemMeta = ItemUtils.setModelSafely(itemMeta, new NamespacedKey("famara", "paper"), 30);
             itemMeta.setDisplayName("§f胶卷盒");
-            itemMeta.setCustomModelData(30);
             ArrayList<String> lore = new ArrayList<>();
             lore.add("§7当手指抚过这卷泛黄的胶片，银盐颗粒在指腹间沙沙作响——");
             lore.add("§7这是属于旧时代的情书载体，每一格35mm画幅都暗藏时光的密语。");
@@ -149,7 +146,6 @@ public class LoadItem {
             lore.add("§f『（突然撕开胶卷外盒）嘻，那我打开看看内部结构！』");
             lore.add("§f『等、等下！这会让胶卷彻底曝光的！（扑上去按住胶卷）我的胶卷啊！』");
             itemMeta.setLore(lore);
-            itemMeta.setItemModel(new NamespacedKey("famara", "film_box"));
             itemStack.setItemMeta(itemMeta);
             ItemSystem.put("filmBox", itemStack);
             RecipeBook.mainPage.items().put(1, itemStack);

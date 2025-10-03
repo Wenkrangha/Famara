@@ -114,6 +114,7 @@ public class LoadCmd {
             }
         }));
 
+
         Objects.requireNonNull(Bukkit.getServer().getPluginCommand("fa"))
                 .setExecutor(FaCmd.exec);
         Objects.requireNonNull(Bukkit.getServer().getPluginCommand("fa"))
