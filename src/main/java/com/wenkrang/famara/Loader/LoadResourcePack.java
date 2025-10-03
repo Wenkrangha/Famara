@@ -64,7 +64,7 @@ public class LoadResourcePack {
         if (player.getScoreboardTags().contains("FamaraResPackIncluded")){
             return;
         }
-        player.sendMessage("§9§l[*]§r 正在下载材质包");
+        player.sendMessage("§9§l[*]§r 正在下载材质包，如果下载失败，请使用/fa resource下载");
         byte[] hash = stringToHash("d8148fb023c11a5d2e11696a9ad6bf1d4acae94c");
         if (player.getScoreboardTags().contains("FromChina") || isIPFromChina(getOutIP()) || player.getLocale().equalsIgnoreCase("zh_cn")) {
             player.setResourcePack(mirrorURL, hash);
