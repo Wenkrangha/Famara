@@ -134,7 +134,7 @@ public class LoadItem {
         {
             ItemStack itemStack = new ItemStack(Material.PAPER);
             ItemMeta itemMeta = itemStack.getItemMeta();
-            itemMeta = ItemUtils.setModelSafely(itemMeta, new NamespacedKey("famara", "paper"), 30);
+            itemMeta = ItemUtils.setModelSafely(itemMeta, new NamespacedKey("famara", "film_box"), 30);
             itemMeta.setDisplayName("§f胶卷盒");
             ArrayList<String> lore = new ArrayList<>();
             lore.add("§7当手指抚过这卷泛黄的胶片，银盐颗粒在指腹间沙沙作响——");

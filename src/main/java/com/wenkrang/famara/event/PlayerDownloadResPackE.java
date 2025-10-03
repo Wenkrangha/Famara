@@ -33,11 +33,6 @@ public class PlayerDownloadResPackE implements Listener {
 
     @EventHandler
     public static void onPlayerDownloadResPack(org.bukkit.event.player.PlayerResourcePackStatusEvent event) {
-        //检查材质包是否是Famara的
-        //检查条件：
-        //1. 材质包id是Famara材质包的
-        //2. 服务器的版本大于1.21.4（似乎当服务器版本大于1.21.4时，getId不可用）
-        if (!VersionChecker.isVersionBelow("1.21.4") && !Famara.resPack.equals(getID(event))) return;
         if (event.getStatus().toString().equalsIgnoreCase("SUCCESSFULLY_LOADED")) {
             event.getPlayer().addScoreboardTag("FamaraResPackIncluded");
         }
