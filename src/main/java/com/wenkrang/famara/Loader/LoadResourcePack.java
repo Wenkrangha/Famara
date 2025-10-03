@@ -67,12 +67,12 @@ public class LoadResourcePack {
         player.sendMessage("§9§l[*]§r 正在下载材质包");
         byte[] hash = stringToHash("d8148fb023c11a5d2e11696a9ad6bf1d4acae94c");
         if (player.getScoreboardTags().contains("FromChina") || isIPFromChina(getOutIP()) || player.getLocale().equalsIgnoreCase("zh_cn")) {
-            player.addResourcePack(Famara.resPack, mirrorURL, hash, Translation.CURRENT.of("resourceInformation"), false);
+            player.setResourcePack(mirrorURL, hash);
             player.sendMessage("§9§l[*]§r 正在从中国镜像下载材质包");
         } else {
             //https://github.com/Wenkrangha/Famara/raw/refs/heads/master/famara_textures.zip
             //目前只在minebbs发布该插件，因此直接使用gitee
-            player.addResourcePack(Famara.resPack, mirrorURL, hash, Translation.CURRENT.of("resourceInformation"), false);
+            player.setResourcePack(mirrorURL, hash);
         }
 
     }

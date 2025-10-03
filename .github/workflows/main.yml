@@ -19,7 +19,11 @@ jobs:
             repository: 'Famara'
         - name: 编译 Famara 本体
           run: mvn package -q
+        - name: 准备降级Famara代码至Java 8
+          run: |
+              wget https://github.com/RaphiMC/JavaDowngrader/releases/download/v1.1.2/JavaDowngrader-Standalone-1.1.2.jar
+              java -jar JavaDowngrader-Standalone-1.1.2.jar -i target/Famara-*.jar -o target/Famara-1.0.jar -v 8
         - uses: actions/upload-artifact@v4
           with:
             name: Famara  
-            path: target/Famara-1.0-SNAPSHOT.jar
+            path: target/Famara-1.0.jar

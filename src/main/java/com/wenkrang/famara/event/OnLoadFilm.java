@@ -2,6 +2,7 @@ package com.wenkrang.famara.event;
 
 import com.wenkrang.famara.Famara;
 import com.wenkrang.famara.lib.ItemUtils;
+import org.bukkit.entity.Item;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerSwapHandItemsEvent;
@@ -17,14 +18,14 @@ public class OnLoadFilm implements Listener {
 
     @EventHandler
     public void LoadFilm(PlayerSwapHandItemsEvent event) {
-        if (event.getOffHandItem() != null && event.getOffHandItem().getItemMeta() != null && event.getOffHandItem().getItemMeta().getItemModel() != null) {
-            if (event.getOffHandItem().getItemMeta().getItemModel().getKey().equalsIgnoreCase("famara_close")) {
+        if (event.getOffHandItem() != null && event.getOffHandItem().getItemMeta() != null) {
+            if (ItemUtils.matchKey(event.getOffHandItem().getItemMeta(), "famara_close", 20)) {
                 if (ItemUtils.getFilmAmount(event.getOffHandItem()) != 0) return;
                 PlayerInventory inventory = event.getPlayer().getInventory();
                 for (int i = 0;i < inventory.getSize();i++) {
                     ItemStack item = inventory.getItem(i);
-                    if (item != null && item.getItemMeta() != null && item.getItemMeta().getItemModel() != null) {
-                        if (item.getItemMeta().getItemModel().getKey().equalsIgnoreCase("film_box")) {
+                    if (item != null && item.getItemMeta() != null) {
+                        if (ItemUtils.matchKey(item.getItemMeta(), "film_box", 30)) {
                             if (item.getAmount() > 1) {
                                 item.setAmount(item.getAmount() - 1);
                                 inventory.setItem(i, item);

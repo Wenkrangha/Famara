@@ -2,6 +2,7 @@ package com.wenkrang.famara.event;
 
 import com.wenkrang.famara.Famara;
 import com.wenkrang.famara.itemSystem.RecipeBook;
+import com.wenkrang.famara.lib.InventoryUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
@@ -13,8 +14,11 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Map;
+import java.util.Objects;
 
 public class BookClickE implements Listener {
     Famara plugin;
@@ -24,20 +28,21 @@ public class BookClickE implements Listener {
     }
 
     @EventHandler
-    public void onClick(InventoryClickEvent event) {
-        if (event.getView().getTitle().equalsIgnoreCase("相机具体配方")) {
+    public void onClick(InventoryClickEvent event) throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
+        if (InventoryUtils.getTitle(event.getView()).equalsIgnoreCase("相机具体配方")) {
             if (event.getRawSlot() == 1) {
                 RecipeBook.openBook((Player) event.getWhoClicked());
             }
             event.setCancelled(true);
         }
-        if (event.getView().getTitle().equalsIgnoreCase("相机配方")) {
+        Player player = (Player) InventoryUtils.getPlayer(event.getView());
+        if (InventoryUtils.getTitle(event.getView()).equalsIgnoreCase("相机配方")) {
             Map<Integer, ArrayList<ItemStack>> recipes = RecipeBook.mainPage.Recipes();
             if (event.getRawSlot() >= 9 && event.getRawSlot() <= 26) {
-                if (event.isRightClick() && event.getView().getPlayer().isOp()
-                        && event.getView().getPlayer().getGameMode().equals(GameMode.CREATIVE)
+                if (event.isRightClick() && player.isOp()
+                        && player.getGameMode().equals(GameMode.CREATIVE)
                         && event.getCurrentItem() != null) {
-                    event.getView().getPlayer().getInventory().addItem(event.getCurrentItem());
+                    player.getInventory().addItem(event.getCurrentItem());
                 }
                 if (event.isLeftClick()) {
                     if (recipes.containsKey(event.getRawSlot() - 9)) {
@@ -79,7 +84,11 @@ public class BookClickE implements Listener {
                         inventory.setItem(22, recipes.get(event.getRawSlot() - 9).get(7).clone());
                         inventory.setItem(23, recipes.get(event.getRawSlot() - 9).get(8).clone());
 
-                        event.getView().getPlayer().openInventory(inventory);
+
+
+                        if (player != null) {
+                            player.openInventory(inventory);
+                        }
                     }
                 }
             }

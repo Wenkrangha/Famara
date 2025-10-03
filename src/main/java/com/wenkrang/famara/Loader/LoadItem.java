@@ -60,7 +60,7 @@ public class LoadItem {
         {
             ItemStack itemStack = new ItemStack(Material.STICK);
             ItemMeta itemMeta = itemStack.getItemMeta();
-            itemMeta = ItemUtils.setModelSafely(itemMeta, new NamespacedKey("famara", "camera"), 20);
+            itemMeta = ItemUtils.setModelSafely(itemMeta, new NamespacedKey("famara", "famara_close"), 20);
             itemMeta.setDisplayName("§f相机");
             ArrayList<String> lore = new ArrayList<>();
             lore.add("§7这是一台老式的撕拉片相机，外观虽显陈旧，");
@@ -102,7 +102,7 @@ public class LoadItem {
         {
             ItemStack itemStack = new ItemStack(Material.STICK);
             ItemMeta itemMeta = itemStack.getItemMeta();
-            itemMeta = ItemUtils.setModelSafely(itemMeta, new NamespacedKey("famara", "camera"), 20);
+            itemMeta = ItemUtils.setModelSafely(itemMeta, new NamespacedKey("famara", "famara_close"), 20);
             itemMeta.setDisplayName("§f相机（Shift + 右键拉出撕拉片）");
             ArrayList<String> lore = new ArrayList<>();
             lore.add("§7这是一台老式的撕拉片相机，外观虽显陈旧，");
