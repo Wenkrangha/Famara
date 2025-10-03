@@ -105,6 +105,7 @@ public class OnPlayerJoinE implements Listener {
                 ItemStack itemInMainHand = player.getInventory().getItemInMainHand();
 
                 PotionEffectType type = PotionEffectType.getByName("slowness");
+                if (type == null) type = PotionEffectType.SLOW;
                 //检测手中是否拿相机
                 if (ItemUtils.checkName(itemInMainHand, "§f相机") && ItemUtils.matchKey(itemInMainHand.getItemMeta(),"famara_open",10)) {
                     ItemMeta itemMeta = itemInMainHand.getItemMeta();
