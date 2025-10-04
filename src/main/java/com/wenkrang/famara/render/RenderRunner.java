@@ -6,7 +6,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 import java.util.Random;
 import java.util.logging.Logger;
 
-import static com.wenkrang.famara.render.RenderLib.*;
+import static com.wenkrang.famara.render.RenderLib.render;
 
 public class RenderRunner {
 
@@ -22,7 +22,7 @@ public class RenderRunner {
 
                             render(renderTask.x(), renderTask.y()
                                     , renderTask.eyes(),
-                                    renderTask.pitchRad(), renderTask.yawRad(),
+                                    renderTask.pitch(), renderTask.yaw(),
                                     renderTask.fieldOfView(),
                                     renderTask.uuid(),
                                     renderTask.image(),

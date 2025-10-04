@@ -11,14 +11,10 @@ import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 import java.io.IOException;
-import java.util.Collections;
-import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 
 import static com.wenkrang.famara.Famara.*;
-import static com.wenkrang.famara.Famara.excludingBlocks;
-import static com.wenkrang.famara.Famara.yamlConfiguration;
 
 public class LoadCmd {
     public static void registerCommands() {

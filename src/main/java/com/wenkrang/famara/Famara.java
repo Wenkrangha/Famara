@@ -1,10 +1,10 @@
 package com.wenkrang.famara;
 
 import com.wenkrang.famara.Loader.LoadCmd;
+import com.wenkrang.famara.Loader.LoadItem;
 import com.wenkrang.famara.Loader.LoadRecipe;
 import com.wenkrang.famara.event.*;
 import com.wenkrang.famara.itemSystem.BookPage;
-import com.wenkrang.famara.Loader.LoadItem;
 import com.wenkrang.famara.itemSystem.RecipeBook;
 import com.wenkrang.famara.lib.ConsoleLogger;
 import com.wenkrang.famara.lib.Translation;
@@ -12,7 +12,6 @@ import com.wenkrang.famara.lib.UnsafeDownloader;
 import com.wenkrang.famara.lib.VersionChecker;
 import com.wenkrang.famara.render.RenderRunner;
 import com.wenkrang.famara.render.RenderTask;
-
 import org.bstats.bukkit.Metrics;
 import org.bstats.charts.SimplePie;
 import org.bukkit.Bukkit;
@@ -30,7 +29,6 @@ import java.awt.*;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.URL;
 import java.nio.file.Files;
 import java.util.*;
 import java.util.List;

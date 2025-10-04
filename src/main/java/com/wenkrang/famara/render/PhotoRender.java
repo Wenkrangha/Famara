@@ -6,11 +6,11 @@ import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.map.MapView;
-import org.bukkit.util.Vector;
 
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.util.Vector;
 
 
 public class PhotoRender {
@@ -60,8 +60,9 @@ public class PhotoRender {
 
         //初始化数据
         Location eyes = player.getEyeLocation();
-        double pitchRad = Math.toRadians(-eyes.getPitch());
-        double yawRad = Math.toRadians(eyes.getYaw() + 90);
+
+        double pitch = Math.toRadians(-eyes.getPitch() + 30);
+        double yaw = Math.toRadians(eyes.getYaw() + 210);
         final double fieldOfView = 1.0 / 128.0;
 
         Famara.progress.put(id, 0);
@@ -73,8 +74,8 @@ public class PhotoRender {
                         x,
                         y,
                         eyes,
-                        pitchRad,
-                        yawRad,
+                        pitch,
+                        yaw,
                         fieldOfView,
                         id,
                         image,

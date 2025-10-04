@@ -2,14 +2,11 @@ package com.wenkrang.famara.Loader;
 
 import com.maxmind.geoip2.DatabaseReader;
 import com.maxmind.geoip2.model.CountryResponse;
-import com.wenkrang.famara.Famara;
-import com.wenkrang.famara.lib.Translation;
 import org.bukkit.entity.Player;
 
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.InputStreamReader;
-import java.math.BigInteger;
 import java.net.InetAddress;
 import java.net.URI;
 import java.net.URL;

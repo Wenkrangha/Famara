@@ -3,7 +3,6 @@ package com.wenkrang.famara.event;
 import com.wenkrang.famara.Famara;
 import com.wenkrang.famara.Loader.LoadResourcePack;
 import com.wenkrang.famara.itemSystem.ItemSystem;
-import com.wenkrang.famara.itemSystem.RecipeBook;
 import com.wenkrang.famara.lib.ItemUtils;
 import com.wenkrang.famara.render.PhotoRender;
 import com.wenkrang.famara.render.RenderLib;

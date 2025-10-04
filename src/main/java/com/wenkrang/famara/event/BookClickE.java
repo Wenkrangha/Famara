@@ -15,10 +15,8 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
 import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Map;
-import java.util.Objects;
 
 public class BookClickE implements Listener {
     Famara plugin;
