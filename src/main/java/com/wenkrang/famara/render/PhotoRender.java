@@ -10,7 +10,6 @@ import org.bukkit.map.MapView;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-import java.util.Vector;
 
 
 public class PhotoRender {
@@ -61,30 +60,45 @@ public class PhotoRender {
         //初始化数据
         Location eyes = player.getEyeLocation();
 
-        double pitch = Math.toRadians(-eyes.getPitch() + 30);
-        double yaw = Math.toRadians(eyes.getYaw() + 210);
+        double pitch = Math.toRadians(-eyes.getPitch());
+        double yaw = Math.toRadians(eyes.getYaw() + 90);
         final double fieldOfView = 1.0 / 128.0;
 
         Famara.progress.put(id, 0);
 
         //为照片每一个像素进行渲染
-        for (int x = 0; x < 128; x++) {
-            for (int y = 0; y < 128; y++) {
-                RenderTask renderTask = new RenderTask(
-                        x,
-                        y,
-                        eyes,
-                        pitch,
-                        yaw,
-                        fieldOfView,
-                        id,
-                        image,
-                        player,
-                        picture
-                );
-                Famara.tasks.add(renderTask);
-            }
-        }
+//        for (int x = 0; x < 128; x++) {
+//            for (int y = 0; y < 128; y++) {
+//                RenderTask renderTask = new RenderTask(
+//                        x,
+//                        y,
+//                        eyes,
+//                        pitch,
+//                        yaw,
+//                        fieldOfView,
+//                        id,
+//                        image,
+//                        player,
+//                        picture
+//                );
+//                Famara.tasks.add(renderTask);
+//            }
+//        }
+
+        RenderTaskNew renderTask = new RenderTaskNew(
+                0,
+                0,
+                eyes,
+                pitch,
+                yaw,
+                fieldOfView,
+                id,
+                image,
+                player,
+                picture
+        );
+        Famara.tasks.add(renderTask);
+
         return RenderLib.getPhoto(image, map);
     }
 }

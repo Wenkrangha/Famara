@@ -8,12 +8,14 @@ import com.wenkrang.famara.render.PhotoRender;
 import com.wenkrang.famara.render.RenderLib;
 import org.bukkit.Bukkit;
 import org.bukkit.NamespacedKey;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.MapMeta;
 import org.bukkit.map.MapView;
@@ -33,6 +35,21 @@ public class OnUseCameraE implements Listener {
     public static int getId(ItemStack itemStack, int index) {
         String s = itemStack.getItemMeta().getLore().get(index);
         return Integer.parseInt(s.replace("§7照片编号：", ""));
+    }
+
+    /**
+     * 判断主物品栏是否已满
+     * @param player 检查对象
+     * @return 检查结果
+     */
+    public boolean isMainInventoryFull(Player player) {
+        PlayerInventory inventory = player.getInventory();
+
+        // firstEmpty会返回第一个空槽位的索引（包括盔甲槽）
+        int emptySlot = inventory.firstEmpty();
+
+        // 只要空槽位在主物品栏范围内（0-35），就说明背包未满
+        return emptySlot == -1 || emptySlot >= 36;
     }
     @EventHandler
     public void onUseCamera(PlayerInteractEvent event) {
@@ -96,7 +113,16 @@ public class OnUseCameraE implements Listener {
 
                     itemMeta.setLore(lore);
                     itemStack.setItemMeta(itemMeta);
-                    event.getPlayer().getInventory().addItem(itemStack);
+
+
+
+                    //检查物品栏是否满了
+                    if (isMainInventoryFull(event.getPlayer())) {
+                        event.getPlayer().getWorld().dropItem(event.getPlayer().getLocation(), itemStack);
+                    } else {
+                        event.getPlayer().getInventory().addItem(itemStack);
+                    }
+
                     ItemStack itemStack1 = ItemSystem.get("camera");
                     ItemStack itemStack2 = ItemUtils.setFilmAmount(itemStack1, ItemUtils.getFilmAmount(event.getPlayer().getInventory().getItemInMainHand()));
                     event.getPlayer().getInventory().setItemInMainHand(itemStack2);
@@ -133,6 +159,7 @@ public class OnUseCameraE implements Listener {
                         }
                     }
                     event.getPlayer().getInventory().setItemInMainHand(itemStack);
+
                 } catch (Exception e) {
                     e.printStackTrace();
                 }

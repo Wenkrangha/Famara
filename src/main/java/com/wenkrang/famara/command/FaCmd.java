@@ -2,9 +2,11 @@ package com.wenkrang.famara.command;
 
 import com.wenkrang.famara.lib.Translation;
 import org.bukkit.Bukkit;
+import org.bukkit.Effect;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabCompleter;
+import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -141,7 +143,11 @@ public record FaCmd(
                             i.arguments().length > args.length - 2)
                     .findFirst()
                     //这里的-2是因为索引从0和args第一为子命令
-                    .map(i -> i.arguments()[args.length - 2].tabDescribe())
+                    .map(i -> {
+                        //这里顺便给命令输入加个音效
+                        if (sender instanceof Player player) player.playEffect(player.getLocation(), Effect.CLICK1, 1);
+                        return i.arguments()[args.length - 2].tabDescribe();
+                    })
                     //找不到对应的参数列表直接返空
                     .orElse(null);
 

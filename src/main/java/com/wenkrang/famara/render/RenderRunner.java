@@ -18,18 +18,10 @@ public class RenderRunner {
                     if (!Famara.tasks.isEmpty()) {
                         Random random = new Random();
                         for (int i = 0;i < Famara.speed;i++) {
-                            RenderTask renderTask = Famara.tasks.get(random.nextInt(Famara.tasks.size()));
+                            RenderTaskNew renderTask = Famara.tasks.get(random.nextInt(Famara.tasks.size()));
 
-                            render(renderTask.x(), renderTask.y()
-                                    , renderTask.eyes(),
-                                    renderTask.pitch(), renderTask.yaw(),
-                                    renderTask.fieldOfView(),
-                                    renderTask.uuid(),
-                                    renderTask.image(),
-                                    renderTask.player(),
-                                    renderTask.picture());
-
-                            Famara.tasks.remove(renderTask);
+                            renderTask.step();
+                            if (renderTask.isFinished()) Famara.tasks.remove(renderTask);
                         }
                     }
                 }catch (Exception e) {

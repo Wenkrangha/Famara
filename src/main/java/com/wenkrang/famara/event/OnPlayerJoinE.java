@@ -114,6 +114,7 @@ public class OnPlayerJoinE implements Listener {
                         itemMeta = setModelSafely(itemMeta,new NamespacedKey("famara", "famara_close"), 20);
                         itemInMainHand.setItemMeta(itemMeta);
                         player.getInventory().setItemInMainHand(itemInMainHand);
+                        player.getWorld().playSound(player.getLocation(), "famara:famara.viewfinder", 1, 1);
                     } else {
                         // 相机开启时给玩家添加缓慢效果
                         player.addPotionEffect(new PotionEffect(type, 9999999, 4));
