@@ -2,9 +2,9 @@ package com.wenkrang.famara.render;
 
 import com.wenkrang.famara.Famara;
 import com.wenkrang.famara.itemSystem.ItemSystem;
+import com.wenkrang.famara.lib.ColorManager;
 import org.bukkit.FluidCollisionMode;
 import org.bukkit.Location;
-import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
@@ -27,7 +27,6 @@ import java.io.IOException;
 import java.util.logging.Logger;
 
 import static com.wenkrang.famara.Famara.renderSpeeds;
-import static com.wenkrang.famara.Famara.yamlConfiguration;
 
 public class RenderLib {
     public static Color getSkyColor(World world) {
@@ -105,7 +104,7 @@ public class RenderLib {
         RayTraceResult result = player.getWorld().rayTraceBlocks(eyes, direction, 300, FluidCollisionMode.ALWAYS, false);
 
         if (result != null) {
-            Color color = PhotoColorMatcher(result, eyes, direction, player);
+            Color color = PhotoColorMatcher(result, eyes, player);
             color = BlockFaceColorMatcher(result.getHitBlockFace(), color);
             color = LightColorMatcher(color, getBlockLightLevel(result));
             // 添加边缘阴影效果
@@ -134,58 +133,18 @@ public class RenderLib {
     public static boolean isBlock(Block block) {
         return block != null && block.getType().isBlock() && !block.getType().isAir();
     }
-    public static Color BlockColorMatcher(Block block, Player player, Location eyes, Vector direction) {
-        if (isBlock(block)) {
-            Material material = block.getType();
 
-//            if (material == Material.WATER) {
-//                Predicate<Entity> excludePlayers = entity -> !(entity instanceof Player);
-//                //光线追踪
-//                RayTraceResult result = player.getWorld().rayTrace(eyes, direction, 180, FluidCollisionMode.NEVER, false, 1, excludePlayers);
-//
-//                if (result != null) {
-//                    Color color = PhotoColorMatcher(result, eyes, direction, player);
-//                    color = BlockFaceColorMatcher(result.getHitBlockFace(), color);
-//                    color = LightColorMatcher(color, getBlockLightLevel(result));
-//
-//                    Color Water = new Color(65, 109, 204);
-//
-//                    //混合Water和color这两个颜色
-//                    return new Color(Water.getRed() * 0.5f + color.getRed() * 0.5f, Water.getGreen() * 0.5f + color.getGreen() * 0.5f, Water.getBlue() * 0.5f + color.getBlue() * 0.5f);
-//                }
-//            }
-
-            String name = material.name();
-            if (Famara.colorCache.containsKey(name)) {
-                return Famara.colorCache.get(name);
-            }
-
-            if (!yamlConfiguration.contains(name + ".r")) {
-                player.sendMessage("§c§l[-] §r无法找到颜色：" + name);
-                return Color.MAGENTA;
-            }
-
-            int r = yamlConfiguration.getInt(name + ".r");
-            int g = yamlConfiguration.getInt(name + ".g");
-            int b = yamlConfiguration.getInt(name + ".b");
-
-            Famara.colorCache.put(name, new Color(r, g, b));
-            return new Color(r, g, b);
-        }
-//        return new Color(143,173,241);
-        return getSkyColor(player.getWorld());
-    }
-    public static Color PhotoColorMatcher(RayTraceResult result, Location start, Vector direction, Player player) {
+    public static Color PhotoColorMatcher(RayTraceResult result, Location start, Player player) {
         if (result != null) {
             if (isBlock(result.getHitBlock()) && result.getHitEntity() != null) {
                 if (result.getHitBlock().getLocation().distance(start) < result.getHitEntity().getLocation().distance(start)) {
-                    return BlockColorMatcher(result.getHitBlock(), player, start, direction);
+                    return ColorManager.getBlockColor(result.getHitBlock(), player);
                 }else {
                     return Color.YELLOW;
                 }
             } else {
                 if (isBlock(result.getHitBlock())) {
-                    return BlockColorMatcher(result.getHitBlock(), player, start, direction);
+                    return ColorManager.getBlockColor(result.getHitBlock(), player);
                 } else if (result.getHitEntity() != null) {
                     return Color.YELLOW;
                 }

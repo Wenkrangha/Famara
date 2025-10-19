@@ -6,10 +6,7 @@ import com.wenkrang.famara.Loader.LoadRecipe;
 import com.wenkrang.famara.event.*;
 import com.wenkrang.famara.itemSystem.BookPage;
 import com.wenkrang.famara.itemSystem.RecipeBook;
-import com.wenkrang.famara.lib.ConsoleLogger;
-import com.wenkrang.famara.lib.Translation;
-import com.wenkrang.famara.lib.UnsafeDownloader;
-import com.wenkrang.famara.lib.VersionChecker;
+import com.wenkrang.famara.lib.*;
 import com.wenkrang.famara.render.RenderRunner;
 import com.wenkrang.famara.render.RenderTask;
 import org.bstats.bukkit.Metrics;
@@ -25,7 +22,6 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
 
-import java.awt.*;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -50,11 +46,6 @@ public final class Famara extends JavaPlugin {
     public static ConcurrentHashMap<String, Integer> progress = new ConcurrentHashMap<>();
 
     /**
-     * 颜色配置文件的YAML配置对象。
-     */
-    public static YamlConfiguration yamlConfiguration = new YamlConfiguration();
-
-    /**
      * 渲染任务列表。
      */
     public static CopyOnWriteArrayList<RenderTask> tasks = new CopyOnWriteArrayList<>();
@@ -63,11 +54,6 @@ public final class Famara extends JavaPlugin {
      * 渲染速度设置，默认为7。
      */
     public static int speed = 7;
-
-    /**
-     * 颜色缓存，用于快速查找颜色值。
-     */
-    public static ConcurrentHashMap<String, Color> colorCache = new ConcurrentHashMap<>();
 
     /**
      * 渲染结果缓存，键为任务ID，值为对应的物品堆。
@@ -85,11 +71,6 @@ public final class Famara extends JavaPlugin {
     public static ConcurrentHashMap<String,Integer> renderRealSpeeds = new ConcurrentHashMap<>();
 
     /**
-     * 排除的方块列表，表示没有上色的方块。
-     */
-    public static CopyOnWriteArrayList<String> excludingBlocks = new CopyOnWriteArrayList<>();
-
-    /**
      * 当前颜色配置版本号。
      */
     public static int Version = 3;
@@ -103,7 +84,18 @@ public final class Famara extends JavaPlugin {
 
     public static Inventory excludingBlocksInv = Bukkit.createInventory(null, 54,"54");
 
-    public static void loadPack(String name, File file) {
+    /**
+     * 插件数据文件夹路径。
+     */
+    public static File dataFolder;
+
+    /**
+     * 将jar内的文件解压至指定文件夹
+     *
+     * @param name 文件名
+     * @param file 指定目录
+     */
+    public static void unpackFile(String name, File file) {
         try {
             Runnable runnable = () -> {
                 try {
@@ -151,7 +143,7 @@ public final class Famara extends JavaPlugin {
         new BukkitRunnable() {
             @Override
             public void run() {
-                loadPack("language.yml", new File("./plugins/Famara/language.yml"));
+                unpackFile("language.yml", new File("./plugins/Famara/language.yml"));
                 Translation.setCurrent(YamlConfiguration.loadConfiguration(new File("./plugins/Famara/language.yml")));
             }
         }.runTaskLater(this, 5);
@@ -185,6 +177,8 @@ public final class Famara extends JavaPlugin {
 
         ConsoleLogger.info("Initializing photo storage directory");
         // 初始化照片存储目录
+        dataFolder = getDataFolder();
+
         mkdir(new File(getDataFolder(), "pictures"));
 
         mkdir(new File(getDataFolder(), "players"));
@@ -192,9 +186,9 @@ public final class Famara extends JavaPlugin {
         mkdir(new File(getDataFolder(), "update"));
         // 加载颜色配置文件
         File file = new File(getDataFolder(), "colors.yml");
-        loadPack("colors.yml", file);
+        unpackFile("colors.yml", file);
         try {
-            yamlConfiguration.load(file);
+            ColorManager.yamlConfiguration.load(file);
         } catch (IOException | InvalidConfigurationException e) {
             throw new RuntimeException(e);
         }
@@ -208,7 +202,7 @@ public final class Famara extends JavaPlugin {
         new BukkitRunnable() {
             @Override
             public void run() {
-                colorCache.clear();
+                ColorManager.colorCache.clear();
             }
         }.runTaskTimer(this, 0, 200);
 
@@ -216,13 +210,13 @@ public final class Famara extends JavaPlugin {
         new BukkitRunnable() {
             @Override
             public void run() {
-                excludingBlocks.clear();
+                ColorManager.excludingBlocks.clear();
                 List<Material> itemStacks = new ArrayList<>(Arrays.stream(Material.values()).toList());
-                itemStacks.removeIf(t -> yamlConfiguration.contains(t.name().toUpperCase()));
+                itemStacks.removeIf(t -> ColorManager.yamlConfiguration.contains(t.name().toUpperCase()));
                 itemStacks.removeIf(t -> !t.isBlock());
                 itemStacks.removeIf(t -> !t.isItem());
                 itemStacks.removeIf(Material::isAir);
-                itemStacks.forEach(t -> excludingBlocks.add(t.name().toUpperCase()));
+                itemStacks.forEach(t -> ColorManager.excludingBlocks.add(t.name().toUpperCase()));
                 for (int i = 0;i < excludingBlocksInv.getSize();i++) {
                     ItemStack itemStack = new ItemStack(itemStacks.get(i));
                     ItemMeta itemMeta = itemStack.getItemMeta();
@@ -255,11 +249,11 @@ public final class Famara extends JavaPlugin {
                     UnsafeDownloader.downloadFile("https://gitee.com/wenkrang/Famara/raw/master/colors.yml", updateFile);
                     if (updateFile.exists()) {
                         YamlConfiguration updateYaml = YamlConfiguration.loadConfiguration(updateFile);
-                        if (updateYaml.getInt("version") > yamlConfiguration.getInt("version")) {
+                        if (updateYaml.getInt("version") > ColorManager.yamlConfiguration.getInt("version")) {
 
                             file.delete();
                             Files.copy(updateFile.toPath(), file.toPath());
-                            yamlConfiguration.load(file);
+                            ColorManager.yamlConfiguration.load(file);
                             ConsoleLogger.info("Colors.yml updated");
 
                         }

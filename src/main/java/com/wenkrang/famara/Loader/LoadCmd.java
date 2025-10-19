@@ -5,6 +5,7 @@ import com.wenkrang.famara.Famara;
 import com.wenkrang.famara.command.CmdArgs;
 import com.wenkrang.famara.command.FaCmd;
 import com.wenkrang.famara.itemSystem.RecipeBook;
+import com.wenkrang.famara.lib.ColorManager;
 import com.wenkrang.famara.lib.ConsoleLogger;
 import com.wenkrang.famara.lib.Translation;
 import org.bukkit.Bukkit;
@@ -17,6 +18,16 @@ import java.util.Set;
 import static com.wenkrang.famara.Famara.*;
 
 public class LoadCmd {
+    /**
+     * 注册命令触发器至Spigot
+     */
+    public static void spigotRegister() {
+        Objects.requireNonNull(Bukkit.getServer().getPluginCommand("fa"))
+                .setExecutor(FaCmd.exec);
+        Objects.requireNonNull(Bukkit.getServer().getPluginCommand("fa"))
+                .setTabCompleter(FaCmd.tabCompleter);
+    }
+
     public static void registerCommands() {
 
         FaCmd.register(new FaCmd("help", new CmdArgs[]{},
@@ -24,7 +35,7 @@ public class LoadCmd {
 
         FaCmd.register(new FaCmd("color", new CmdArgs[]{},
                 (i, j) -> {
-                    if (i.isOp()) ConsoleLogger.info("缺失方块颜色数量： " + excludingBlocks.size());
+                    if (i.isOp()) ConsoleLogger.info("缺失方块颜色数量： " + ColorManager.excludingBlocks.size());
                 }));
 
         FaCmd.register(new FaCmd("inv", new CmdArgs[]{},
@@ -32,23 +43,8 @@ public class LoadCmd {
                     ((Player) i).openInventory(excludingBlocksInv);}));
 
         FaCmd.register(new FaCmd(
-                "version", new CmdArgs[]{
-                new CmdArgs.IntArgument("int", false)
-        }, (i, j) -> {
-            if (i.isOp()) {
-                yamlConfiguration.set("version", Integer.parseInt(j.getFirst()));
-                try {
-                    yamlConfiguration.save("./plugins/Famara/colors.yml");
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
-                }
-            }
-        }
-        ));
-
-        FaCmd.register(new FaCmd(
                 "set", new CmdArgs[]{
-                new CmdArgs.WeakFixedArgument(excludingBlocks, false),
+                new CmdArgs.WeakFixedArgument(ColorManager.excludingBlocks, false),
                 new CmdArgs.IntArgument("RED", false),
                 new CmdArgs.IntArgument("GREEN", false),
                 new CmdArgs.IntArgument("BLUE", false)
@@ -56,21 +52,10 @@ public class LoadCmd {
 
             if (!i.isOp()) return;
 
-            if (!Range.closed(0, 255)
-                    .containsAll(Set.of(
-                            Integer.parseInt(j.get(1)),
-                            Integer.parseInt(j.get(2)),
-                            Integer.parseInt(j.get(3))
-                    ))) i.sendMessage(Translation.CURRENT.of("setError1"));
-
-            yamlConfiguration.set(j.getFirst() + ".r", Integer.parseInt(j.get(1)));
-            yamlConfiguration.set(j.getFirst() + ".g", Integer.parseInt(j.get(2)));
-            yamlConfiguration.set(j.getFirst() + ".b", Integer.parseInt(j.get(3)));
-
             try {
-                yamlConfiguration.save("./plugins/Famara/colors.yml");
-            } catch (IOException e) {
-                throw new RuntimeException(e);
+                ColorManager.setColor(j.get(0), j.get(1),j.get(2),j.get(3));
+            }catch (NullPointerException e) {
+                i.sendMessage(Translation.CURRENT.of("setError1"));
             }
             i.sendMessage(Translation.CURRENT.of("setSuccessfully"));
         }
@@ -109,12 +94,23 @@ public class LoadCmd {
                 i.sendMessage(Translation.CURRENT.of("useInGame"));
             }
         }));
+        FaCmd.register(new FaCmd(
+                        "step", new CmdArgs[]{
+                        new CmdArgs.IntArgument("RED", false),
+                        new CmdArgs.IntArgument("GREEN", false),
+                        new CmdArgs.IntArgument("BLUE", false)
+                }, (i, j) -> {
+                    if (!i.isOp()) return;
+                    try {
+                        ColorManager.setColor(ColorManager.excludingBlocks.get(0),j.get(0), j.get(1),j.get(2));
+                        ConsoleLogger.info("已设置颜色：" + ColorManager.excludingBlocks.get(0));
+                    }catch (NullPointerException e) {
+                        i.sendMessage(Translation.CURRENT.of("setError1"));
+                    }
+                })
+        );
 
-
-        Objects.requireNonNull(Bukkit.getServer().getPluginCommand("fa"))
-                .setExecutor(FaCmd.exec);
-        Objects.requireNonNull(Bukkit.getServer().getPluginCommand("fa"))
-                .setTabCompleter(FaCmd.tabCompleter);
+        spigotRegister();
 
     }
 }
