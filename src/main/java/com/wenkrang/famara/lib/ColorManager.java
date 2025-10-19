@@ -54,12 +54,9 @@ public class ColorManager {
      * @param blue  蓝色值
      */
     public static void setColor(String name, int red, int green, int blue) {
-        if (!Range.closed(0, 255)
-                .containsAll(Set.of(
-                        red,
-                        green,
-                        blue
-                ))) throw new NullPointerException(Translation.CURRENT.of("setError1"));
+        if (red < 0 || red > 255 || green < 0 || green > 255 || blue < 0 || blue > 255) {
+            throw new NullPointerException(Translation.CURRENT.of("setError1"));
+        }
 
         ColorManager.yamlConfiguration.set(name + ".r", red);
         ColorManager.yamlConfiguration.set(name + ".g", green);

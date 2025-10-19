@@ -73,7 +73,7 @@ public final class Famara extends JavaPlugin {
     /**
      * 当前颜色配置版本号。
      */
-    public static int Version = 3;
+    public static int Version = 4;
 
     /**
      * 插件启用时调用的方法。
@@ -187,11 +187,7 @@ public final class Famara extends JavaPlugin {
         // 加载颜色配置文件
         File file = new File(getDataFolder(), "colors.yml");
         unpackFile("colors.yml", file);
-        try {
-            ColorManager.yamlConfiguration.load(file);
-        } catch (IOException | InvalidConfigurationException e) {
-            throw new RuntimeException(e);
-        }
+        ColorManager.loadColor();
 
         ConsoleLogger.info("Starting renderer");
         // 启动渲染器
@@ -217,7 +213,8 @@ public final class Famara extends JavaPlugin {
                 itemStacks.removeIf(t -> !t.isItem());
                 itemStacks.removeIf(Material::isAir);
                 itemStacks.forEach(t -> ColorManager.excludingBlocks.add(t.name().toUpperCase()));
-                for (int i = 0;i < excludingBlocksInv.getSize();i++) {
+                List<String> ShownBlocks = ColorManager.excludingBlocks.stream().limit(54).toList();
+                for (int i = 0;i < ShownBlocks.size();i++) {
                     ItemStack itemStack = new ItemStack(itemStacks.get(i));
                     ItemMeta itemMeta = itemStack.getItemMeta();
                     itemMeta.setDisplayName(itemStack.getType().name());
@@ -246,7 +243,7 @@ public final class Famara extends JavaPlugin {
                 try {
                     File file = new File(getDataFolder(), "colors.yml");
                     File updateFile = new File(getDataFolder(), "update/colors.yml");
-                    UnsafeDownloader.downloadFile("https://gitee.com/wenkrang/Famara/raw/master/colors.yml", updateFile);
+                    UnsafeDownloader.downloadFile("https://gitee.com/wenkrang/Famara/raw/master/colors_new.yml", updateFile);
                     if (updateFile.exists()) {
                         YamlConfiguration updateYaml = YamlConfiguration.loadConfiguration(updateFile);
                         if (updateYaml.getInt("version") > ColorManager.yamlConfiguration.getInt("version")) {

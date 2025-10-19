@@ -61,8 +61,8 @@ public class PhotoRender {
         //初始化数据
         Location eyes = player.getEyeLocation();
 
-        double pitch = Math.toRadians(-eyes.getPitch() + 30);
-        double yaw = Math.toRadians(eyes.getYaw() + 210);
+        double pitch = Math.toRadians(-eyes.getPitch());
+        double yaw = Math.toRadians(eyes.getYaw() + 90);
         final double fieldOfView = 1.0 / 128.0;
 
         Famara.progress.put(id, 0);

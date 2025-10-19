@@ -102,11 +102,14 @@ public class LoadCmd {
                 }, (i, j) -> {
                     if (!i.isOp()) return;
                     try {
-                        ColorManager.setColor(ColorManager.excludingBlocks.get(0),j.get(0), j.get(1),j.get(2));
+                        ColorManager.setColor(ColorManager.excludingBlocks.get(0), j.get(0), j.get(1), j.get(2));
                         ConsoleLogger.info("已设置颜色：" + ColorManager.excludingBlocks.get(0));
-                    }catch (NullPointerException e) {
-                        i.sendMessage(Translation.CURRENT.of("setError1"));
+                    }catch (Exception e) {
+                        e.printStackTrace();
                     }
+//                    }catch (NullPointerException e) {
+//                        i.sendMessage(Translation.CURRENT.of("setError1"));
+//                    }
                 })
         );
 
