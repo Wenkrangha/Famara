@@ -261,7 +261,6 @@ public final class BootLoader extends JavaPlugin {
             callMain("onDisable");
             HandlerList.unregisterAll(BootLoader.getPlugin(BootLoader.class));
             Bukkit.getScheduler().cancelTasks(BootLoader.getPlugin(BootLoader.class));
-            Bukkit.Re
         }
     }
 
