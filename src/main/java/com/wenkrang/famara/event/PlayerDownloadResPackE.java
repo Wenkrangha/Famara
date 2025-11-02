@@ -1,6 +1,5 @@
 package com.wenkrang.famara.event;
 
-import com.wenkrang.famara.Famara;
 import com.wenkrang.famara.lib.Translation;
 import com.wenkrang.famara.lib.VersionChecker;
 import org.bukkit.event.EventHandler;
@@ -11,12 +10,6 @@ import java.lang.reflect.Method;
 import java.util.UUID;
 
 public class PlayerDownloadResPackE implements Listener {
-    Famara plugin;
-    public PlayerDownloadResPackE(Famara plugin) {
-        this.plugin = plugin;
-        plugin.getServer().getPluginManager().registerEvents(this, plugin);
-    }
-
     public static UUID getID (PlayerResourcePackStatusEvent playerResourcePackStatusEvent) {
         try {
             if (VersionChecker.isVersionBelow("1.20.3")) {

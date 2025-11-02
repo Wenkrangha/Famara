@@ -1,6 +1,5 @@
 package com.wenkrang.famara.lib;
 
-import com.google.common.collect.Range;
 import com.wenkrang.famara.Famara;
 import com.wenkrang.famara.render.RenderLib;
 import org.bukkit.Material;
@@ -12,7 +11,6 @@ import org.bukkit.entity.Player;
 import java.awt.*;
 import java.io.File;
 import java.io.IOException;
-import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 

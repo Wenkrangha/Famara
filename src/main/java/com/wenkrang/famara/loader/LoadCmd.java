@@ -1,6 +1,5 @@
-package com.wenkrang.famara.Loader;
+package com.wenkrang.famara.loader;
 
-import com.google.common.collect.Range;
 import com.wenkrang.famara.Famara;
 import com.wenkrang.famara.command.CmdArgs;
 import com.wenkrang.famara.command.FaCmd;
@@ -11,11 +10,9 @@ import com.wenkrang.famara.lib.Translation;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
-import java.io.IOException;
 import java.util.Objects;
-import java.util.Set;
 
-import static com.wenkrang.famara.Famara.*;
+import static com.wenkrang.famara.Famara.excludingBlocksInv;
 
 public class LoadCmd {
     /**

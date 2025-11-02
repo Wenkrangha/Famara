@@ -14,28 +14,6 @@ import java.io.IOException;
 
 public class PhotoRender {
 
-
-    // 添加边缘阴影检测方法
-//    public static Color addEdgeShadow(Block block, BlockFace face, Color color) {
-//        if (block == null || face != BlockFace.UP) return color;
-//
-//        Location location = block.getLocation();
-//        Location xa = location.add(1, 1, 0);
-//        Location xb = location.add(-1, 1, 0);
-//        Location za = location.add(0, 1, 1);
-//        Location zb = location.add(0, 1, -1);
-//
-//        if (!xa.getBlock().getType().isAir() | !xb.getBlock().getType().isAir() | !za.getBlock().getType().isAir() | !zb.getBlock().getType().isAir()) {
-//            if (color.getRed() < 5 || color.getGreen() < 5 || color.getBlue() < 5) {
-//                return Color.BLACK;
-//            }
-//            return new Color(color.getRed() - 5, color.getGreen() - 5, color.getBlue() - 5);
-//        }
-//
-//        return color;
-//    }
-
-
     public static ItemStack TakePhoto(Player player, File pictureFolder) throws IOException {
 
         MapView map = Bukkit.createMap(player.getWorld());
@@ -67,25 +45,7 @@ public class PhotoRender {
         Famara.progress.put(id, 0);
 
         //为照片每一个像素进行渲染
-//        for (int x = 0; x < 128; x++) {
-//            for (int y = 0; y < 128; y++) {
-//                RenderTask renderTask = new RenderTask(
-//                        x,
-//                        y,
-//                        eyes,
-//                        pitch,
-//                        yaw,
-//                        fieldOfView,
-//                        id,
-//                        image,
-//                        player,
-//                        picture
-//                );
-//                Famara.tasks.add(renderTask);
-//            }
-//        }
-
-        RenderTaskNew renderTask = new RenderTaskNew(
+        RenderTask renderTask = new RenderTask(
                 0,
                 0,
                 eyes,

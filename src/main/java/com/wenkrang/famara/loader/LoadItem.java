@@ -1,4 +1,4 @@
-package com.wenkrang.famara.Loader;
+package com.wenkrang.famara.loader;
 
 import com.wenkrang.famara.itemSystem.ItemSystem;
 import com.wenkrang.famara.itemSystem.RecipeBook;

@@ -1,4 +1,4 @@
-package com.wenkrang.famara.Loader;
+package com.wenkrang.famara.loader;
 
 import com.wenkrang.famara.Famara;
 import com.wenkrang.famara.itemSystem.BookPage;
@@ -22,7 +22,6 @@ public class LoadRecipe {
      * 加载所有自定义配方到 Bukkit 服务器中。
      * 该方法会遍历 RecipeBook 中的配方数据，为每个配方创建一个 ShapedRecipe 实例，
      * 并将其注册到服务器中。
-     *
      * 注意：该方法不会返回任何值，也不会抛出异常（异常被捕获但未处理）。
      */
     public static void loadRecipe() {
@@ -34,7 +33,7 @@ public class LoadRecipe {
         recipes.forEach((index, itemStacks) -> {
             // 创建带命名空间的配方对象
             ShapedRecipe shapedRecipe = new ShapedRecipe(
-                    new NamespacedKey(Famara.getPlugin(Famara.class), String.valueOf(index)),
+                    new NamespacedKey(Famara.getPlugin(), String.valueOf(index)),
                     mainPage.items().get(index).clone()
             );
 

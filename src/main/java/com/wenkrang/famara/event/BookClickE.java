@@ -1,6 +1,5 @@
 package com.wenkrang.famara.event;
 
-import com.wenkrang.famara.Famara;
 import com.wenkrang.famara.itemSystem.RecipeBook;
 import com.wenkrang.famara.lib.InventoryUtils;
 import org.bukkit.Bukkit;
@@ -19,12 +18,6 @@ import java.util.ArrayList;
 import java.util.Map;
 
 public class BookClickE implements Listener {
-    Famara plugin;
-    public BookClickE(Famara plugin) {
-        this.plugin = plugin;
-        plugin.getServer().getPluginManager().registerEvents(this, plugin);
-    }
-
     @EventHandler
     public void onClick(InventoryClickEvent event) throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
         if (InventoryUtils.getTitle(event.getView()).equalsIgnoreCase("相机具体配方")) {

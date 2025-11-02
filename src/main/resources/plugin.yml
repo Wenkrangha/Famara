@@ -1,6 +1,6 @@
 name: Famara
 version: '1.0-SNAPSHOT'
-main: com.wenkrang.famara.Famara
+main: com.wenkrang.famara.BootLoader
 # 自 1.20.5 以来，Spigot 支持在 api-version 中使用小版本
 api-version: '1.15'
 commands:

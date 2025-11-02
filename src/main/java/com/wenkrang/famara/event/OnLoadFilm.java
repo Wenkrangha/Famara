@@ -1,6 +1,5 @@
 package com.wenkrang.famara.event;
 
-import com.wenkrang.famara.Famara;
 import com.wenkrang.famara.lib.ItemUtils;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -9,11 +8,6 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 
 public class OnLoadFilm implements Listener {
-    Famara plugin;
-    public OnLoadFilm(Famara plugin) {
-        this.plugin = plugin;
-        plugin.getServer().getPluginManager().registerEvents(this, plugin);
-    }
 
     @EventHandler
     public void LoadFilm(PlayerSwapHandItemsEvent event) {

@@ -1,9 +1,9 @@
 package com.wenkrang.famara.event;
 
 import com.wenkrang.famara.Famara;
-import com.wenkrang.famara.Loader.LoadResourcePack;
 import com.wenkrang.famara.itemSystem.ItemSystem;
 import com.wenkrang.famara.lib.ItemUtils;
+import com.wenkrang.famara.loader.LoadResourcePack;
 import com.wenkrang.famara.render.PhotoRender;
 import com.wenkrang.famara.render.RenderLib;
 import org.bukkit.Bukkit;
@@ -25,13 +25,9 @@ import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
-public class OnUseCameraE implements Listener {
-    Famara plugin;
-    public OnUseCameraE(Famara plugin) {
-        this.plugin = plugin;
-        plugin.getServer().getPluginManager().registerEvents(this, plugin);
-    }
+import static com.wenkrang.famara.Famara.plugin;
 
+public class OnUseCameraE implements Listener {
     public static int getId(ItemStack itemStack, int index) {
         String s = itemStack.getItemMeta().getLore().get(index);
         return Integer.parseInt(s.replace("§7照片编号：", ""));

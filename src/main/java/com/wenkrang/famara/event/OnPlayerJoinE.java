@@ -1,9 +1,9 @@
 package com.wenkrang.famara.event;
 
 import com.wenkrang.famara.Famara;
-import com.wenkrang.famara.Loader.LoadResourcePack;
 import com.wenkrang.famara.itemSystem.ItemSystem;
 import com.wenkrang.famara.lib.ItemUtils;
+import com.wenkrang.famara.loader.LoadResourcePack;
 import org.bukkit.Bukkit;
 import org.bukkit.NamespacedKey;
 import org.bukkit.boss.BarColor;
@@ -23,15 +23,11 @@ import java.io.File;
 import java.util.Objects;
 import java.util.logging.Logger;
 
+import static com.wenkrang.famara.Famara.plugin;
 import static com.wenkrang.famara.event.OnUseCameraE.getId;
 import static com.wenkrang.famara.lib.ItemUtils.setModelSafely;
 
 public class OnPlayerJoinE implements Listener {
-    Famara plugin;
-    public OnPlayerJoinE(Famara plugin) {
-        this.plugin = plugin;
-        plugin.getServer().getPluginManager().registerEvents(this, plugin);
-    }
 
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent event) {
@@ -43,7 +39,7 @@ public class OnPlayerJoinE implements Listener {
         startCheck(event.getPlayer());
     }
 
-    public void startCheck(Player player) {
+    public static void startCheck(Player player) {
         BossBar progress = Bukkit.createBossBar("冲洗进度", BarColor.WHITE, BarStyle.SOLID);
         File PlayerFile = new File(plugin.getDataFolder(), "players/" + player.getName() + ".yml");
         
@@ -128,6 +124,6 @@ public class OnPlayerJoinE implements Listener {
                     }
                 }
             }
-        }.runTaskTimer(Famara.getPlugin(Famara.class), 0, 3);
+        }.runTaskTimer(Famara.getPlugin(), 0, 3);
     }
 }

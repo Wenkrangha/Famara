@@ -1,4 +1,4 @@
-package com.wenkrang.famara.Loader;
+package com.wenkrang.famara.loader;
 
 import com.maxmind.geoip2.DatabaseReader;
 import com.maxmind.geoip2.model.CountryResponse;

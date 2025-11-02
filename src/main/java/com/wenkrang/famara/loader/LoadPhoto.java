@@ -1,4 +1,4 @@
-package com.wenkrang.famara.Loader;
+package com.wenkrang.famara.loader;
 
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;

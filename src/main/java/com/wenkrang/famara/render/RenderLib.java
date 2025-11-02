@@ -107,10 +107,6 @@ public class RenderLib {
             Color color = PhotoColorMatcher(result, eyes, player);
             color = BlockFaceColorMatcher(result.getHitBlockFace(), color);
             color = LightColorMatcher(color, getBlockLightLevel(result));
-            // 添加边缘阴影效果
-//                                if (result.getHitBlock() != null && result.getHitBlockFace() != null) {
-//                                    color = addEdgeShadow(result.getHitBlock(), result.getHitBlockFace(), color);
-//                                }
             color = MaskColor(x, y, color);
             image.setRGB(x, y, color.getRGB());
         } else {
