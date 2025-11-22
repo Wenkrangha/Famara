@@ -18,6 +18,7 @@
 1. 基于Spigot的1.18.2+服务端
 2. 使用1.15.2+的客户端 <br>
 ![分割线.png](img/%E5%88%86%E5%89%B2%E7%BA%BF.png)
+<img width="2380" height="1536" alt="A4 - 1@4x" src="https://github.com/user-attachments/assets/1e9aa7ef-b52d-4a6a-a634-7ea8214a53b7" />
 
 
 ### 特别感谢 :
@@ -30,3 +31,8 @@
 ### 感谢有你
 >感谢来自各地的开发者助力项目开发 <br />
 具体名单请看贡献者列表
+<img width="288" height="384" style="float: left" alt="f11780b7b93958984e7c3c5f13fbf15b" src="https://github.com/user-attachments/assets/ee8e68a6-f335-49c5-b115-17e7a60e5831" />
+<img width="288" height="384" style="float: left" alt="48f5c9801e58a19b6872cbb98c833bda" src="https://github.com/user-attachments/assets/8d66e05f-6a3d-49fe-b025-1721d2b6515d" />
+<img width="288" height="384" style="float: left" alt="970eabd1155c99c451daa16991b2770e" src="https://github.com/user-attachments/assets/39a2ab49-4296-4811-810e-afec2a837436" />
+
+
