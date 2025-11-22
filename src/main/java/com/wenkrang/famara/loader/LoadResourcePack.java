@@ -2,6 +2,7 @@ package com.wenkrang.famara.loader;
 
 import com.maxmind.geoip2.DatabaseReader;
 import com.maxmind.geoip2.model.CountryResponse;
+import com.wenkrang.famara.lib.Config;
 import org.bukkit.entity.Player;
 
 import java.io.BufferedReader;
@@ -94,6 +95,9 @@ public class LoadResourcePack {
      * @param player 目标玩家对象
      */
     public static void load(Player player) {
+        // 检查是否强制使用资源包
+        if (!Boolean.parseBoolean(Config.CURRENT.of("force-resource"))) return;
+
         String mirrorURL = "https://gitee.com/wenkrang/Famara/raw/master/famara_compatible_textures.zip";
 
         // 检查玩家是否已经包含了资源包标记

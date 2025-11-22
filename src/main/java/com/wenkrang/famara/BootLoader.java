@@ -23,6 +23,7 @@ import java.util.zip.ZipInputStream;
  * 插件引导加载器，负责使用自定义ClassLoader动态加载并运行主类。
  * 该类不依赖任何外部库，以确保兼容性和稳定性。
  */
+//TODO:完善卸载机制，添加远程更新
 public final class BootLoader extends JavaPlugin {
 
     /**

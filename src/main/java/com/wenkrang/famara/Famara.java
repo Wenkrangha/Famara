@@ -162,6 +162,10 @@ public final class Famara {
             }
         }.runTaskLater(getPlugin(), 5);
 
+        //加载配置
+        unpackFile("config.yml", new File("./plugins/Famara/config.yml"));
+        Config.setCurrent(YamlConfiguration.loadConfiguration(new File("./plugins/Famara/config.yml")));
+
         //Bstats统计
         int pluginId = 27448;
         Metrics metrics = new Metrics(getPlugin(), pluginId);

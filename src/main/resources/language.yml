@@ -1,4 +1,4 @@
-version: 3
+version: 4
 lostArguments: "§c§l[-]§r 参数缺少，请根据命令补全来填写"
 setError1: "§c§l[-]§r \"RED\",\"BLUE\",\"GREEN\"必须在0 ~ 255之间"
 setError2: "§c§l[-]§r \"RED\",\"BLUE\",\"GREEN\"必须为数字"
