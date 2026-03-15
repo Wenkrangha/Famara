@@ -18,7 +18,6 @@
 1. 基于Spigot的1.18.2+服务端
 2. 使用1.15.2+的客户端 <br>
 ![分割线.png](img/%E5%88%86%E5%89%B2%E7%BA%BF.png)
-<img width="2380" height="1536" alt="A4 - 1@4x" src="https://github.com/user-attachments/assets/1e9aa7ef-b52d-4a6a-a634-7ea8214a53b7" />
 
 
 ### 特别感谢 :
