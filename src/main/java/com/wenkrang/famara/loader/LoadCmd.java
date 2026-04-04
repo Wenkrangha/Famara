@@ -66,7 +66,7 @@ public class LoadCmd {
 
             Famara.speed = Integer.parseInt(j.getFirst());
 
-            if (Famara.speed > 50)
+            if (Famara.speed > 500)
                 i.sendMessage(Translation.CURRENT.of("warning1"));
 
             i.sendMessage(String.format(

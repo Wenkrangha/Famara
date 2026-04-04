@@ -32,7 +32,10 @@ public class RenderRunner {
 
                             renderTask.step();
                             // 如果任务已完成，则从任务队列中移除
-                            if (renderTask.isFinished()) Famara.tasks.remove(renderTask);
+                            if (renderTask.isFinished()) {
+                                RenderLib.finishRender(renderTask);
+                                Famara.tasks.remove(renderTask);
+                            }
                         }
                     }
                 }catch (Exception e) {

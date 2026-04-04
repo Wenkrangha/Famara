@@ -53,7 +53,7 @@ public final class Famara {
     /**
      * 渲染速度设置，默认为7。
      */
-    public static int speed = 7;
+    public static int speed = 300;
 
     /**
      * 渲染结果缓存，键为任务ID，值为对应的物品堆。

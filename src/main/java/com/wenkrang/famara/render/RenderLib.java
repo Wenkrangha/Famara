@@ -15,6 +15,7 @@ import org.bukkit.inventory.meta.MapMeta;
 import org.bukkit.map.MapCanvas;
 import org.bukkit.map.MapRenderer;
 import org.bukkit.map.MapView;
+import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.RayTraceResult;
 import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NotNull;
@@ -89,6 +90,20 @@ public class RenderLib {
         itemStack.setItemMeta(mapMeta);
         return itemStack;
     }
+    public static void finishRender(RenderTask renderTask) {
+        new BukkitRunnable() {
+            @Override
+            public void run() {
+                //写入照片
+                try {
+                    ImageIO.write(renderTask.image, "png", renderTask.picture);
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        }.runTaskAsynchronously(Famara.getPlugin());
+    }
+
     public static void render(int x, int y, Location eyes, double pitchRad, double yawRad, double fieldOfView,String id, BufferedImage image, Player player, File picture){
         //TODO:1.添加液体渲染 2.添加UP阴影
         double cos = Math.cos(pitchRad - (y - 64) * fieldOfView);
@@ -101,7 +116,7 @@ public class RenderLib {
 
 
         //光线追踪
-        RayTraceResult result = player.getWorld().rayTraceBlocks(eyes, direction, 300, FluidCollisionMode.ALWAYS, false);
+        RayTraceResult result = player.getWorld().rayTraceBlocks(eyes, direction, 128, FluidCollisionMode.ALWAYS, false);
 
         if (result != null) {
             Color color = PhotoColorMatcher(result, eyes, player);
@@ -114,12 +129,6 @@ public class RenderLib {
 
         }
 
-        //写入照片
-        try {
-            ImageIO.write(image, "png", picture);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
 
         Famara.progress.put(id, Famara.progress.get(id) + 1);
 
