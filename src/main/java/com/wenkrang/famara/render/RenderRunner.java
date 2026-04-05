@@ -28,18 +28,20 @@ public class RenderRunner {
                         // 根据配置的速度参数，执行相应数量的任务步骤
                         for (int i = 0;i < Famara.speed;i++) {
                             // 随机选择一个渲染任务并执行一步
-                            RenderTask renderTask = Famara.tasks.get(random.nextInt(Famara.tasks.size()));
-
-                            renderTask.step();
-                            // 如果任务已完成，则从任务队列中移除
-                            if (renderTask.isFinished()) {
-                                RenderLib.finishRender(renderTask);
-                                Famara.tasks.remove(renderTask);
+                            if (!Famara.tasks.isEmpty()) {
+                                RenderTask renderTask = Famara.tasks.get(random.nextInt(Famara.tasks.size()));
+                                renderTask.step();
+                                // 如果任务已完成，则从任务队列中移除
+                                if (renderTask.isFinished()) {
+                                    RenderLib.finishRender(renderTask);
+                                    Famara.tasks.remove(renderTask);
+                                }
                             }
                         }
                     }
                 }catch (Exception e) {
-                    Logger.getGlobal().warning(e.getMessage());
+//                    Logger.getGlobal().warning(e.getMessage());
+                    e.printStackTrace();
                 }
             }
         }.runTaskTimer(Famara.getPlugin(), 0, 1);

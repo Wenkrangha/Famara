@@ -5,6 +5,7 @@ import com.wenkrang.famara.itemSystem.ItemSystem;
 import com.wenkrang.famara.lib.ColorManager;
 import org.bukkit.FluidCollisionMode;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
@@ -23,7 +24,6 @@ import org.jetbrains.annotations.NotNull;
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.io.File;
 import java.io.IOException;
 import java.util.logging.Logger;
 
@@ -104,7 +104,7 @@ public class RenderLib {
         }.runTaskAsynchronously(Famara.getPlugin());
     }
 
-    public static void render(int x, int y, Location eyes, double pitchRad, double yawRad, double fieldOfView,String id, BufferedImage image, Player player, File picture){
+    public static void render(int x, int y, Location eyes, double pitchRad, double yawRad, double fieldOfView,String id, BufferedImage image, Player player){
         //TODO:1.添加液体渲染 2.添加UP阴影
         double cos = Math.cos(pitchRad - (y - 64) * fieldOfView);
         Vector direction = new Vector(
@@ -116,17 +116,40 @@ public class RenderLib {
 
 
         //光线追踪
-        RayTraceResult result = player.getWorld().rayTraceBlocks(eyes, direction, 128, FluidCollisionMode.ALWAYS, false);
+        RayTraceResult result = player.getWorld().rayTraceBlocks(eyes, direction, 256, FluidCollisionMode.ALWAYS, false);
 
+        // 先检查结果是否为空
         if (result != null) {
-            Color color = PhotoColorMatcher(result, eyes, player);
+            Color color;
+            // 检查是否命中的方块是液体
+            // 由于玩家在游戏内看岩浆是不透明的
+            // 所以这里只处理水的透明性
+            if (result.getHitBlock()!= null
+                    && result.getHitBlock().isLiquid()
+                    && result.getHitBlock().getType().equals(Material.WATER)) {
+                // 获取在水后面方块的颜色
+                RayTraceResult blockBehindWater = player.getWorld().rayTraceBlocks(eyes, direction, 256, FluidCollisionMode.NEVER, false);
+                if (blockBehindWater != null) {
+                    color = PhotoColorMatcher(blockBehindWater, eyes, player);
+                    // 叠加水的颜色
+                    color = new Color(
+                            Math.max(0,color.getRed() - 50),
+                            color.getGreen(),
+                            Math.min(255,color.getBlue() + 50));
+                }else {
+                    color = PhotoColorMatcher(result, eyes, player);
+                }
+            }else {
+                // 直接匹配颜色
+                color = PhotoColorMatcher(result, eyes, player);
+            }
+
             color = BlockFaceColorMatcher(result.getHitBlockFace(), color);
             color = LightColorMatcher(color, getBlockLightLevel(result));
             color = MaskColor(x, y, color);
             image.setRGB(x, y, color.getRGB());
         } else {
             image.setRGB(x, y, getSkyColor(player.getWorld()).getRGB());
-
         }
 
 

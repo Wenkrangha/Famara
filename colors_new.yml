@@ -372,9 +372,9 @@ CHERRY_HANGING_SIGN:
   g: 0
   b: 0
 CHERRY_LEAVES:
-  r: 252
-  g: 203
-  b: 231
+  r: 202
+  g: 153
+  b: 181
 CHERRY_LOG:
   r: 48
   g: 29

@@ -63,7 +63,7 @@ public class RenderTask {
      * 渲染任务执行步骤
      */
     public void step(){
-        RenderLib.render(x, y, eyes, pitch, yaw, fieldOfView, uuid, image, player, picture);
+        RenderLib.render(x, y, eyes, pitch, yaw, fieldOfView, uuid, image, player);
 
         x++;
         // 当x坐标超出范围时，重置x坐标并增加y坐标

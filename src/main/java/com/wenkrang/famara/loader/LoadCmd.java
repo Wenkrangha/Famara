@@ -9,10 +9,17 @@ import com.wenkrang.famara.lib.ConsoleLogger;
 import com.wenkrang.famara.lib.Translation;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
+import org.bukkit.map.MapCanvas;
+import org.bukkit.map.MapRenderer;
+import org.bukkit.map.MapView;
+import org.bukkit.util.RayTraceResult;
+import org.jetbrains.annotations.NotNull;
 
+import java.awt.*;
 import java.util.Objects;
 
 import static com.wenkrang.famara.Famara.excludingBlocksInv;
+import static com.wenkrang.famara.render.RenderLib.*;
 
 public class LoadCmd {
     /**
@@ -109,6 +116,20 @@ public class LoadCmd {
 //                    }
                 })
         );
+//        FaCmd.register(new FaCmd("test", new CmdArgs[]{}, (i, j) -> {
+//            if (!i.isOp()) return;
+//
+//            Player player = (Player) i;
+//            RayTraceResult result = ((Player) i).rayTraceBlocks(128);
+//
+//            if (result == null) return;
+//            Color color = PhotoColorMatcher(result, player.getEyeLocation(), player);
+//            player.sendMessage(color.toString());
+//            color = BlockFaceColorMatcher(result.getHitBlockFace(), color);
+//            player.sendMessage(color.toString());
+//            color = LightColorMatcher(color, getBlockLightLevel(result));
+//            player.sendMessage(color.toString());
+//        }));
 
         spigotRegister();
 

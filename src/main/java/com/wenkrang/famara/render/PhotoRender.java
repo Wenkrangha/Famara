@@ -27,7 +27,8 @@ public class PhotoRender {
         try {
             boolean newFile = picture.createNewFile();
             if (!newFile) {
-                throw new RuntimeException("照片文件创建失败");
+                picture.delete();
+                throw new RuntimeException("照片文件创建失败:" + picture.getAbsolutePath());
             }
         } catch (IOException e) {
             throw new RuntimeException(e);
