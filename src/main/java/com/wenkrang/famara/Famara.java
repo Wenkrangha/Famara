@@ -40,7 +40,7 @@ public final class Famara {
     /**
      * 当前颜色配置版本号。
      */
-    public static int Version = 4;
+    public static int Version = 5;
 
     /**
      * 插件启用时调用的方法。

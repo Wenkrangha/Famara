@@ -4,7 +4,6 @@ import com.wenkrang.famara.Famara;
 import com.wenkrang.famara.itemSystem.ItemSystem;
 import com.wenkrang.famara.render.lib.LoadPhoto;
 import org.bukkit.Bukkit;
-import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -87,10 +86,9 @@ public class RenderService {
 
     /**
      * 创建照片文件
-     * @param id 任务ID
      * @return 照片
      */
-    public BufferedImage createPhotoFile(String id, File picture) {
+    public BufferedImage createPhotoFile(File picture) {
         //初始化照片
         BufferedImage image = new BufferedImage(128, 128, BufferedImage.TYPE_INT_RGB);
 
@@ -135,8 +133,8 @@ public class RenderService {
         //生成mapID
         String id = String.valueOf(map.getId());
 
-        File picture = new File(pictureFolder, id + ".png");
-        BufferedImage image = createPhotoFile(id, picture);
+        File picture = new File(new File(pictureFolder, "pictures"), id + ".png");
+        BufferedImage image = createPhotoFile(picture);
 
         // 新建渲染上下文
         RenderContext ctx = new RenderContext(id, image, player, picture, map);
