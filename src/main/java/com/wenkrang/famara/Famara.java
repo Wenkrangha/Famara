@@ -7,8 +7,7 @@ import com.wenkrang.famara.lib.*;
 import com.wenkrang.famara.loader.LoadCmd;
 import com.wenkrang.famara.loader.LoadItem;
 import com.wenkrang.famara.loader.LoadRecipe;
-import com.wenkrang.famara.render.RenderRunner;
-import com.wenkrang.famara.render.RenderTask;
+import com.wenkrang.famara.render.RenderService;
 import org.bstats.bukkit.Metrics;
 import org.bstats.charts.SimplePie;
 import org.bukkit.Bukkit;
@@ -27,11 +26,9 @@ import java.io.InputStream;
 import java.lang.reflect.Method;
 import java.nio.file.Files;
 import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.logging.Logger;
 
-import static com.wenkrang.famara.loader.LoadPhoto.loadPhoto;
+import static com.wenkrang.famara.render.lib.LoadPhoto.loadPhoto;
 import static org.bukkit.Bukkit.getServer;
 
 /**
@@ -39,36 +36,6 @@ import static org.bukkit.Bukkit.getServer;
  * 包括命令注册、事件监听、资源加载、渲染器启动等。
  */
 public final class Famara {
-
-    /**
-     * 存储渲染进度的映射表，键为任务标识符，值为当前进度。
-     */
-    public static ConcurrentHashMap<String, Integer> progress = new ConcurrentHashMap<>();
-
-    /**
-     * 渲染任务列表。
-     */
-    public static CopyOnWriteArrayList<RenderTask> tasks = new CopyOnWriteArrayList<>();
-
-    /**
-     * 渲染速度设置，默认为7。
-     */
-    public static int speed = 300;
-
-    /**
-     * 渲染结果缓存，键为任务ID，值为对应的物品堆。
-     */
-    public static ConcurrentHashMap<Integer, ItemStack> results = new ConcurrentHashMap<>();
-
-    /**
-     * 存储每个图片的渲染速度。
-     */
-    public static ConcurrentHashMap<String,Integer> renderSpeeds = new ConcurrentHashMap<>();
-
-    /**
-     * 实际使用的渲染速度映射。
-     */
-    public static ConcurrentHashMap<String,Integer> renderRealSpeeds = new ConcurrentHashMap<>();
 
     /**
      * 当前颜色配置版本号。
@@ -85,6 +52,8 @@ public final class Famara {
     public static Inventory excludingBlocksInv = Bukkit.createInventory(null, 54,"54");
 
     public static JavaPlugin plugin;
+
+    public static RenderService renderService;
 
     /**
      * 插件数据文件夹路径。
@@ -144,7 +113,7 @@ public final class Famara {
             Class<?> bootLoaderClass = Class.forName("com.wenkrang.famara.BootLoader");
             Method getPluginMethod = JavaPlugin.class.getMethod("getPlugin", Class.class);
             return (JavaPlugin) getPluginMethod.invoke(null, bootLoaderClass);
-        } catch (Exception ignored) {
+        } catch (Exception e) {
             // 备用方案
             return (JavaPlugin) Bukkit.getServer().getPluginManager().getPlugin("Famara");
         }
@@ -209,7 +178,8 @@ public final class Famara {
 
         ConsoleLogger.info("Starting renderer");
         // 启动渲染器
-        RenderRunner.Runner();
+        renderService = new RenderService(plugin.getDataFolder());
+        renderService.start();
 
         ConsoleLogger.info("Starting scheduled tasks");
         // 定时清理颜色缓存
@@ -220,12 +190,13 @@ public final class Famara {
             }
         }.runTaskTimer(getPlugin(), 0, 200);
 
+        List<Material> itemStacks = new ArrayList<>(Arrays.stream(Material.values()).toList());
+
         // 定时重新加载物品缓存
         new BukkitRunnable() {
             @Override
             public void run() {
                 ColorManager.excludingBlocks.clear();
-                List<Material> itemStacks = new ArrayList<>(Arrays.stream(Material.values()).toList());
                 itemStacks.removeIf(t -> ColorManager.yamlConfiguration.contains(t.name().toUpperCase()));
                 itemStacks.removeIf(t -> !t.isBlock());
                 itemStacks.removeIf(t -> !t.isItem());
@@ -242,16 +213,6 @@ public final class Famara {
                 LoadItem.loadItem();
             }
         }.runTaskTimer(Famara.getPlugin(), 0, 8);
-
-        // 定时同步渲染速度数据
-        new BukkitRunnable() {
-            @Override
-            public void run() {
-                Famara.renderRealSpeeds.clear();
-                Famara.renderRealSpeeds.putAll(Famara.renderSpeeds);
-                Famara.renderSpeeds.clear();
-            }
-        }.runTaskTimerAsynchronously(Famara.getPlugin(), 0, 20);
 
         // 定时更新Colors.yml
         new BukkitRunnable() {
@@ -282,8 +243,8 @@ public final class Famara {
         new BukkitRunnable() {
             @Override
             public void run() {
-                Famara.progress.forEach((id, progress) -> {
-                    if (progress >= 16384) Famara.progress.remove(id);
+                renderService.progress.forEach((id, progress) -> {
+                    if (progress >= 16384) renderService.progress.remove(id);
                 });
             }
         }.runTaskTimer(Famara.getPlugin(), 0 , 20);
@@ -296,14 +257,13 @@ public final class Famara {
         ConsoleLogger.info("Loading items, photos and recipes");
         // 加载物品、照片和配方
         LoadItem.loadItem();
-        loadPhoto(plugin.getDataFolder());
         LoadRecipe.loadRecipe();
 
 
         // 对在线玩家执行加入检查
         getServer().getOnlinePlayers().forEach(OnPlayerJoinE::startCheck);
 
-        ConsoleLogger.info("Loading complete, current version: 1.2");
+        ConsoleLogger.info("Loading complete, current version: 1.3");
     }
 
     /**

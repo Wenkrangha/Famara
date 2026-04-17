@@ -1,12 +1,13 @@
 package com.wenkrang.famara.lib;
 
 import com.wenkrang.famara.Famara;
-import com.wenkrang.famara.render.RenderLib;
+import com.wenkrang.famara.render.RenderTemp;
+import com.wenkrang.famara.render.lib.FaColor;
+import com.wenkrang.famara.render.stage.RayTraceStage;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
-import org.bukkit.entity.Player;
 
 import java.awt.*;
 import java.io.File;
@@ -30,6 +31,12 @@ public class ColorManager {
      * 颜色缓存，用于快速查找颜色值。
      */
     public static ConcurrentHashMap<String, Color> colorCache = new ConcurrentHashMap<>();
+
+    /**
+     * 颜色缓存，用于快速查找颜色值。
+     */
+    public static ConcurrentHashMap<String, FaColor> faColorCache = new ConcurrentHashMap<>();
+
 
     /**
      * 加载颜色配置文件。
@@ -87,34 +94,51 @@ public class ColorManager {
         }
     }
 
+
+
     /**
-     * 获取方块颜色。
-     *
+     * 枚举方块颜色
      * @param block 要查询的方块
-     * @param player 报错反馈
-     * @return 方块颜色
+     * @param rt 渲染临时变量
      */
-    public static Color getBlockColor(Block block, Player player) {
-        if (RenderLib.isBlock(block)) {
+    public static void getBlockColor(Block block, RenderTemp rt) {
+        // 先检测是不是方块(不是空气)
+        if (RayTraceStage.isBlock(block)) {
+            // 获取材质
             Material material = block.getType();
-
+    
+            // 获取方块名字
             String name = material.name();
-            if (colorCache.containsKey(name)) {
-                return colorCache.get(name);
+                
+            // 查询FaColor缓存
+            FaColor cached = faColorCache.get(name);
+            if (cached != null) {
+                rt.color.set(cached);
+                return;
             }
-
+    
+            // 查询配置是否存在
             if (!yamlConfiguration.contains(name + ".r")) {
-                player.sendMessage("§c§l[-] §r无法找到颜色：" + name);
-                return Color.MAGENTA;
+                //TODO:返回找不到的
+                rt.color.set(Color.MAGENTA);
+                rt.failedBlocks.add(name);
+                return;
             }
-
+    
+            // 获取rgb
             int r = yamlConfiguration.getInt(name + ".r");
             int g = yamlConfiguration.getInt(name + ".g");
             int b = yamlConfiguration.getInt(name + ".b");
-
-            colorCache.put(name, new Color(r, g, b));
-            return new Color(r, g, b);
+    
+            // 存缓存(只创建一次)
+            FaColor newColor = new FaColor(r, g, b);
+            faColorCache.put(name, newColor);
+                
+            // 赋值
+            rt.color.set(newColor);
+        }else {
+            // 赋空
+            rt.color = null;
         }
-        return RenderLib.getSkyColor(player.getWorld());
     }
 }

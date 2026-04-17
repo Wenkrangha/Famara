@@ -1,50 +1,51 @@
 package com.wenkrang.famara.render;
 
+
 import com.wenkrang.famara.Famara;
 import org.bukkit.scheduler.BukkitRunnable;
 
+import java.util.Arrays;
 import java.util.Random;
 import java.util.logging.Logger;
 
-/**
- * 渲染任务执行器类
- * 负责定时执行渲染任务队列中的任务
- */
-public class RenderRunner {
+import static com.wenkrang.famara.Famara.renderService;
 
-    /**
-     * 启动渲染任务执行器
-     * 创建一个Bukkit定时任务，周期性地从任务队列中随机选择并执行渲染任务
-     * 该方法会立即启动并以1tick的间隔持续执行
-     */
-    public static void Runner() {
+public class RenderRunner {
+    public RenderService renderService;
+
+    public RenderRunner(RenderService renderService) {
+        this.renderService = renderService;
+    }
+
+    public void Runner() {
+        //TODO:取消竞态渲染
         new BukkitRunnable() {
             @Override
             public void run() {
                 try {
                     // 检查任务队列是否为空
-                    if (!Famara.tasks.isEmpty()) {
+                    if (!renderService.tasks.isEmpty()) {
                         Random random = new Random();
                         // 根据配置的速度参数，执行相应数量的任务步骤
-                        for (int i = 0;i < Famara.speed;i++) {
+                        for (int i = 0; i < renderService.speed; i++) {
                             // 随机选择一个渲染任务并执行一步
-                            if (!Famara.tasks.isEmpty()) {
-                                RenderTask renderTask = Famara.tasks.get(random.nextInt(Famara.tasks.size()));
+                            if (!renderService.tasks.isEmpty()) {
+                                RenderTask renderTask = renderService.tasks.get(random.nextInt(renderService.tasks.size()));
                                 renderTask.step();
                                 // 如果任务已完成，则从任务队列中移除
                                 if (renderTask.isFinished()) {
-                                    RenderLib.finishRender(renderTask);
-                                    Famara.tasks.remove(renderTask);
+                                    renderTask.finish();
+                                    renderService.tasks.remove(renderTask);
                                 }
                             }
                         }
                     }
                 }catch (Exception e) {
-//                    Logger.getGlobal().warning(e.getMessage());
+//                    Logger.getGlobal().warning(Arrays.toString(e.getStackTrace()));
                     e.printStackTrace();
                 }
             }
         }.runTaskTimer(Famara.getPlugin(), 0, 1);
     }
-}
 
+}

@@ -24,6 +24,7 @@ import java.util.Objects;
 import java.util.logging.Logger;
 
 import static com.wenkrang.famara.Famara.plugin;
+import static com.wenkrang.famara.Famara.renderService;
 import static com.wenkrang.famara.event.OnUseCameraE.getId;
 import static com.wenkrang.famara.lib.ItemUtils.setModelSafely;
 
@@ -66,26 +67,26 @@ public class OnPlayerJoinE implements Listener {
                             .equalsIgnoreCase("§f照片（按右键撕开拉片）")) {
                         int id = getId(player.getInventory().getItemInMainHand(), 3);
 
-                        if (!Famara.progress.containsKey(String.valueOf(id))) {
+                        if (!renderService.progress.containsKey(String.valueOf(id))) {
                             progress.removeAll();
                             return;
                         }
-                        Integer i = Famara.progress.get(String.valueOf(id));
+                        Integer i = renderService.progress.get(String.valueOf(id));
 
                         if (i != 16384) progress.addPlayer(player);
 
                         try {
                             progress.setProgress((double) i / 16384);
-                            if (Famara.renderRealSpeeds.get(String.valueOf(id)) == null) return;
+                            if (renderService.renderRealSpeeds.get(String.valueOf(id)) == null) return;
                             progress.setTitle("冲洗进度 "
                                     + Math.round((double) i / 16384 * 100) + "% "
-                                    + "s:" + Famara.renderRealSpeeds.get(String.valueOf(id)) + "p/s "
-                                    + "ETA:" + (16384 - Famara.progress.get(String.valueOf(id))) /
-                                    Math.max(1, Famara.renderRealSpeeds.get(String.valueOf(id))) + "s");
+                                    + "s:" + renderService.renderRealSpeeds.get(String.valueOf(id)) + "p/s "
+                                    + "ETA:" + (16384 - renderService.progress.get(String.valueOf(id))) /
+                                    Math.max(1, renderService.renderRealSpeeds.get(String.valueOf(id))) + "s");
 
                         } catch (Exception e) {
                             progress.removeAll();
-                            Famara.progress.remove(String.valueOf(id));
+                            renderService.progress.remove(String.valueOf(id));
                         }
 
                         if (i == 16384) {

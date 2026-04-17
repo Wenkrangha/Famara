@@ -1,6 +1,5 @@
 package com.wenkrang.famara.loader;
 
-import com.wenkrang.famara.Famara;
 import com.wenkrang.famara.command.CmdArgs;
 import com.wenkrang.famara.command.FaCmd;
 import com.wenkrang.famara.itemSystem.RecipeBook;
@@ -9,17 +8,12 @@ import com.wenkrang.famara.lib.ConsoleLogger;
 import com.wenkrang.famara.lib.Translation;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
-import org.bukkit.map.MapCanvas;
-import org.bukkit.map.MapRenderer;
-import org.bukkit.map.MapView;
-import org.bukkit.util.RayTraceResult;
-import org.jetbrains.annotations.NotNull;
 
-import java.awt.*;
 import java.util.Objects;
 
 import static com.wenkrang.famara.Famara.excludingBlocksInv;
-import static com.wenkrang.famara.render.RenderLib.*;
+import static com.wenkrang.famara.Famara.renderService;
+
 
 public class LoadCmd {
     /**
@@ -71,13 +65,13 @@ public class LoadCmd {
         }, (i, j) -> {
             if (!i.isOp()) return;
 
-            Famara.speed = Integer.parseInt(j.getFirst());
+            renderService.speed = Integer.parseInt(j.getFirst());
 
-            if (Famara.speed > 500)
+            if (renderService.speed > 500)
                 i.sendMessage(Translation.CURRENT.of("warning1"));
 
             i.sendMessage(String.format(
-                    Translation.CURRENT.of("speedSetSuccessfully"), Famara.speed));
+                    Translation.CURRENT.of("speedSetSuccessfully"), renderService.speed));
         }));
 
         FaCmd.register(new FaCmd(
@@ -116,20 +110,6 @@ public class LoadCmd {
 //                    }
                 })
         );
-//        FaCmd.register(new FaCmd("test", new CmdArgs[]{}, (i, j) -> {
-//            if (!i.isOp()) return;
-//
-//            Player player = (Player) i;
-//            RayTraceResult result = ((Player) i).rayTraceBlocks(128);
-//
-//            if (result == null) return;
-//            Color color = PhotoColorMatcher(result, player.getEyeLocation(), player);
-//            player.sendMessage(color.toString());
-//            color = BlockFaceColorMatcher(result.getHitBlockFace(), color);
-//            player.sendMessage(color.toString());
-//            color = LightColorMatcher(color, getBlockLightLevel(result));
-//            player.sendMessage(color.toString());
-//        }));
 
         spigotRegister();
 

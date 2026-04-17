@@ -1,76 +1,98 @@
 package com.wenkrang.famara.render;
 
-import org.bukkit.Location;
-import org.bukkit.entity.Player;
+import com.wenkrang.famara.Famara;
+import com.wenkrang.famara.lib.Translation;
+import com.wenkrang.famara.render.stage.*;
+import org.bukkit.scheduler.BukkitRunnable;
 
-import java.awt.image.BufferedImage;
-import java.io.File;
+import javax.imageio.ImageIO;
+import java.io.IOException;
+
+import static com.wenkrang.famara.Famara.renderService;
 
 /**
- * 渲染任务类，用于处理图像渲染过程中的位置跟踪和状态管理
+ * 渲染任务
  */
 public class RenderTask {
-    int x;
-    int y;
-    Location eyes;
-    double pitch;
-    double yaw;
-    double fieldOfView;
-    String uuid;
-    BufferedImage image;
-    Player player;
-    File picture;
+    public final RenderPipe pipe;
+    public final RenderContext ctx;
+    private final RenderTemp rt;
+    public volatile boolean handled = false;
 
-    /**
-     * 构造一个新的渲染任务
-     *
-     * @param x 渲染任务的起始x坐标
-     * @param y 渲染任务的起始y坐标
-     * @param eyes 观察者的眼睛位置
-     * @param pitch 观察者的俯仰角度
-     * @param yaw 观察者的偏航角度
-     * @param fieldOfView 视野范围
-     * @param uuid 任务唯一标识符
-     * @param image 要渲染的图像缓冲区
-     * @param player 相关的玩家对象
-     * @param picture 图像文件
-     */
-    public RenderTask(
-            int x,
-            int y,
-            Location eyes,
-            double pitch,
-            double yaw,
-            double fieldOfView,
-            String uuid,
-            BufferedImage image,
-            Player player,
-            File picture
-    ) {
-        this.x = x;
-        this.y = y;
-        this.eyes = eyes;
-        this.pitch = pitch;
-        this.yaw = yaw;
-        this.fieldOfView = fieldOfView;
-        this.uuid = uuid;
-        this.image = image;
-        this.player = player;
-        this.picture = picture;
+    public boolean isHandled() {
+        return handled;
     }
 
     /**
-     * 渲染任务执行步骤
+     * 完成渲染任务
      */
-    public void step(){
-        RenderLib.render(x, y, eyes, pitch, yaw, fieldOfView, uuid, image, player);
+    public void finish() {
+        new BukkitRunnable() {
+            @Override
+            public void run() {
+                //写入照片
+                try {
+                    ImageIO.write(ctx.image, "png", ctx.picture);
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        }.runTaskAsynchronously(Famara.getPlugin());
 
-        x++;
-        // 当x坐标超出范围时，重置x坐标并增加y坐标
-        if (x >= 128) {
-            x = 0;
-            y++;
+        // 输出错误信息
+        if (!rt.failedBlocks.isEmpty()) {
+            Famara.plugin.getLogger().warning(Translation.CURRENT.of("renderError1") + " " + rt.failedBlocks.toString());
         }
+    }
+
+    public RenderTask(RenderContext ctx) {
+        this.ctx = ctx;
+
+        // 初始化渲染临时变量
+        rt = new RenderTemp();
+
+        rt.x = 0;
+        rt.y = 0;
+
+        pipe = new RenderPipe(rt);
+
+        // 添加渲染阶段
+        pipe.addStage(new RayTraceStage())
+                .addStage(new SkyColorStage())
+                .addStage(new BlockFaceLightStage())
+                .addStage(new LightColorStage())
+                .addStage(new MaskColorStage());
+    }
+
+    public void updateTraceData() {
+        // progress
+        renderService.progress.put(ctx.id, renderService.progress.get(ctx.id) + 1);
+
+        // render speed
+        renderService.renderSpeeds.put(
+                ctx.id, renderService.renderSpeeds.containsKey(ctx.id)
+                        ?
+                        renderService.renderSpeeds.get(ctx.id) + 1
+                        :
+                        1
+        );
+    }
+
+    public void step() {
+        rt.isSkipped = false;
+
+        pipe.render(ctx);
+
+        rt.x++;
+        // 当x坐标超出范围时，重置x坐标并增加y坐标
+        if (rt.x >= 128) {
+            rt.x = 0;
+            rt.y++;
+        }
+
+        updateTraceData();
+
+        handled = true;
     }
 
     /**
@@ -79,7 +101,8 @@ public class RenderTask {
      * @return 当y坐标达到或超过128时返回true，否则返回false
      */
     public boolean isFinished(){
-        return y >= 128;
+        return rt.y >= 128;
     }
+
 
 }

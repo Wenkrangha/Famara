@@ -24,6 +24,7 @@ public class LoadItem {
             lore.add("");
             lore.add("§6§l右键§6打开");
             itemMeta.setLore(lore);
+            itemMeta = ItemUtils.setModelSafely(itemMeta, new NamespacedKey("famara", "book"), 50);
             itemStack.setItemMeta(itemMeta);
 
             ItemSystem.put("recipeBook", itemStack);
