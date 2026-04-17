@@ -107,7 +107,7 @@ public class LoadResourcePack {
 
         player.sendMessage("§9§l[*]§r 正在下载材质包，如果下载失败，请使用/fa resource下载");
 
-        byte[] hash = stringToHash("d8148fb023c11a5d2e11696a9ad6bf1d4acae94c");
+        byte[] hash = stringToHash("de4c3ab99b00eab6430c5f26c1be33bb8000b426");
 
         // 判断是否应该使用中国镜像：如果玩家有 FromChina 标签、IP 来自中国或语言环境为中国大陆
         if (player.getScoreboardTags().contains("FromChina") || isIPFromChina(getOutIP()) || player.getLocale().equalsIgnoreCase("zh_cn")) {
