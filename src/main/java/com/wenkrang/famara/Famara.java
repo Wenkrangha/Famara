@@ -263,7 +263,7 @@ public final class Famara {
         // 对在线玩家执行加入检查
         getServer().getOnlinePlayers().forEach(OnPlayerJoinE::startCheck);
 
-        ConsoleLogger.info("Loading complete, current version: 1.3");
+        ConsoleLogger.info("Loading complete, current version: 1.4");
     }
 
     /**
