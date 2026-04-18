@@ -1,4 +1,4 @@
-version: 5
+version: 6
 ACACIA_DOOR:
   r: 0
   g: 0
@@ -372,9 +372,9 @@ CHERRY_HANGING_SIGN:
   g: 0
   b: 0
 CHERRY_LEAVES:
-  r: 202
-  g: 153
-  b: 181
+  r: 152
+  g: 103
+  b: 131
 CHERRY_LOG:
   r: 48
   g: 29
@@ -1044,9 +1044,9 @@ JUNGLE_HANGING_SIGN:
   g: 0
   b: 0
 JUNGLE_LEAVES:
-  r: 0
-  g: 0
-  b: 0
+  r: 13
+  g: 35
+  b: 2
 JUNGLE_LOG:
   r: 89
   g: 70
