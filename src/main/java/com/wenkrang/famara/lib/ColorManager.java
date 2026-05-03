@@ -121,7 +121,7 @@ public class ColorManager {
             if (!yamlConfiguration.contains(name + ".r")) {
                 //TODO:返回找不到的
                 rt.color.set(Color.MAGENTA);
-                rt.failedBlocks.add(name);
+                if (!rt.failedBlocks.contains(name)) rt.failedBlocks.add(name);
                 return;
             }
     

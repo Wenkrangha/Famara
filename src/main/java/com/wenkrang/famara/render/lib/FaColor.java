@@ -167,4 +167,20 @@ public class FaColor {
         this.g = Math.min(Math.max((int)(this.g * combinedFactor), 0), 255);
         this.b = Math.min(Math.max((int)(this.b * combinedFactor), 0), 255);
     }
+
+    /**
+     * 获取亮度
+     * @return 亮度
+     */
+    public int getBrightness() {
+        return (r * 299 + g * 587 + b * 114) / 1000;
+    }
+
+    /**
+     * 获取亮度
+     * @return 亮度
+     */
+    public static int getBrightness(int rgb) {
+        return (((rgb >> 16) & 0xFF) * 299 + ((rgb >> 8) & 0xFF) * 587 + (rgb & 0xFF) * 114) / 1000;
+    }
 }

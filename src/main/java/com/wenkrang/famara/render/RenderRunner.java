@@ -18,6 +18,7 @@ public class RenderRunner {
     }
 
     public void Runner() {
+        Random random = new Random();
         //TODO:取消竞态渲染
         new BukkitRunnable() {
             @Override
@@ -25,7 +26,6 @@ public class RenderRunner {
                 try {
                     // 检查任务队列是否为空
                     if (!renderService.tasks.isEmpty()) {
-                        Random random = new Random();
                         // 根据配置的速度参数，执行相应数量的任务步骤
                         for (int i = 0; i < renderService.speed; i++) {
                             // 随机选择一个渲染任务并执行一步

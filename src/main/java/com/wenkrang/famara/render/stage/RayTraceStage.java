@@ -4,6 +4,7 @@ import com.wenkrang.famara.lib.ColorManager;
 import com.wenkrang.famara.render.RenderContext;
 import com.wenkrang.famara.render.RenderTemp;
 import org.bukkit.FluidCollisionMode;
+import org.bukkit.Location;
 import org.bukkit.block.Block;
 
 import java.awt.*;
@@ -36,9 +37,10 @@ public class RayTraceStage implements RenderStage{
                 double blockX = rt.hit.getHitBlock().getX();
                 double blockY = rt.hit.getHitBlock().getY();
                 double blockZ = rt.hit.getHitBlock().getZ();
-                double entityX = rt.hit.getHitEntity().getLocation().getX();
-                double entityY = rt.hit.getHitEntity().getLocation().getY();
-                double entityZ = rt.hit.getHitEntity().getLocation().getZ();
+                Location location = rt.hit.getHitBlock().getLocation();
+                double entityX = location.getX();
+                double entityY = location.getY();
+                double entityZ = location.getZ();
                 
                 // 使用距离平方比较，避免 sqrt 开销
                 double blockDistSq = (blockX - ctx.eyeX) * (blockX - ctx.eyeX) +
