@@ -57,24 +57,31 @@ public class RenderTask {
         return Brightness / (128 * 128);
     }
 
-    public int applyColorContrast(int rgb, int contrast,int brightness) {
+    public static int applyColorContrast(int rgb, float contrast, float brightness) {
         // 获取各分量
         int r = (rgb >> 16) & 0xFF;
         int g = (rgb >> 8) & 0xFF;
         int b = rgb & 0xFF;
 
-        int newR = (r - brightness) * (1 + contrast) + brightness;
-        int newG = (g - brightness) * (1 + contrast) + brightness;
-        int newB = (b - brightness) * (1 + contrast) + brightness;
+        // 应用对比度公式：newC = (c - brightness) * (1 + contrast) + brightness
+        int newR = clampChannel((r - brightness) * (1 + contrast) + brightness);
+        int newG = clampChannel((g - brightness) * (1 + contrast) + brightness);
+        int newB = clampChannel((b - brightness) * (1 + contrast) + brightness);
 
-        // 应用对比度公式
         return (255 << 24) | (newR << 16) | (newG << 8) | newB;
+    }
+
+    /**
+     * 将通道值四舍五入并钳制到合法的 0-255 范围，避免溢出污染相邻通道。
+     */
+    private static int clampChannel(float value) {
+        return Math.max(0, Math.min(255, Math.round(value)));
     }
 
     public void applyContrast(float contrast, float brightness) {
         for (int x = 0; x < 128; x++) {
             for (int y = 0; y < 128; y++) {
-                ctx.image.setRGB(x, y, applyColorContrast(ctx.image.getRGB(x, y), (int) contrast, (int) brightness));
+                ctx.image.setRGB(x, y, applyColorContrast(ctx.image.getRGB(x, y), contrast, brightness));
             }
         }
     }
