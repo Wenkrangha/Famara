@@ -65,7 +65,7 @@ public class LoadCmd {
         }, (i, j) -> {
             if (!i.isOp()) return;
 
-            renderService.speed = Integer.parseInt(j.getFirst());
+            renderService.speed = Integer.parseInt(j.get(0));
 
             if (renderService.speed > 500)
                 i.sendMessage(Translation.CURRENT.of("warning1"));
