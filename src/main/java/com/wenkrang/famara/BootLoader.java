@@ -18,6 +18,7 @@ import java.util.logging.Level;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
+// 暂时弃用，待完善
 /**
  * 插件引导加载器，负责使用自定义ClassLoader动态加载并运行主类。
  * 该类不依赖任何外部库，以确保兼容性和稳定性。

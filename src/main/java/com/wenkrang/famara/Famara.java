@@ -1,10 +1,10 @@
 package com.wenkrang.famara;
 
+import com.wenkrang.faClip.module.faBootstrap.Fa;
 import com.wenkrang.famara.event.*;
 import com.wenkrang.famara.itemSystem.BookPage;
 import com.wenkrang.famara.itemSystem.RecipeBook;
 import com.wenkrang.famara.lib.*;
-import com.wenkrang.famara.loader.LoadCmd;
 import com.wenkrang.famara.loader.LoadItem;
 import com.wenkrang.famara.loader.LoadRecipe;
 import com.wenkrang.famara.render.RenderService;
@@ -23,19 +23,15 @@ import org.bukkit.scheduler.BukkitRunnable;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.lang.reflect.Method;
 import java.nio.file.Files;
 import java.util.*;
 import java.util.logging.Logger;
-
-import static com.wenkrang.famara.render.lib.LoadPhoto.loadPhoto;
-import static org.bukkit.Bukkit.getServer;
 
 /**
  * 主插件类，负责插件的初始化和关闭逻辑。
  * 包括命令注册、事件监听、资源加载、渲染器启动等。
  */
-public final class Famara {
+public final class Famara extends JavaPlugin {
 
     /**
      * 当前颜色配置版本号。
@@ -108,20 +104,29 @@ public final class Famara {
     }
 
     public static JavaPlugin getPlugin() {
+        // 暂时禁用Bootloader
+//        try {
+//            // 使用完整类名
+//            Class<?> bootLoaderClass = Class.forName("com.wenkrang.famara.BootLoader");
+//            Method getPluginMethod = JavaPlugin.class.getMethod("getPlugin", Class.class);
+//            return (JavaPlugin) getPluginMethod.invoke(null, bootLoaderClass);
+//        } catch (Exception e) {
+//            // 备用方案
+//            return (JavaPlugin) Bukkit.getServer().getPluginManager().getPlugin("Famara");
+//        }
+
         try {
-            // 使用完整类名
-            Class<?> bootLoaderClass = Class.forName("com.wenkrang.famara.BootLoader");
-            Method getPluginMethod = JavaPlugin.class.getMethod("getPlugin", Class.class);
-            return (JavaPlugin) getPluginMethod.invoke(null, bootLoaderClass);
-        } catch (Exception e) {
-            // 备用方案
-            return (JavaPlugin) Bukkit.getServer().getPluginManager().getPlugin("Famara");
+            return plugin;
+        } catch (Exception ignored) {
+            return plugin = (JavaPlugin) Bukkit.getServer().getPluginManager().getPlugin("Famara");
         }
     }
 
     public void onEnable() {
         //设置插件实例
-        plugin = getPlugin();
+        plugin = this;
+
+        Fa.auto();
 
         new BukkitRunnable() {
             @Override
@@ -150,17 +155,8 @@ public final class Famara {
         ConsoleLogger.info("Server version: " + VersionChecker.getVersion());
 
         ConsoleLogger.info("Registering commands");
-        // 注册命令执行器和 completer
-        LoadCmd.registerCommands();
 
         ConsoleLogger.info("Registering event listeners");
-        // 注册事件监听器
-        getServer().getPluginManager().registerEvents(new BookClickE(), getPlugin());
-        getServer().getPluginManager().registerEvents(new OnLoadFilm(), getPlugin());
-        getServer().getPluginManager().registerEvents(new OnPlayerJoinE(), getPlugin());
-        getServer().getPluginManager().registerEvents(new OnUseCameraE(), getPlugin());
-        getServer().getPluginManager().registerEvents(new OpenBookE(), getPlugin());
-        getServer().getPluginManager().registerEvents(new PlayerDownloadResPackE(), getPlugin());
 
         ConsoleLogger.info("Initializing photo storage directory");
         // 初始化照片存储目录
