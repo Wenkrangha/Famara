@@ -63,7 +63,7 @@ public class FCmd {
     public static void speed(FaCmdContext ctx,int speed) {
         renderService.speed = speed;
 
-        if (renderService.speed > 500)
+        if (renderService.speed > 1000)
             ctx.sender().sendMessage(Translation.CURRENT.of("warning1"));
 
         ctx.sender().sendMessage(String.format(

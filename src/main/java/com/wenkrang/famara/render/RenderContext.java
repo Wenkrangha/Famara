@@ -1,5 +1,6 @@
 package com.wenkrang.famara.render;
 
+import com.wenkrang.famara.render.rota.Camara;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.map.MapView;
@@ -11,13 +12,25 @@ import java.io.File;
  * 渲染上下文的内容
  */
 public class RenderContext {
+    /**
+     * 竖直方向的完整视野角(弧度)。
+     * 与替换前的球面计算保持一致的取景范围(128 像素 * 1/128 弧度)。
+     */
+    public static final double FOV = 1.0;
+
+    /**
+     * 焦距。方向向量归一化后焦距不影响结果, 仅用于定义视平面尺度。
+     */
+    public static final double FOCAL_LENGTH = 1.0;
+
     public final Location eyes;
     public final double eyeX;
     public final double eyeY;
     public final double eyeZ;
-    public final double pitch;
-    public final double yaw;
-    public final double fieldOfView;
+    /**
+     * 针孔相机模型, 已预计算每个像素的视线方向
+     */
+    public final Camara camara;
     public final String id;
     public final BufferedImage image;
     public final Player player;
@@ -31,9 +44,7 @@ public class RenderContext {
         eyeX = eyes.getX();
         eyeY = eyes.getY();
         eyeZ = eyes.getZ();
-        pitch = Math.toRadians(-eyes.getPitch());
-        yaw = Math.toRadians(eyes.getYaw() + 90);
-        fieldOfView = 1.0 / 128.0;
+        camara = new Camara(eyes, FOV, FOCAL_LENGTH, 128, 128);
 
         this.id = id;
         this.image = image;

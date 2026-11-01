@@ -1,5 +1,6 @@
 package com.wenkrang.famara;
 
+import com.wenkrang.faClip.manager.EventManager;
 import com.wenkrang.faClip.module.faBootstrap.Fa;
 import com.wenkrang.famara.event.*;
 import com.wenkrang.famara.itemSystem.BookPage;
@@ -127,6 +128,9 @@ public final class Famara extends JavaPlugin {
         plugin = this;
 
         Fa.auto();
+
+        EventManager eventManager = new EventManager(this);
+        eventManager.autoRegister("com.wenkrang.famara.event");
 
         new BukkitRunnable() {
             @Override
