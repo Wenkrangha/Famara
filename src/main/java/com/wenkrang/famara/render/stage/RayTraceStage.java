@@ -6,6 +6,7 @@ import com.wenkrang.famara.render.RenderTemp;
 import org.bukkit.FluidCollisionMode;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
+import org.bukkit.util.Vector;
 
 import java.awt.*;
 
@@ -72,11 +73,11 @@ public class RayTraceStage implements RenderStage{
 
     @Override
     public void render(RenderContext ctx, RenderTemp rt) {
-        // 初始化渲染向量
-        rt.cos = Math.cos(ctx.pitch - (rt.y - 64) * ctx.fieldOfView);
-        rt.direction.setX(Math.cos(ctx.yaw + (rt.x - 64) * ctx.fieldOfView) * rt.cos);
-        rt.direction.setY(Math.sin(ctx.pitch - (rt.y - 64) * ctx.fieldOfView));
-        rt.direction.setZ(Math.sin(ctx.yaw + (rt.x - 64) * ctx.fieldOfView) * rt.cos);
+        // 从预计算的视角矩阵取出当前像素的视线方向, 避免逐像素三角函数与球面畸变
+        Vector direction = ctx.camara.getDirection(rt.x, rt.y);
+        rt.direction.setX(direction.getX());
+        rt.direction.setY(direction.getY());
+        rt.direction.setZ(direction.getZ());
 
         // 光线追踪
         rt.hit = ctx.player.getWorld().rayTraceBlocks(ctx.eyes, rt.direction, 256, FluidCollisionMode.ALWAYS, false);

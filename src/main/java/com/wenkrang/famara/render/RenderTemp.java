@@ -13,7 +13,6 @@ public class RenderTemp {
     public int x;
     public int y;
     public Vector direction;
-    public double cos;
     public RayTraceResult hit;
     public FaColor color;
     public ArrayList<String> failedBlocks;

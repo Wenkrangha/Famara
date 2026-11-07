@@ -31,9 +31,9 @@ public class RenderService {
     @NotNull
     public CopyOnWriteArrayList<RenderTask> tasks = new CopyOnWriteArrayList<>();
     /**
-     * 渲染速度设置，默认为300。
+     * 渲染速度设置，默认为600。
      */
-    public int speed = 400;
+    public int speed = 600;
     /**
      * 渲染结果缓存，键为任务ID，值为对应的物品堆。
      */
