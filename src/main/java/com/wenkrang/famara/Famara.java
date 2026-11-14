@@ -2,6 +2,7 @@ package com.wenkrang.famara;
 
 import com.wenkrang.faClip.manager.EventManager;
 import com.wenkrang.faClip.module.faBootstrap.Fa;
+import com.wenkrang.faClip.module.faResource.FaBukkitResourceManager;
 import com.wenkrang.famara.event.*;
 import com.wenkrang.famara.itemSystem.BookPage;
 import com.wenkrang.famara.itemSystem.RecipeBook;
@@ -51,6 +52,8 @@ public final class Famara extends JavaPlugin {
     public static JavaPlugin plugin;
 
     public static RenderService renderService;
+
+    public static FaBukkitResourceManager resourceManager;
 
     /**
      * 插件数据文件夹路径。
@@ -128,6 +131,8 @@ public final class Famara extends JavaPlugin {
         plugin = this;
 
         Fa.auto();
+
+        resourceManager = new FaBukkitResourceManager(Famara.getPlugin());
 
         EventManager eventManager = new EventManager(this);
         eventManager.autoRegister("com.wenkrang.famara.event");

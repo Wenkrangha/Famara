@@ -74,7 +74,7 @@ public class FCmd {
     @Help("重新下载资源包")
     @ForPlayer
     public static void resource(FaCmdContext ctx) {
-        LoadResourcePack.load((Player) ctx.sender());
+        LoadResourcePack.newLoad((Player) ctx.sender());
     }
 
     @Cmd("fa.guide")

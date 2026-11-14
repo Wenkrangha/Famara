@@ -1,4 +1,4 @@
-package com.wenkrang.famara.render.rota.lib;
+package com.wenkrang.famara.render.rota.math;
 
 public class RotateHelper {
     public static double angleToRad(double angle) {

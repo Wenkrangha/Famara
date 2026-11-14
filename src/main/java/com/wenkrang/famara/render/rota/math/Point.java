@@ -1,4 +1,4 @@
-package com.wenkrang.famara.render.rota.lib;
+package com.wenkrang.famara.render.rota.math;
 
 import org.bukkit.Location;
 import org.bukkit.util.Vector;

@@ -1,7 +1,7 @@
 package com.wenkrang.famara.render.rota;
 
-import com.wenkrang.famara.render.rota.lib.Point;
-import com.wenkrang.famara.render.rota.lib.RotateHelper;
+import com.wenkrang.famara.render.rota.math.Point;
+import com.wenkrang.famara.render.rota.math.RotateHelper;
 import org.bukkit.Location;
 import org.bukkit.util.Vector;
 

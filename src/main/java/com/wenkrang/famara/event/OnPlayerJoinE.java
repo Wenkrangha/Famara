@@ -33,8 +33,9 @@ public class OnPlayerJoinE implements Listener {
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent event) {
         if (event.getPlayer().getScoreboardTags().contains("FamaraResPackIncluded")) {
-            event.getPlayer().removeScoreboardTag("FamaraResPackIncluded");
-            LoadResourcePack.load(event.getPlayer());
+            Famara.resourceManager.loadFor(Famara.resourceManager
+                    .getResource("famara_compatible_textures")
+                    , event.getPlayer(), "相机模型材质包");
         }
         //进行相关检测
         startCheck(event.getPlayer());

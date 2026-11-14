@@ -2,6 +2,9 @@ package com.wenkrang.famara.loader;
 
 import com.maxmind.geoip2.DatabaseReader;
 import com.maxmind.geoip2.model.CountryResponse;
+import com.wenkrang.faClip.module.faResource.BukkitResource;
+import com.wenkrang.faClip.module.faResource.FaBukkitResourceManager;
+import com.wenkrang.famara.Famara;
 import com.wenkrang.famara.lib.Config;
 import org.bukkit.entity.Player;
 
@@ -11,6 +14,7 @@ import java.io.InputStreamReader;
 import java.net.InetAddress;
 import java.net.URI;
 import java.net.URL;
+import static com.wenkrang.famara.Famara.resourceManager;
 
 /**
  * 资源包加载器类，用于根据玩家所在地区自动选择合适的资源包下载地址。
@@ -117,5 +121,23 @@ public class LoadResourcePack {
             // 使用默认镜像（目前与国内一致）
             player.setResourcePack(mirrorURL, hash);
         }
+    }
+
+    public static void newLoad(Player player) {
+        BukkitResource bukkitResource =
+                new BukkitResource("famara_compatible_textures"
+                        , "https://gitee.com/wenkrang/Famara/raw/master/famara_compatible_textures.zip"
+                        , "de4c3ab99b00eab6430c5f26c1be33bb8000b426");
+
+        resourceManager.registerResource(bukkitResource);
+
+        player.sendMessage("§9§l[*]§r 正在下载材质包，如果下载失败，请使用/fa resource下载");
+
+        // 检查玩家是否已经包含了资源包标记
+        if (player.getScoreboardTags().contains("FamaraResPackIncluded")){
+            return;
+        }
+
+        resourceManager.askFor(bukkitResource, player, "相机模型材质包");
     }
 }
